@@ -1,8 +1,8 @@
 #root {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  margin: 0;
+  padding: 0;
+  /* text-align: center; */
 }
 
 .logo {
@@ -39,4 +39,32 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.div1 {
+  background-image: url(assets/bgreg.jpg);
+  width: 119%;
+  height: 100vh;
+  background-size: cover;
+}
+
+.regImage {
+  background-image: url(assets/login2.jpg);
+  width: 100%;
+  height: 84%;
+  background-size: cover;
+}
+
+.logImage{
+  background-image: url(assets/login2.jpg);
+  width: 100%;
+  height: 58%;
+  background-size: cover;
+}
+
+.dashImage{
+  background-image: url(assets/bg.png);
+  width: 119%;
+  /* height: 60%; */
+  /* background-size: cover; */
 }

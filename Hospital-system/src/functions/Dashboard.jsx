@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 const Dashboard = () => {
   return (
     <div className="dashImage bg-cover bg-no-repeat bg-center min-h-screen flex-col md:flex-row items-start justify-start px-4">
-        <div className='flex bg-blue-500 h-15'>
+        <div className='flex bg-blue-500 h-1/4'>
             <div className='justify-left ml-5'>
                 <img src={LogoImg} alt="hospital" className="w-10 h-10 mt-3.5" />
             </div>
@@ -79,21 +79,21 @@ const Dashboard = () => {
         <div className="flex">
             <div className="flex">
                 <ul className="list-none text-left">
-                    <li className="text-white bg-blue-400 h-21 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">
+                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">
                         <Link to="/dashboard">
                         Home
                         </Link>
                     </li>
-                    <li className="text-white bg-blue-400 h-21 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">
+                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">
                         <Link to="/personalDetails">
                         Patient registration & Book issuance
                         </Link>
                     </li>
-                    <li className="text-white bg-blue-400 h-21 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Patient records</li>
-                    <li className="text-white bg-blue-400 h-21 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Reports & Alerts</li>
-                    <li className="text-white bg-blue-400 h-21 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Departments/Clinics</li>
-                    <li className="text-white bg-blue-400 h-21 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Other 1</li>
-                    <li className="text-white bg-blue-400 h-21.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-700"> Other 2</li>
+                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Patient records</li>
+                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Reports & Alerts</li>
+                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Departments/Clinics</li>
+                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Other</li>
+                    
                 </ul>
             </div>
             <div>
