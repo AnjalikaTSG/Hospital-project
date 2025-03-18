@@ -1,28 +1,20 @@
-import './App.css'
-import AppNavigation from './navigation/AppNavigation'
-// import PersonalDetails4 from './functions/PersonalDetails4'
-// import PersonalDetails3 from './functions/PersonalDetails3'
-// import PersonalDetails2 from './functions/PersonalDetails2'
-// import PersonalDetails from './functions/PersonalDetails'
-// import Dashboard from './functions/Dashboard'
-// import LoginScreen from './functions/LoginScreen'
-// import RegisterScreen from './functions/RegisterScreen'
+import { Outlet } from "react-router-dom";
+import SideBar from "./functions/SideBar";
 
-function App() {
+export default function App() {
   return (
-    <>
-      <div>
-       {/* <RegisterScreen /> */}
-       {/* <LoginScreen /> */}
-       {/* <Dashboard /> */}
-       {/* <PersonalDetails /> */}
-       {/* <PersonalDetails2 /> */}
-       {/* <PersonalDetails3 /> */}
-       {/* <PersonalDetails4 /> */}
-       <AppNavigation />
+    <div className="min-h-screen max-h-screen flex">
+      <SideBar />
+      <div className="md:w-full w-full max-h-screen overflow-y-auto mt-16">
+        <div>
+          <p className="text-2xl font-bold text-gray-900 bg-orange-500 py-3 px-6  w-fit">
+            {/* <RxHamburgerMenu className="block md:hidden translate-y-[2px] text-white cursor-pointer" /> */}
+            Tittle goes here
+          </p>
+          
+        </div>
+        <Outlet />
       </div>
-    </>
-  )
+    </div>
+  );
 }
-
-export default App
