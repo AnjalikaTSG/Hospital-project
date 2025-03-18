@@ -11,7 +11,6 @@ export default function App() {
             {/* <RxHamburgerMenu className="block md:hidden translate-y-[2px] text-white cursor-pointer" /> */}
             Tittle goes here
           </p>
-          
         </div>
         <Outlet />
       </div>
