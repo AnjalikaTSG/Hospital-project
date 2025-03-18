@@ -91,8 +91,8 @@ const Dashboard = () => {
                     </li>
                     <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Patient records</li>
                     <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Reports & Alerts</li>
-                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Departments/Clinics</li>
-                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Other</li>
+                    <li className="text-white bg-blue-400 h-28 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Departments/Clinics</li>
+                    <li className="text-white bg-blue-400 h-28 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Other</li>
                     
                 </ul>
             </div>

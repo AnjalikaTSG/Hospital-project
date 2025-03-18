@@ -62,7 +62,7 @@ const PersonalDetails = () => {
                   <input
                     type="text"
                     placeholder="Name"
-                    className="w-full p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                    className="w-3/4 p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div className="flex items-center space-x-2">
@@ -72,7 +72,7 @@ const PersonalDetails = () => {
                   <input
                     type="text"
                     placeholder="NIC no."
-                    className="w-full p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                    className="w-half p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div className="flex items-center space-x-2">
@@ -127,7 +127,7 @@ const PersonalDetails = () => {
                   <input
                     type="text"
                     placeholder="Name"
-                    className="w-full p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
+                    className="w-3/4 p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div className="flex items-center space-x-2">
@@ -202,13 +202,13 @@ const PersonalDetails = () => {
             </div>
             <div className="flex justify-center mt-5 space-x-4">
               <button
-                className="w-full md:w-1/5 bg-blue-400 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-blue-600 transition-all"
+                className="w-full md:w-1/7 bg-blue-400 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-blue-600 transition-all"
                 onClick={() => Navigate("/dashboard")}
               >
                 Back
               </button>
               <button
-                className="w-full md:w-1/5 bg-blue-500 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-gray-500 transition-all"
+                className="w-full md:w-1/7 bg-blue-500 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-gray-500 transition-all"
                 onClick={() => Navigate("/personalDetails2")}
               >
                 Next

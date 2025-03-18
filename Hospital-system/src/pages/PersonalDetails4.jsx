@@ -45,77 +45,86 @@ const Navigate = useNavigate();
           Register patients
         </h2>
         <div className=" justify-center">
-          <div className="w-full md:w-1/2 mb-1">
+          <div className="w-full md:w-1/2 mb-1 ml-50">
             <div className="">
               <h3 className="text-xl text-gray-500 font-semibold text-left ml-1.5">
                 Diseases that family members are suffering
               </h3>
-              <div className="flex flex-col">
-                <Checkbox
-                  color="gray"
-                  Checked
-                  className="border border-gray-500 "
-                  label="Ischaemic heart diseases"
-                />
-                <Checkbox
-                  color="gray"
-                  Checked
-                  className="border border-gray-500 "
-                  label="High blood pressure"
-                />
-                <Checkbox
-                  color="gray"
-                  Checked
-                  className="border border-gray-500 "
-                  label="Stroke"
-                />
-                <Checkbox
-                  color="gray"
-                  Checked
-                  className="border border-gray-500 "
-                  label="Diabetes Mellitus"
-                />
-                <Checkbox
-                  color="gray"
-                  Checked
-                  className="border border-gray-500 "
-                  label="Cancer"
-                />
-                <Checkbox
-                  color="gray"
-                  Checked
-                  className="border border-gray-500 "
-                  label="COPD and Asthma"
-                />
-                <Checkbox
-                  color="gray"
-                  Checked
-                  className="border border-gray-500 "
-                  label="Kidney Diseases"
-                />
-                <Checkbox
-                  color="gray"
-                  Checked
-                  className="border border-gray-500 "
-                  label="Other"
-                />
-                <Checkbox
-                  color="gray"
-                  Checked
-                  className="border border-gray-500 "
-                  label="Sudden deaths of relatives due to unknown causes"
-                />
+              <div className="flex flex-col ml-2">
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                      color="gray"
+                      className="border border-gray-500"
+                    />
+                  <span className="text-sm text-gray-500">Ischaemic heart diseases</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                      color="gray"
+                      className="border border-gray-500"
+                    />
+                  <span className="text-sm text-gray-500">High blood pressure</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                      color="gray"
+                      className="border border-gray-500"
+                    />
+                  <span className="text-sm text-gray-500">Stroke</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                      color="gray"
+                      className="border border-gray-500"
+                    />
+                  <span className="text-sm text-gray-500">Diabetes Mellitus</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                      color="gray"
+                      className="border border-gray-500"
+                    />
+                  <span className="text-sm text-gray-500">Cancer</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                      color="gray"
+                      className="border border-gray-500"
+                    />
+                  <span className="text-sm text-gray-500">COPD and Asthma</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                      color="gray"
+                      className="border border-gray-500"
+                    />
+                  <span className="text-sm text-gray-500">Kidney Diseases</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                      color="gray"
+                      className="border border-gray-500"
+                    />
+                  <span className="text-sm text-gray-500">Other</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox
+                      color="gray"
+                      className="border border-gray-500"
+                    />
+                  <span className="text-sm text-gray-500">Sudden deaths of relatives due to unknown causes</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
         <div className="flex justify-center mt-2 space-x-4">
-          <button className="w-full md:w-1/5 bg-blue-400 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-blue-600 transition-all"
+          <button className="w-full md:w-1/7 bg-blue-400 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-blue-600 transition-all"
           onClick={()=>Navigate("/personalDetails3")}
           >
             Back
           </button>
-          <button className="w-full md:w-1/5 bg-blue-500 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-blue-700 transition-all">
+          <button className="w-full md:w-1/7 bg-blue-500 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-blue-700 transition-all">
             Next
           </button>
         </div>
