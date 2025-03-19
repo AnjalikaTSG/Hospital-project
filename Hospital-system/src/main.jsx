@@ -11,6 +11,8 @@ import PersonalDetails2 from './pages/PersonalDetails2';
 import PersonalDetails3 from './pages/PersonalDetails3';
 import PersonalDetails4 from './pages/PersonalDetails4';
 import PersonalDetails5 from './pages/PersonalDetails5';
+import PersonalDetails6 from './pages/PersonalDetails6';
+import RefferedTo from './pages/RefferedTo';
 
 
 
@@ -18,7 +20,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<PersonalDetails5 />}>
+        <Route path="/" element={<RefferedTo />}>
         <Route path="/registerScreen" element={<RegisterScreen />} />
             <Route path="/loginScreen" element={<LoginScreen />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -27,6 +29,8 @@ createRoot(document.getElementById('root')).render(
             <Route path="/personalDetails3" element={<PersonalDetails3 />} />
             <Route path="/personalDetails4" element={<PersonalDetails4 />} />
             <Route path="/personalDetails5" element={<PersonalDetails5 />} />
+            <Route path="/personalDetails6" element={<PersonalDetails6 />} />
+            <Route path="/RefferedTo" element={<RefferedTo />} />
         </Route>
       </Routes>
     </Router>

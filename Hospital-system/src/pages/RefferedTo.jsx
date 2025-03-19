@@ -2,7 +2,7 @@ import "react";
 import { Checkbox } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 
-const PersonalDetails4 = () => {
+const RefferedTo = () => {
 
   const Navigate = useNavigate();
   
@@ -48,7 +48,7 @@ const PersonalDetails4 = () => {
           <div className="w-full md:w-1/2 mb-1 ml-50">
             <div className="">
               <h3 className="text-xl text-gray-500 font-semibold text-left ml-1.5">
-                Diseases that family members are suffering
+                Referred to:
               </h3>
               <div className="flex flex-col ml-2">
                 <div className="flex items-center gap-2">
@@ -56,64 +56,44 @@ const PersonalDetails4 = () => {
                       color="gray"
                       className="border border-gray-500"
                     />
-                  <span className="text-sm text-gray-500">Ischaemic heart diseases</span>
+                  <span className="text-sm text-gray-500">Medical Clinic</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <Checkbox
                       color="gray"
                       className="border border-gray-500"
                     />
-                  <span className="text-sm text-gray-500">High blood pressure</span>
+                  <span className="text-sm text-gray-500">Specialist Clinic</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <Checkbox
                       color="gray"
                       className="border border-gray-500"
                     />
-                  <span className="text-sm text-gray-500">Stroke</span>
+                  <span className="text-sm text-gray-500">Well women clinic</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <Checkbox
                       color="gray"
                       className="border border-gray-500"
                     />
-                  <span className="text-sm text-gray-500">Diabetes Mellitus</span>
+                  <span className="text-sm text-gray-500">Dental Clinic</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <Checkbox
                       color="gray"
                       className="border border-gray-500"
                     />
-                  <span className="text-sm text-gray-500">Cancer</span>
+                  <span className="text-sm text-red-500">Add here</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <Checkbox
                       color="gray"
                       className="border border-gray-500"
                     />
-                  <span className="text-sm text-gray-500">COPD and Asthma</span>
+                  <span className="text-sm text-red-500">Add here</span>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Checkbox
-                      color="gray"
-                      className="border border-gray-500"
-                    />
-                  <span className="text-sm text-gray-500">Kidney Diseases</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Checkbox
-                      color="gray"
-                      className="border border-gray-500"
-                    />
-                  <span className="text-sm text-gray-500">Other</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Checkbox
-                      color="gray"
-                      className="border border-gray-500"
-                    />
-                  <span className="text-sm text-gray-500">Sudden deaths of relatives due to unknown causes</span>
-                </div>
+                
               </div>
             </div>
           </div>
@@ -125,7 +105,7 @@ const PersonalDetails4 = () => {
             Back
           </button>
           <button className="w-full md:w-1/7 bg-blue-500 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-blue-700 transition-all">
-            Next
+            Submit
           </button>
         </div>
       </div>
@@ -133,4 +113,4 @@ const PersonalDetails4 = () => {
   );
 };
 
-export default PersonalDetails4;
+export default RefferedTo;

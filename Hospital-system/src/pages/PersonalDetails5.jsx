@@ -104,7 +104,7 @@ const PersonalDetails5 = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <label className="text-sm font-medium text-gray-500">
-                  Ideal body weight:
+                  Ideal body weight(kg):
                   </label>
                   <select className="w-half p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500">
                     {Array.from({ length: 51 }, (_, i) => i + 50).map((age) => (
@@ -147,11 +147,13 @@ const PersonalDetails5 = () => {
                   <label className="text-sm font-medium text-gray-500">
                     Blood pressure:
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Blood pressure"
-                    className="w-half p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                  />
+                  <select className="w-half p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500">
+                  <option>Below 120</option>
+                  <option>120–129</option>
+                  <option>130–139</option>
+                  <option>Below/Equal 140</option>
+                  <option>Below/Equal 180</option>
+                </select>
                 </div>
                 <div className="flex gap-4 items-center">
                   <label className="text-sm text-gray-500">
