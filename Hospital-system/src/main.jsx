@@ -14,14 +14,15 @@ import PersonalDetails5 from './pages/PersonalDetails5';
 import PersonalDetails6 from './pages/PersonalDetails6';
 import RefferedTo from './pages/RefferedTo';
 import AddSurgicalRecords from './pages/AddSurgicalRecords';
-
+import PsychologicalRecords from './pages/PsychologicalRecords';
+import ImmunizationRecords from './pages/ImmunizationRecords';
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<AddSurgicalRecords />}>
+        <Route path="/" element={<ImmunizationRecords />}>
         <Route path="/registerScreen" element={<RegisterScreen />} />
             <Route path="/loginScreen" element={<LoginScreen />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -33,6 +34,8 @@ createRoot(document.getElementById('root')).render(
             <Route path="/personalDetails6" element={<PersonalDetails6 />} />
             <Route path="/RefferedTo" element={<RefferedTo />} />
             <Route path="/AddSurgicalRecords" element={<AddSurgicalRecords />} />
+            <Route path="/psychologicalRecords" element={<PsychologicalRecords />} />
+            <Route path="/psychologicalRecords" element={<ImmunizationRecords />} />
 
         </Route>
       </Routes>

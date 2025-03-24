@@ -2,22 +2,22 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 
-const AddSurgicalRecords = () => {
+const ImmunizationRecords = () => {
   const navigate = useNavigate();
   const today = new Date().toISOString().split("T")[0]; // Get today's date
-  const [surgery, setSurgery] = useState("");
+  const [vaccine, setVaccine] = useState("");
   const [comment, setComment] = useState("");
   const [surgicalRecords, setSurgicalRecords] = useState([
-    { name: "Surgery 1", date: "2021-09-01", comments: "Comment 1" },
-    { name: "Surgery 2", date: "2021-09-02", comments: "Comment 2" },
-    { name: "Surgery 3", date: "2021-09-03", comments: "Comment 3" },
+    { name: "Immunization 1", date: "2021-09-01", comments: "Comment 1" },
+    { name: "Immunization 2", date: "2021-09-02", comments: "Comment 2" },
+    { name: "Immunization 3", date: "2021-09-03", comments: "Comment 3" },
   ]);
 
   const handleAddSurgery = () => {
-    if (surgery.trim() === "") return;
-    const newRecord = { name: surgery, date: today, comments: comment };
+    if (Psychological.trim() === "") return;
+    const newRecord = { name: vaccine, date: today, comments: comment };
     setSurgicalRecords([...surgicalRecords, newRecord]);
-    setSurgery(""); // Clear input after adding
+    setVaccine(""); // Clear input after adding
     setComment(""); // Clear input after adding comment
   };
 
@@ -52,17 +52,17 @@ const AddSurgicalRecords = () => {
         </ul>
       </div>
 
-      {/* Form for adding Surgical Records */}
+      {/* Form for adding Records */}
       <div>
         <h2 className="text-xl text-gray-500 font-bold text-center mt-2 ml-2 mb-2">
-          Surgical Records
+        Immunization Records
         </h2>
         <div>
           <form className="px-8 pb-8">
             <div className="flex flex-wrap md:flex-nowrap gap-5">
               <div className="w-full md:w-1/2 space-y-4">
                 <h3 className="text-xl text-gray-500 font-semibold text-left ml-1.5">
-                  Add New Surgery
+                  Add New Immunization
                 </h3>
 
                 <div className="flex items-center space-x-2">
@@ -78,12 +78,12 @@ const AddSurgicalRecords = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <label className="text-sm font-medium text-gray-500">
-                    Surgery Name:
+                   Name of the vaccine:
                   </label>
                   <input
                     type="text"
-                    value={surgery}
-                    onChange={(e) => setSurgery(e.target.value)}
+                    value={vaccine}
+                    onChange={(e) => setVaccine(e.target.value)}
                     className="w-3/4 p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none"
                   />
                 </div>
@@ -112,14 +112,14 @@ const AddSurgicalRecords = () => {
                     className="w-full md:w-1/5 bg-blue-500 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-gray-500 transition-all"
                     onClick={handleAddSurgery}
                   >
-                    Add Surgery
+                    Add 
                   </button>
                 </div>
               </div>
 
               <div className="w-full md:w-1/2 mb-1 space-y-4">
                 <h3 className="text-xl text-gray-500 font-semibold text-left ml-1.5">
-                  Surgical History
+                Immunization History
                 </h3>
 
                 <div className="flex flex-col gap-4">
@@ -160,4 +160,4 @@ const AddSurgicalRecords = () => {
   );
 };
 
-export default AddSurgicalRecords;
+export default ImmunizationRecords;
