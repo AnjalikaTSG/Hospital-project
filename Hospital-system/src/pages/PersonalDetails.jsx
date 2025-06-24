@@ -11,7 +11,7 @@ const PersonalDetails = () => {
   const [selectedDate, setSelectedDate] = useState(null); //date picker
 
   return (
-    <div className="dashImage bg-cover bg-no-repeat bg-center min-h-screen items-start justify-start px-4">
+    <div className="bg-white min-h-screen min-w-screen">
       <div className="flex w-full bg-blue-500 py-4 justify-center">
         <h1 className="text-xl font-semibold text-white text-center">
           Patient checkup management system - Base Hospital - Avissawella

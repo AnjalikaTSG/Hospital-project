@@ -22,8 +22,8 @@ const ImmunizationRecords = () => {
   };
 
   return (
-    <div className="dashImage bg-cover bg-no-repeat bg-center min-h-screen px-4">
-      {/* Header */}
+    <div className="bg-white min-h-screen min-w-screen">
+      {/* Header */} 
       <div className="flex w-full bg-blue-500 py-4 justify-center">
         <h1 className="text-xl font-semibold text-white text-center">
           Patient Checkup Management System - Base Hospital - Avissawella

@@ -76,26 +76,35 @@ const Dashboard = () => {
                 </button>
             </div>
         </div>
-        <div className="flex">
-            <div className="flex">
-                <ul className="list-none text-left">
-                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">
-                        <Link to="/dashboard">
-                        Home
-                        </Link>
-                    </li>
-                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">
-                        <Link to="/personalDetails">
-                        Patient registration & Book issuance
-                        </Link>
-                    </li>
-                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Patient records</li>
-                    <li className="text-white bg-blue-400 h-28.5 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Reports & Alerts</li>
-                    <li className="text-white bg-blue-400 h-28 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Departments/Clinics</li>
-                    <li className="text-white bg-blue-400 h-28 w-60 border border-black px-4 py-4 hover:bg-blue-600 active:bg-blue-300">Other</li>
-                    
-                </ul>
-            </div>
+
+        <div className="flex flex-grow">
+  {/* Sidebar */}
+  <div className="w-64 bg-blue-400 flex flex-col divide-y divide-blue-300 text-white" style={{ height: 'calc(100vh - 56px)' }}>
+    {[
+      { label: 'Home', path: '/dashboard' },
+      { label: 'Patient Registration & Book Issuance', path: '/personalDetails' },
+      { label: 'Patient Records' },
+      { label: 'Reports & Alerts' },
+      { label: 'Departments/Clinics' },
+      { label: 'Other' },
+    ].map((item, index) => (
+      <div
+        key={index}
+        className="flex-1 flex items-center justify-start px-4 hover:bg-blue-600 active:bg-blue-300"
+        style={{ height: 'calc(100% / 6)' }} // Ensures each item takes up 1/6th of the remaining space
+      >
+        {item.path ? (
+          <Link to={item.path} className="w-full">
+            {item.label}
+          </Link>
+        ) : (
+          <span>{item.label}</span>
+        )}
+      </div>
+    ))}
+  </div>
+
+
             <div>
                 <div className="flex justify-center mt-15 space-x-6 ml-22">
                     <button className="w-60 h-50 bg-blue-100 border border-black px-4 py-4 text-sm text-black uppercase font-medium rounded-lg cursor-pointer hover:bg-blue-600 text-center">
