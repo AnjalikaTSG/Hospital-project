@@ -1,162 +1,393 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight, Calendar, Syringe, Shield, FileText, History, AlertCircle, CheckCircle } from "lucide-react";
+import SideBar from "../functions/SideBar";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const ImmunizationRecords = () => {
   const navigate = useNavigate();
   const today = new Date().toISOString().split("T")[0]; // Get today's date
-  const [vaccine, setVaccine] = useState("");
-  const [comment, setComment] = useState("");
-  const [surgicalRecords, setSurgicalRecords] = useState([
-    { name: "Immunization 1", date: "2021-09-01", comments: "Comment 1" },
-    { name: "Immunization 2", date: "2021-09-02", comments: "Comment 2" },
-    { name: "Immunization 3", date: "2021-09-03", comments: "Comment 3" },
+  const [immunizationData, setImmunizationData] = useState({
+    vaccineName: "",
+    vaccineType: "",
+    doseNumber: "",
+    dateGiven: null,
+    nextDueDate: null,
+    batchNumber: "",
+    manufacturer: "",
+    administeredBy: "",
+    site: "",
+    route: "",
+    adverseReaction: "",
+    notes: ""
+  });
+  const [immunizationRecords, setImmunizationRecords] = useState([
+    { 
+      vaccineName: "BCG", 
+      vaccineType: "Live attenuated",
+      doseNumber: "1",
+      dateGiven: "2024-01-15", 
+      nextDueDate: "2024-07-15",
+      status: "Completed"
+    },
+    { 
+      vaccineName: "DPT", 
+      vaccineType: "Inactivated",
+      doseNumber: "2",
+      dateGiven: "2024-01-10", 
+      nextDueDate: "2024-04-10",
+      status: "Completed"
+    },
+    { 
+      vaccineName: "MMR", 
+      vaccineType: "Live attenuated",
+      doseNumber: "1",
+      dateGiven: "2024-01-05", 
+      nextDueDate: "2024-07-05",
+      status: "Pending"
+    },
   ]);
 
-  const handleAddSurgery = () => {
-    if (Psychological.trim() === "") return;
-    const newRecord = { name: vaccine, date: today, comments: comment };
-    setSurgicalRecords([...surgicalRecords, newRecord]);
-    setVaccine(""); // Clear input after adding
-    setComment(""); // Clear input after adding comment
+  const handleInputChange = (field, value) => {
+    setImmunizationData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
+  const handleAddImmunization = () => {
+    if (!immunizationData.vaccineName.trim() || !immunizationData.dateGiven) return;
+    
+    const newRecord = {
+      vaccineName: immunizationData.vaccineName,
+      vaccineType: immunizationData.vaccineType,
+      doseNumber: immunizationData.doseNumber,
+      dateGiven: immunizationData.dateGiven ? immunizationData.dateGiven.toISOString().split("T")[0] : "",
+      nextDueDate: immunizationData.nextDueDate ? immunizationData.nextDueDate.toISOString().split("T")[0] : "",
+      status: "Completed"
+    };
+    
+    setImmunizationRecords([...immunizationRecords, newRecord]);
+    
+    // Clear form
+    setImmunizationData({
+      vaccineName: "",
+      vaccineType: "",
+      doseNumber: "",
+      dateGiven: null,
+      nextDueDate: null,
+      batchNumber: "",
+      manufacturer: "",
+      administeredBy: "",
+      site: "",
+      route: "",
+      adverseReaction: "",
+      notes: ""
+    });
+  };
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case 'completed': return 'text-green-600 bg-green-50 border-green-200';
+      case 'pending': return 'text-orange-600 bg-orange-50 border-orange-200';
+      case 'overdue': return 'text-red-600 bg-red-50 border-red-200';
+      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+    }
+  };
+
+  const InputField = ({ field, label, type = "text", placeholder, icon: Icon }) => (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="w-4 h-4 text-blue-600" />}
+        <label className="text-sm font-medium text-gray-700">{label}:</label>
+      </div>
+      <input
+        type={type}
+        value={immunizationData[field]}
+        onChange={(e) => handleInputChange(field, e.target.value)}
+        placeholder={placeholder}
+        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700"
+      />
+    </div>
+  );
+
+  const DatePickerField = ({ field, label, icon: Icon }) => (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="w-4 h-4 text-blue-600" />}
+        <label className="text-sm font-medium text-gray-700">{label}:</label>
+      </div>
+      <DatePicker
+        selected={immunizationData[field]}
+        onChange={date => handleInputChange(field, date)}
+        dateFormat="yyyy-MM-dd"
+        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700"
+        placeholderText={label}
+      />
+    </div>
+  );
+
+  const SelectField = ({ field, label, options, icon: Icon }) => (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="w-4 h-4 text-blue-600" />}
+        <label className="text-sm font-medium text-gray-700">{label}:</label>
+      </div>
+      <select
+        value={immunizationData[field]}
+        onChange={(e) => handleInputChange(field, e.target.value)}
+        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700 bg-white"
+      >
+        <option value="">Select {label.toLowerCase()}</option>
+        {options.map((option, index) => (
+          <option key={index} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+
+  const TextAreaField = ({ field, label, placeholder, icon: Icon }) => (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="w-4 h-4 text-blue-600" />}
+        <label className="text-sm font-medium text-gray-700">{label}:</label>
+      </div>
+      <textarea
+        value={immunizationData[field]}
+        onChange={(e) => handleInputChange(field, e.target.value)}
+        placeholder={placeholder}
+        rows={3}
+        className="w-full p-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700 resize-none"
+      />
+    </div>
+  );
+
   return (
-    <div className="bg-white min-h-screen min-w-screen">
-      {/* Header */} 
-      <div className="flex w-full bg-blue-500 py-4 justify-center">
-        <h1 className="text-xl font-semibold text-white text-center">
-          Patient Checkup Management System - Base Hospital - Avissawella
-        </h1>
-      </div>
+    <SideBar>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+          <div className="px-8 py-6 border-b border-gray-200">
+            <h2 className="text-2xl font-bold text-gray-800 text-center flex items-center justify-center gap-2">
+              <Shield className="w-6 h-6 text-blue-600" />
+              Immunization Records
+            </h2>
+            <p className="text-gray-600 text-center mt-2">
+              Manage patient immunization schedules and vaccination records
+            </p>
+          </div>
 
-      {/* Navigation Tabs */}
-      <div>
-        <ul className="flex">
-          {[
-            "Personal Details",
-            "OPD Records",
-            "Hospitalization",
-            "Currently Mediation",
-            "Lifestyles",
-            "Immunization",
-            "Surgical History",
-          ].map((tab, index) => (
-            <li
-              key={index}
-              className="text-white bg-blue-400 w-60 border border-black px-4 py-4 text-center hover:bg-blue-600 active:bg-blue-300 cursor-pointer"
-            >
-              {tab}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Form for adding Records */}
-      <div>
-        <h2 className="text-xl text-gray-500 font-bold text-center mt-2 ml-2 mb-2">
-        Immunization Records
-        </h2>
-        <div>
-          <form className="px-8 pb-8">
-            <div className="flex flex-wrap md:flex-nowrap gap-5">
-              <div className="w-full md:w-1/2 space-y-4">
-                <h3 className="text-xl text-gray-500 font-semibold text-left ml-1.5">
-                  Add New Immunization
-                </h3>
-
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm font-medium text-gray-500">
-                    Date:
-                  </label>
-                  <input
-                    type="text"
-                    value={today}
-                    readOnly
-                    className="w-half p-3 pl-10 text-gray-500 rounded-lg border-2 border-gray-200 outline-none bg-gray-100 cursor-not-allowed"
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm font-medium text-gray-500">
-                   Name of the vaccine:
-                  </label>
-                  <input
-                    type="text"
-                    value={vaccine}
-                    onChange={(e) => setVaccine(e.target.value)}
-                    className="w-3/4 p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none"
-                  />
+          <div className="p-8">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Left Column - Add New Immunization */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Syringe className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Add New Immunization
+                  </h3>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm font-medium text-gray-500">
-                    Comments:
-                  </label>
-                  <input
-                    type="text"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    className="w-3/4 p-3 text-gray-500 rounded-lg border-2 border-gray-200 outline-none"
+                <div className="space-y-4">
+                  <InputField
+                    field="vaccineName"
+                    label="Vaccine Name"
+                    placeholder="Enter vaccine name"
+                    icon={Shield}
                   />
-                </div>
-                {/* Buttons */}
-                <div className="flex mt-5 space-x-4">
-                  <button
-                    className="w-full md:w-1/5 bg-blue-400 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-blue-600 transition-all"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    className="w-full md:w-1/5 bg-blue-500 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-gray-500 transition-all"
-                    onClick={handleAddSurgery}
-                  >
-                    Add 
-                  </button>
+
+                  <SelectField
+                    field="vaccineType"
+                    label="Vaccine Type"
+                    icon={Syringe}
+                    options={[
+                      "Live attenuated",
+                      "Inactivated",
+                      "Subunit",
+                      "Toxoid",
+                      "Conjugate",
+                      "Recombinant",
+                      "Other"
+                    ]}
+                  />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <InputField
+                      field="doseNumber"
+                      label="Dose Number"
+                      type="number"
+                      placeholder="1, 2, 3..."
+                    />
+                    <InputField
+                      field="batchNumber"
+                      label="Batch Number"
+                      placeholder="Batch/Lot number"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <DatePickerField
+                      field="dateGiven"
+                      label="Date Given"
+                      icon={Calendar}
+                    />
+                    <DatePickerField
+                      field="nextDueDate"
+                      label="Next Due Date"
+                      icon={Calendar}
+                    />
+                  </div>
+
+                  <InputField
+                    field="manufacturer"
+                    label="Manufacturer"
+                    placeholder="Vaccine manufacturer"
+                  />
+
+                  <InputField
+                    field="administeredBy"
+                    label="Administered By"
+                    placeholder="Healthcare provider name"
+                    icon={Syringe}
+                  />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <SelectField
+                      field="site"
+                      label="Injection Site"
+                      options={[
+                        "Left arm",
+                        "Right arm",
+                        "Left thigh",
+                        "Right thigh",
+                        "Left buttock",
+                        "Right buttock",
+                        "Oral",
+                        "Nasal"
+                      ]}
+                    />
+                    <SelectField
+                      field="route"
+                      label="Route"
+                      options={[
+                        "Intramuscular",
+                        "Subcutaneous",
+                        "Intradermal",
+                        "Oral",
+                        "Nasal",
+                        "Intranasal"
+                      ]}
+                    />
+                  </div>
+
+                  <TextAreaField
+                    field="adverseReaction"
+                    label="Adverse Reactions"
+                    placeholder="Any adverse reactions or side effects..."
+                    icon={AlertCircle}
+                  />
+
+                  <TextAreaField
+                    field="notes"
+                    label="Additional Notes"
+                    placeholder="Any additional information..."
+                    icon={FileText}
+                  />
+
+                  {/* Buttons */}
+                  <div className="flex gap-4 pt-4">
+                    <button
+                      className="flex items-center gap-2 px-8 py-3 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-all duration-200 shadow-md hover:shadow-lg"
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Back
+                    </button>
+                    <button
+                      type="button"
+                      className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                      onClick={handleAddImmunization}
+                    >
+                      Add Immunization
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <div className="w-full md:w-1/2 mb-1 space-y-4">
-                <h3 className="text-xl text-gray-500 font-semibold text-left ml-1.5">
-                Immunization History
-                </h3>
+              {/* Right Column - Immunization History */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <History className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Immunization History
+                  </h3>
+                </div>
 
-                <div className="flex flex-col gap-4">
-                  {surgicalRecords.map((record, index) => (
+                <div className="space-y-4">
+                  {immunizationRecords.map((record, index) => (
                     <div
                       key={index}
-                      className="bg-gray-100 p-4 rounded-lg border-2 border-gray-300"
+                      className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-all"
                     >
-                      <h4 className="text-gray-700 font-semibold">
-                        {record.name}
-                      </h4>
-                      <p className="text-sm text-gray-500">
-                        Date: {record.date}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Comments: {record.comments}
-                      </p>
+                      <div className="flex justify-between items-start mb-3">
+                        <h4 className="text-gray-800 font-semibold flex items-center gap-2">
+                          <Shield className="w-4 h-4 text-blue-600" />
+                          {record.vaccineName}
+                        </h4>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(record.status)}`}>
+                          {record.status}
+                        </span>
+                      </div>
+                      
+                      <div className="space-y-2 text-sm text-gray-600">
+                        <p><span className="font-medium">Type:</span> {record.vaccineType}</p>
+                        <p><span className="font-medium">Dose:</span> {record.doseNumber}</p>
+                        <p className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-blue-600" />
+                          <span className="font-medium">Given:</span> {record.dateGiven}</p>
+                        <p className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-blue-600" />
+                          <span className="font-medium">Next Due:</span> {record.nextDueDate}</p>
+                      </div>
                     </div>
                   ))}
-                  {/* Buttons */}
-            <div className="flex justify-left mt-5 space-x-4">
-              <button
-                type="button"
-                className="w-full md:w-1/5 bg-blue-500 p-4 text-sm text-white uppercase rounded-2xl cursor-pointer hover:bg-gray-500 transition-all"
-                onClick={handleAddSurgery}
-              >
-                Next
-              </button>
-            </div>
                 </div>
-                
+
+                {/* Summary Stats */}
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <h4 className="text-blue-800 font-semibold mb-2 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Immunization Summary
+                  </h4>
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div className="text-center">
+                      <div className="text-blue-600 font-bold">{immunizationRecords.length}</div>
+                      <div className="text-blue-500">Total Vaccines</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-green-600 font-bold">
+                        {immunizationRecords.filter(r => r.status === 'Completed').length}
+                      </div>
+                      <div className="text-green-500">Completed</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-orange-600 font-bold">
+                        {immunizationRecords.filter(r => r.status === 'Pending').length}
+                      </div>
+                      <div className="text-orange-500">Pending</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
-    </div>
+    </SideBar>
   );
 };
 

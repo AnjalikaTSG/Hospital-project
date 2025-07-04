@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-const SideBar = () => {
+const SideBar = ({ children }) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [screenDimensions, setScreenDimensions] = useState({
-    width: 0,
-    height: 0
-  });
+  const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
 
   const tabs = [
     "Personal details",
-    "OPD records", 
+    "OPD records",
     "Hospitalization",
     "Currently medication",
     "Lifestyles",
@@ -25,38 +22,23 @@ const SideBar = () => {
       });
     };
 
-    // Set initial dimensions
     handleResize();
-    
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Calculate dynamic styles based on screen dimensions
   const getDynamicStyles = () => {
     const { width, height } = screenDimensions;
-    
     if (width === 0 || height === 0) return {};
-    
-    // Font size calculations
-    const headerFontSize = Math.max(width * 0.015, 14);
-    const tabFontSize = Math.max(width * 0.01, 11);
-    const contentFontSize = Math.max(width * 0.012, 12);
-    
-    // Padding calculations
-    const headerPadding = Math.max(width * 0.01, 8);
-    const tabPaddingX = Math.max(width * 0.005, 4);
-    const tabPaddingY = Math.max(height * 0.01, 8);
-    const contentPadding = Math.max(width * 0.02, 16);
-    
+
     return {
-      headerFontSize,
-      tabFontSize,
-      contentFontSize,
-      headerPadding,
-      tabPaddingX,
-      tabPaddingY,
-      contentPadding
+      headerFontSize: Math.max(width * 0.015, 14),
+      tabFontSize: Math.max(width * 0.01, 11),
+      contentFontSize: Math.max(width * 0.012, 12),
+      headerPadding: Math.max(width * 0.01, 8),
+      tabPaddingX: Math.max(width * 0.005, 4),
+      tabPaddingY: Math.max(height * 0.01, 8),
+      contentPadding: Math.max(width * 0.02, 16)
     };
   };
 
@@ -65,14 +47,11 @@ const SideBar = () => {
   return (
     <div className="w-screen h-screen bg-white flex flex-col overflow-hidden">
       {/* Header */}
-      <div 
+      <div
         className="w-full bg-blue-500 flex items-center justify-center"
-        style={{
-          height: '8vh',
-          padding: `${styles.headerPadding || 8}px`
-        }}
+        style={{ height: '8vh', padding: `${styles.headerPadding || 8}px` }}
       >
-        <h1 
+        <h1
           className="font-semibold text-white text-center leading-tight"
           style={{ fontSize: `${styles.headerFontSize || 16}px` }}
         >
@@ -87,12 +66,9 @@ const SideBar = () => {
             <div
               key={index}
               onClick={() => setActiveTab(index)}
-              className={`
-                text-white bg-blue-400 border border-black cursor-pointer 
+              className={`text-white bg-blue-400 border border-black cursor-pointer
                 transition-colors duration-200 flex items-center justify-center
-                hover:bg-blue-600 active:bg-blue-300
-                ${activeTab === index ? 'bg-blue-600' : ''}
-              `}
+                hover:bg-blue-600 ${activeTab === index ? 'bg-blue-600' : ''}`}
               style={{
                 width: `${100 / tabs.length}%`,
                 fontSize: `${styles.tabFontSize || 12}px`,
@@ -102,33 +78,18 @@ const SideBar = () => {
                 paddingBottom: `${styles.tabPaddingY || 8}px`
               }}
             >
-              <span className="text-center leading-tight">
-                {tab}
-              </span>
+              <span className="text-center leading-tight">{tab}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Content Area */}
-      <div 
-        className="flex-1 flex items-center justify-center bg-white"
-        style={{ 
-          height: '85vh',
-          padding: `${styles.contentPadding || 16}px`
-        }}
+      <div
+        className="flex-1 overflow-y-auto bg-white"
+        style={{ padding: `${styles.contentPadding || 16}px` }}
       >
-        <div className="text-center text-gray-600">
-          <h2 
-            className="font-semibold mb-4 text-gray-700"
-            style={{ fontSize: `${styles.contentFontSize || 18}px` }}
-          >
-            {tabs[activeTab]}
-          </h2>
-          <p style={{ fontSize: `${styles.tabFontSize || 14}px` }}>
-            Content for {tabs[activeTab]} will be displayed here
-          </p>
-        </div>
+        {children}
       </div>
     </div>
   );
