@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LogoImg from '../assets/logo.png';
 import docImg from '../assets/doctor.png';
 import nurImg from '../assets/nurse.png';
 import pharImg from '../assets/phar.png';
 import patImg from '../assets/patient.png';
 import labImg from '../assets/lab.png';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Home,
   UserPlus,
@@ -71,6 +71,14 @@ const stats = [
 ];
 
 const Dashboard = () => {
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState('/dashboard');
+
+  // Update active tab based on current location
+  React.useEffect(() => {
+    setActiveTab(location.pathname);
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
       {/* Sidebar */}
@@ -84,7 +92,12 @@ const Dashboard = () => {
             <Link
               key={idx}
               to={item.path}
-              className="flex items-center px-6 py-3 hover:bg-blue-500/60 transition rounded-r-full font-medium text-white/90 hover:text-white"
+              className={`flex items-center px-6 py-3 transition rounded-r-full font-medium ${
+                activeTab === item.path 
+                  ? 'bg-blue-500/80 text-white shadow-lg' 
+                  : 'text-white/90 hover:bg-blue-500/60 hover:text-white'
+              }`}
+              onClick={() => setActiveTab(item.path)}
             >
               {item.icon}
               {item.label}

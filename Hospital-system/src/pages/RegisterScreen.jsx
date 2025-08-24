@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { User, Lock, Hash, Briefcase, UserPlus, Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { User, Lock, Hash, Briefcase, UserPlus, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
 
 const RegisterScreen = () => {
+    const navigate = useNavigate();
     const [selectedPosition, setSelectedPosition] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState({ type: '', text: '' });
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -12,10 +16,55 @@ const RegisterScreen = () => {
     });
     const [focusedField, setFocusedField] = useState("");
 
-    const handleRegister = (e) => {
+    // Backend API URL - update this to match your backend URL
+    const API_BASE_URL = 'http://localhost:3000'; // Update port as needed
+
+    const handleRegister = async (e) => {
         e.preventDefault();
-        console.log("Registration data:", formData);
-        // Navigate logic would go here
+        
+        // Validate form data
+        if (!formData.username || !formData.password || !formData.employeeNumber || !formData.position) {
+            setMessage({ type: 'error', text: 'Please fill in all fields' });
+            return;
+        }
+
+        setLoading(true);
+        setMessage({ type: '', text: '' });
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: formData.username,
+                    password: formData.password,
+                    employee_number: formData.employeeNumber,
+                    position: formData.position
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMessage({ type: 'success', text: data.message || 'Registration submitted for admin approval!' });
+                // Clear form after successful registration
+                setFormData({
+                    username: "",
+                    password: "",
+                    employeeNumber: "",
+                    position: ""
+                });
+                setSelectedPosition("");
+            } else {
+                setMessage({ type: 'error', text: data.error || 'Registration failed. Please try again.' });
+            }
+        } catch (error) {
+            setMessage({ type: 'error', text: 'Network error. Please check your connection.' });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleInputChange = (field, value) => {
@@ -120,7 +169,7 @@ const RegisterScreen = () => {
                                 <p className="text-white/70">Join our healthcare platform today</p>
                             </div>
 
-                            <div onSubmit={handleRegister} className="space-y-4 lg:space-y-6">
+                            <form onSubmit={handleRegister} className="space-y-4 lg:space-y-6">
                                 {/* Username Field */}
                                 <div style={{animation: 'fadeInUp 1s ease-out 0.3s both'}}>
                                     <label className="block text-sm font-medium text-white/90 mb-2">Username</label>
@@ -209,33 +258,57 @@ const RegisterScreen = () => {
                                     </div>
                                 </div>
 
+                                {/* Message Display */}
+                                {message.text && (
+                                    <div style={{animation: 'fadeInUp 1s ease-out 0.7s both'}}>
+                                        <div className={`flex items-center gap-2 p-3 rounded-xl ${
+                                            message.type === 'success' 
+                                                ? 'bg-green-500/20 border border-green-500/30 text-green-300' 
+                                                : 'bg-red-500/20 border border-red-500/30 text-red-300'
+                                        }`}>
+                                            {message.type === 'success' ? (
+                                                <CheckCircle className="w-5 h-5" />
+                                            ) : (
+                                                <AlertCircle className="w-5 h-5" />
+                                            )}
+                                            <span className="text-sm font-medium">{message.text}</span>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Register Button */}
-                                <div style={{animation: 'fadeInUp 1s ease-out 0.7s both'}}>
+                                <div style={{animation: 'fadeInUp 1s ease-out 0.8s both'}}>
                                     <button
                                         type="submit"
-                                        className="w-full py-3 lg:py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 transform hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group"
+                                        disabled={loading}
+                                        className="w-full py-3 lg:py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 transform hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         <span className="relative z-10 flex items-center justify-center">
-                                            <UserPlus className="w-5 h-5 mr-2" />
-                                            Create Account
+                                            {loading ? (
+                                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                            ) : (
+                                                <UserPlus className="w-5 h-5 mr-2" />
+                                            )}
+                                            {loading ? 'Creating Account...' : 'Create Account'}
                                         </span>
                                         <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     </button>
                                 </div>
 
                                 {/* Login Link */}
-                                <div className="text-center" style={{animation: 'fadeInUp 1s ease-out 0.8s both'}}>
+                                <div className="text-center" style={{animation: 'fadeInUp 1s ease-out 0.9s both'}}>
                                     <p className="text-white/70">
                                         Already have an account?{" "}
                                         <button 
-                                            onClick={() => console.log('Navigate to login')}
+                                            type="button"
+                                            onClick={() => navigate('/loginScreen')}
                                             className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
                                         >
                                             Sign In
                                         </button>
                                     </p>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>

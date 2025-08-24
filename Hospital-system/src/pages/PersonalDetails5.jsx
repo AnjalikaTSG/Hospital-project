@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Calendar, Scale, Ruler, Heart, Eye, Stethoscope } from "lucide-react";
 import SideBar from "../functions/SideBar";
+import { useNavigate } from "react-router-dom";
 
 const PersonalDetails5 = () => {
   const [formData, setFormData] = useState({
@@ -32,6 +33,8 @@ const PersonalDetails5 = () => {
     lipidTCHDL: ''
   });
 
+  const navigate = useNavigate();
+
   // Set today's date on component mount
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
@@ -48,10 +51,11 @@ const PersonalDetails5 = () => {
   const handleNext = () => {
     console.log('Form Data:', formData);
     alert('Form submitted successfully! Moving to next step...');
+    navigate('/dashboard');
   };
 
   const handleBack = () => {
-    alert('Going back to previous step...');
+    navigate('/personalDetails3');
   };
 
   const tabs = [

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, Activity, Cigarette, Coffee, Wine } from "lucide-react";
 import SideBar from "../functions/SideBar";
+import { useNavigate } from "react-router-dom";
 
 const PersonalDetails3 = () => {
+  const Navigate = useNavigate();
   const [formData, setFormData] = useState({
     physicalActivity: '',
     tobaccoSmoking: '',
@@ -22,11 +24,11 @@ const PersonalDetails3 = () => {
 
   const handleNext = () => {
     console.log('Form Data:', formData);
-    alert('Form submitted successfully! Moving to next step...');
+    Navigate('/personalDetails5');
   };
 
   const handleBack = () => {
-    alert('Going back to previous step...');
+    Navigate('/personalDetails');
   };
 
   const tabs = [

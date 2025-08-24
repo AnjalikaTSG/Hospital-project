@@ -338,7 +338,7 @@ const PersonalDetails = () => {
                 <button
                   type="button"
                   className="px-8 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                  onClick={() => Navigate("/personalDetails2")}
+                  onClick={() => Navigate("/personalDetails3")}
                 >
                   Next
                 </button>

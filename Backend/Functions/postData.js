@@ -1,4 +1,3 @@
-
 const connection = require('../Services/Connection')
 
 module.exports = async function postData(req, res){

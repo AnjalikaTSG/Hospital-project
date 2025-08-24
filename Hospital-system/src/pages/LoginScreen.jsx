@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { User, Lock, LogIn, Eye, EyeOff, Shield } from "lucide-react";
 
 const LoginScreen = () => {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         username: "",
@@ -13,7 +15,7 @@ const LoginScreen = () => {
         e.preventDefault();
         console.log("Login data:", formData);
         // Navigate to dashboard logic would go here
-        console.log('Navigate to dashboard');
+        navigate('/dashboard');
     };
 
     const handleInputChange = (field, value) => {
@@ -21,7 +23,7 @@ const LoginScreen = () => {
     };
 
     const handleRegisterClick = () => {
-        console.log('Navigate to register');
+        navigate('/registerScreen');
     };
 
     return (
