@@ -15,9 +15,7 @@ const RegisterScreen = () => {
         position: ""
     });
     const [focusedField, setFocusedField] = useState("");
-
-    // Backend API URL - update this to match your backend URL
-    const API_BASE_URL = 'http://localhost:3000'; // Update port as needed
+    const API_BASE_URL = 'http://localhost:3000';
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -40,9 +38,9 @@ const RegisterScreen = () => {
                 body: JSON.stringify({
                     username: formData.username,
                     password: formData.password,
-                    employee_number: formData.employeeNumber,
+                    employeeNumber: formData.employeeNumber,
                     position: formData.position
-                }),
+}),
             });
 
             const data = await response.json();
@@ -251,9 +249,10 @@ const RegisterScreen = () => {
                                             }`}
                                         >
                                             <option value="" disabled className="bg-gray-800 text-white/70">Select your position</option>
-                                            <option value="doctor" className="bg-gray-800 text-white">Doctor</option>
-                                            <option value="nurse" className="bg-gray-800 text-white">Nurse</option>
-                                            <option value="pharmacist" className="bg-gray-800 text-white">Pharmacist</option>
+                                            <option value="Doctor" className="bg-gray-800 text-white">Doctor</option>
+                                            <option value="Nurse" className="bg-gray-800 text-white">Nurse</option>
+                                            <option value="Pharmacist" className="bg-gray-800 text-white">Pharmacist</option>
+                                            <option value="Laboratorist" className="bg-gray-800 text-white">Laboratorist</option>
                                         </select>
                                     </div>
                                 </div>

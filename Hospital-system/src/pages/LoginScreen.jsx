@@ -10,12 +10,46 @@ const LoginScreen = () => {
         password: ""
     });
     const [focusedField, setFocusedField] = useState("");
+    const API_BASE_URL = 'http://localhost:3000';
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        console.log("Login data:", formData);
-        // Navigate to dashboard logic would go here
-        navigate('/dashboard');
+        
+        // Basic validation
+        if (!formData.username.trim() || !formData.password.trim()) {
+            alert('Please enter both username and password');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: formData.username,
+                    password: formData.password
+                }),
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Login success: store token/user data and navigate
+                console.log('Login successful:', data);
+                // You can store the token in localStorage here
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                }
+                // Navigate to dashboard or home page
+                navigate('/dashboard'); // Change this to your desired route
+            } else {
+                // Show error message
+                alert(data.message || 'Login failed. Please check your credentials.');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Network error. Please try again.');
+        }
     };
 
     const handleInputChange = (field, value) => {
@@ -119,7 +153,7 @@ const LoginScreen = () => {
                                 <p className="text-white/70">Sign in to your healthcare account</p>
                             </div>
 
-                            <div className="space-y-4 lg:space-y-6">
+                            <form onSubmit={handleLogin} className="space-y-4 lg:space-y-6">
                                 {/* Username Field */}
                                 <div style={{animation: 'fadeInUp 1s ease-out 0.3s both'}}>
                                     <label className="block text-sm font-medium text-white/90 mb-2">Username</label>
@@ -135,6 +169,7 @@ const LoginScreen = () => {
                                             onBlur={() => setFocusedField('')}
                                             className="w-full pl-12 pr-4 py-3 lg:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-white/50 outline-none focus:border-cyan-400 focus:shadow-lg focus:shadow-cyan-400/25 transition-all duration-300"
                                             placeholder="Enter your username"
+                                            required
                                         />
                                     </div>
                                 </div>
@@ -154,6 +189,7 @@ const LoginScreen = () => {
                                             onBlur={() => setFocusedField('')}
                                             className="w-full pl-12 pr-12 py-3 lg:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-white/50 outline-none focus:border-cyan-400 focus:shadow-lg focus:shadow-cyan-400/25 transition-all duration-300"
                                             placeholder="Enter your password"
+                                            required
                                         />
                                         <button
                                             type="button"
@@ -168,6 +204,7 @@ const LoginScreen = () => {
                                 {/* Forgot Password Link */}
                                 <div className="text-right" style={{animation: 'fadeInUp 1s ease-out 0.5s both'}}>
                                     <button 
+                                        type="button"
                                         onClick={() => console.log('Navigate to forgot password')}
                                         className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
                                     >
@@ -178,8 +215,7 @@ const LoginScreen = () => {
                                 {/* Login Button */}
                                 <div style={{animation: 'fadeInUp 1s ease-out 0.6s both'}}>
                                     <button
-                                        type="button"
-                                        onClick={handleLogin}
+                                        type="submit"
                                         className="w-full py-3 lg:py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 transform hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group"
                                     >
                                         <span className="relative z-10 flex items-center justify-center">
@@ -195,6 +231,7 @@ const LoginScreen = () => {
                                     <p className="text-white/70">
                                         Don't have an account?{" "}
                                         <button 
+                                            type="button"
                                             onClick={handleRegisterClick}
                                             className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
                                         >
@@ -210,7 +247,7 @@ const LoginScreen = () => {
                                         <span className="text-xs text-green-300">Secured with end-to-end encryption</span>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
