@@ -28,6 +28,7 @@ const API_BASE_URL = 'http://localhost:3000';
 
 const PatientRecords = () => {
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,14 +56,42 @@ const PatientRecords = () => {
     fetchPatients();
   }, []);
 
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Helper function to highlight search terms
+  const highlightText = (text, searchTerm) => {
+    if (!searchTerm || !text) return text;
+    
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');
+  };
+
   // Filter patients based on search
   const filtered = patients.filter((p) => {
-    const q = search.toLowerCase();
-    return (
-      (p.tab1?.name && p.tab1.name.toLowerCase().includes(q)) ||
-      (p.patientId && p.patientId.toLowerCase().includes(q)) ||
-      (p.tab1?.nic && p.tab1.nic.toLowerCase().includes(q))
-    );
+    if (!debouncedSearch.trim()) return true; // Show all if search is empty
+    
+    const q = debouncedSearch.toLowerCase().trim();
+    
+    // Search in multiple fields with better null checking
+    const nameMatch = p.tab1?.name && p.tab1.name.toLowerCase().includes(q);
+    const patientIdMatch = p.patientId && p.patientId.toLowerCase().includes(q);
+    const nicMatch = p.tab1?.nic && p.tab1.nic.toLowerCase().includes(q);
+    
+    // Also search in other tab fields if they exist
+    const tab2Match = p.tab2?.name && p.tab2.name.toLowerCase().includes(q);
+    const tab3Match = p.tab3?.name && p.tab3.name.toLowerCase().includes(q);
+    const tab4Match = p.tab4?.name && p.tab4.name.toLowerCase().includes(q);
+    const tab5Match = p.tab5?.name && p.tab5.name.toLowerCase().includes(q);
+    const tab6Match = p.tab6?.name && p.tab6.name.toLowerCase().includes(q);
+    
+    return nameMatch || patientIdMatch || nicMatch || tab2Match || tab3Match || tab4Match || tab5Match || tab6Match;
   });
 
   return (
@@ -109,13 +138,52 @@ const PatientRecords = () => {
               <h2 className="text-xl font-bold text-gray-800">Search Patients</h2>
             </div>
             <div className="px-8 py-6">
-                              <input
+              <div className="relative">
+                <input
                   type="text"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  placeholder="Search by name, patient ID, or NIC..."
-                  className="w-full p-3 rounded-lg border-2 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700 bg-white mb-2"
+                  placeholder="Search by name, patient ID, or NIC... (Press Ctrl+K to focus)"
+                  className="w-full p-3 pr-12 rounded-lg border-2 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700 bg-white"
+                  ref={(input) => {
+                    if (input) {
+                      // Add keyboard shortcut Ctrl+K to focus search
+                      const handleKeyDown = (e) => {
+                        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                          e.preventDefault();
+                          input.focus();
+                        }
+                      };
+                      document.addEventListener('keydown', handleKeyDown);
+                      return () => document.removeEventListener('keydown', handleKeyDown);
+                    }
+                  }}
                 />
+                {search && (
+                  <button
+                    onClick={() => setSearch('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+              {debouncedSearch && (
+                <div className="mt-3 text-sm text-gray-600">
+                  {filtered.length === 1 
+                    ? `Found 1 patient record` 
+                    : `Found ${filtered.length} patient records`
+                  }
+                  {patients.length > 0 && (
+                    <span className="text-gray-400 ml-2">
+                      (out of {patients.length} total)
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className="mt-3 text-xs text-gray-400">
+                💡 Search tip: You can search by patient name, ID, or NIC number. Use Ctrl+K to quickly focus the search box.
+              </div>
             </div>
           </div>
         </div>
@@ -144,22 +212,42 @@ const PatientRecords = () => {
             </div>
           ) : (
             filtered.map((p, idx) => (
-              <div key={p._id || idx} className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-6 flex flex-col gap-3">
+              <div key={p._id || idx} className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-6 flex flex-col gap-3 hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-2 mb-2">
                   <User className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-gray-700">Name:</span>
-                  <span className="text-gray-800">{p.tab1?.name || 'N/A'}</span>
+                  <span 
+                    className="text-gray-800"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(p.tab1?.name || 'N/A', debouncedSearch)
+                    }}
+                  />
                 </div>
                 <div className="flex items-center gap-2">
                   <Hash className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-gray-700">Patient ID:</span>
-                  <span className="text-gray-800">{p.patientId || 'N/A'}</span>
+                  <span 
+                    className="text-gray-800 font-mono"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(p.patientId || 'N/A', debouncedSearch)
+                    }}
+                  />
                 </div>
                 <div className="flex items-center gap-2">
                   <IdCard className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-gray-700">NIC:</span>
-                  <span className="text-gray-800">{p.tab1?.nic || 'N/A'}</span>
+                  <span 
+                    className="text-gray-800 font-mono"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(p.tab1?.nic || 'N/A', debouncedSearch)
+                    }}
+                  />
                 </div>
+                {debouncedSearch && (p.tab2?.name || p.tab3?.name || p.tab4?.name || p.tab5?.name || p.tab6?.name) && (
+                  <div className="mt-2 pt-2 border-t border-blue-200">
+                    <span className="text-xs text-gray-500">Also found in other records</span>
+                  </div>
+                )}
               </div>
             ))
           )}
