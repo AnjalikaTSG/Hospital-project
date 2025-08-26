@@ -196,13 +196,6 @@ const PersonalDetails = () => {
             Register Patients
           </h2>
           
-          {/* Patient ID Display */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
-              <IdCard className="w-4 h-4" />
-              <span className="font-medium">Patient ID will be generated after form submission based on NIC and Date of Birth</span>
-            </div>
-          </div>
           <div className="max-w-7xl mx-auto">
             <form className="space-y-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
