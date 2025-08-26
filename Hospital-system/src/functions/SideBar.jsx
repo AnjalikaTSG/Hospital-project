@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SideBar = ({ children }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const tabs = [
     "Personal details",
@@ -11,7 +14,10 @@ const SideBar = ({ children }) => {
     "Currently medication",
     "Lifestyles",
     "Immunization",
-    "Surgical history"
+    "Surgical history",
+    "Gyn history",
+    "Occupational history",
+    "Psychological history",
   ];
 
   useEffect(() => {
@@ -65,7 +71,45 @@ const SideBar = ({ children }) => {
           {tabs.map((tab, index) => (
             <div
               key={index}
-              onClick={() => setActiveTab(index)}
+              onClick={() => {
+                setActiveTab(index);
+                // Navigate to appropriate page based on tab
+                const currentPatientId = location.pathname.split('/')[2]; // Extract patient ID from URL
+                switch (index) {
+                  case 0: // Personal details
+                    navigate(`/patient/${currentPatientId}/personal`);
+                    break;
+                  case 1: // OPD records
+                    navigate(`/patient/${currentPatientId}/opd`);
+                    break;
+                  case 2: // Hospitalization
+                    navigate(`/patient/${currentPatientId}/hospitalization`);
+                    break;
+                  case 3: // Currently medication
+                    navigate(`/patient/${currentPatientId}/medication`);
+                    break;
+                  case 4: // Lifestyles
+                    navigate(`/patient/${currentPatientId}/lifestyles`);
+                    break;
+                  case 5: // Immunization
+                    navigate(`/patient/${currentPatientId}/immunization`);
+                    break;
+                  case 6: // Surgical history
+                    navigate(`/patient/${currentPatientId}/surgical`);
+                    break;
+                  case 7: // Gyn history
+                    navigate(`/patient/${currentPatientId}/gyn`);
+                    break;
+                  case 8: // Occupational history
+                    navigate(`/patient/${currentPatientId}/occupational`);
+                    break;
+                  case 9: // Psychological history
+                    navigate(`/patient/${currentPatientId}/psychological`);
+                    break;
+                  default:
+                    break;
+                }
+              }}
               className={`text-white bg-blue-400 border border-black cursor-pointer
                 transition-colors duration-200 flex items-center justify-center
                 hover:bg-blue-600 ${activeTab === index ? 'bg-blue-600' : ''}`}

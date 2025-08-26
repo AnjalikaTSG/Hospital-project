@@ -23,6 +23,11 @@ import GynHistoryPage from './pages/GynHistoryPage';
 import OccupationalHistory from './pages/OccupationalHistory';
 import SuccessfulRegistration from './pages/SuccessfulRegistration';
 import PatientRecords from './pages/PatientRecords';
+import PatientDetail from './pages/PatientDetail';
+import PatientOPDRecords from './pages/PatientOPDRecords';
+import PatientHospitalization from './pages/PatientHospitalization';
+import PatientMedication from './pages/PatientMedication';
+import PatientLifestyles from './pages/PatientLifestyles';
 import PatientBasicInfo from './pages/PatientBasicInfo';
 import PatientReport from './pages/PatientReport';
 import AdminStaffVerification from './pages/AdminStaffVerification';
@@ -56,6 +61,17 @@ createRoot(document.getElementById('root')).render(
         <Route path="/OccupationalHistory" element={<OccupationalHistory />} />
         <Route path="/SuccessfulRegistration" element={<SuccessfulRegistration />} />
         <Route path="/PatientRecords" element={<PatientRecords />} />
+        <Route path="/patient/:patientId" element={<PatientDetail />} />
+        <Route path="/patient/:patientId/personal" element={<PatientDetail />} />
+        <Route path="/patient/:patientId/opd" element={<PatientOPDRecords />} />
+        <Route path="/patient/:patientId/hospitalization" element={<PatientHospitalization />} />
+        <Route path="/patient/:patientId/medication" element={<PatientMedication />} />
+        <Route path="/patient/:patientId/lifestyles" element={<PatientLifestyles />} />
+        <Route path="/patient/:patientId/immunization" element={<PastImmunizationHistory />} />
+        <Route path="/patient/:patientId/surgical" element={<PastSurgicalHistory />} />
+        <Route path="/patient/:patientId/gyn" element={<GynHistoryPage />} />
+        <Route path="/patient/:patientId/occupational" element={<OccupationalHistory />} />
+        <Route path="/patient/:patientId/psychological" element={<PastPsychologicalHistory />} />
         <Route path="/PatientBasicInfo" element={<PatientBasicInfo />} />
         <Route path="/PatientReport" element={<PatientReport />} />
         <Route path="/AdminStaffVerification" element={<AdminStaffVerification />} />

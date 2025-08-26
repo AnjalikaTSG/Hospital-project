@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Home,
   UserPlus,
@@ -27,6 +27,7 @@ const sidebarItems = [
 const API_BASE_URL = 'http://localhost:3000';
 
 const PatientRecords = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [patients, setPatients] = useState([]);
@@ -209,7 +210,11 @@ const PatientRecords = () => {
             </div>
           ) : (
             filtered.map((p, idx) => (
-              <div key={p._id || idx} className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-6 flex flex-col gap-3 hover:shadow-md transition-shadow">
+              <div 
+                key={p._id || idx} 
+                className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-6 flex flex-col gap-3 hover:shadow-md transition-shadow cursor-pointer transform hover:scale-105 transition-transform duration-200"
+                onClick={() => navigate(`/patient/${p.patientId || p._id}`)}
+              >
                 <div className="flex items-center gap-2 mb-2">
                   <User className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-gray-700">Name:</span>
@@ -245,6 +250,9 @@ const PatientRecords = () => {
                     <span className="text-xs text-gray-500">Also found in other records</span>
                   </div>
                 )}
+                <div className="mt-3 pt-3 border-t border-blue-200">
+                  <span className="text-xs text-blue-600 font-medium">Click to view full details →</span>
+                </div>
               </div>
             ))
           )}
