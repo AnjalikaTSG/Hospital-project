@@ -143,7 +143,7 @@ const PatientRecords = () => {
                   type="text"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  placeholder="Search by name, patient ID, or NIC... (Press Ctrl+K to focus)"
+                  placeholder="Search by name, patient ID, or NIC"
                   className="w-full p-3 pr-12 rounded-lg border-2 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700 bg-white"
                   ref={(input) => {
                     if (input) {
@@ -181,9 +181,6 @@ const PatientRecords = () => {
                   )}
                 </div>
               )}
-              <div className="mt-3 text-xs text-gray-400">
-                💡 Search tip: You can search by patient name, ID, or NIC number. Use Ctrl+K to quickly focus the search box.
-              </div>
             </div>
           </div>
         </div>
