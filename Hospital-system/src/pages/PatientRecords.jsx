@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Home,
@@ -23,38 +23,45 @@ const sidebarItems = [
   { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
 ];
 
-const PATIENTS = [
-  {
-    name: 'John Doe',
-    registrationNumber: 'REG2024001',
-    nic: '123456789V',
-  },
-  {
-    name: 'Jane Smith',
-    registrationNumber: 'REG2024002',
-    nic: '987654321V',
-  },
-  {
-    name: 'Michael Lee',
-    registrationNumber: 'REG2024003',
-    nic: '456789123V',
-  },
-  {
-    name: 'Ayesha Perera',
-    registrationNumber: 'REG2024004',
-    nic: '200012345678',
-  },
-];
+// API base URL
+const API_BASE_URL = 'http://localhost:3000';
 
 const PatientRecords = () => {
   const [search, setSearch] = useState('');
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filtered = PATIENTS.filter((p) => {
+  // Fetch patients from database
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_BASE_URL}/patients`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch patients');
+        }
+        const data = await response.json();
+        setPatients(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching patients:', err);
+        setError('Failed to load patient records');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPatients();
+  }, []);
+
+  // Filter patients based on search
+  const filtered = patients.filter((p) => {
     const q = search.toLowerCase();
     return (
-      p.name.toLowerCase().includes(q) ||
-      p.registrationNumber.toLowerCase().includes(q) ||
-      p.nic.toLowerCase().includes(q)
+      (p.tab1?.name && p.tab1.name.toLowerCase().includes(q)) ||
+      (p.patientId && p.patientId.toLowerCase().includes(q)) ||
+      (p.tab1?.nic && p.tab1.nic.toLowerCase().includes(q))
     );
   });
 
@@ -102,37 +109,56 @@ const PatientRecords = () => {
               <h2 className="text-xl font-bold text-gray-800">Search Patients</h2>
             </div>
             <div className="px-8 py-6">
-              <input
-                type="text"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Search by name, registration number, or NIC..."
-                className="w-full p-3 rounded-lg border-2 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700 bg-white mb-2"
-              />
+                              <input
+                  type="text"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder="Search by name, patient ID, or NIC..."
+                  className="w-full p-3 rounded-lg border-2 border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-700 bg-white mb-2"
+                />
             </div>
           </div>
         </div>
         {/* Cards Grid */}
         <div className="grid gap-6 md:grid-cols-2 w-full max-w-5xl">
-          {filtered.length === 0 ? (
-            <div className="col-span-2 text-center text-gray-500">No patient records found.</div>
+          {loading ? (
+            <div className="col-span-2 text-center py-8">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <p className="mt-2 text-gray-600">Loading patient records...</p>
+            </div>
+          ) : error ? (
+            <div className="col-span-2 text-center py-8">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                <p className="text-red-600 font-medium">{error}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="col-span-2 text-center text-gray-500 py-8">
+              {search ? 'No patient records found matching your search.' : 'No patient records found in the database.'}
+            </div>
           ) : (
             filtered.map((p, idx) => (
-              <div key={idx} className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-6 flex flex-col gap-3">
+              <div key={p._id || idx} className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-6 flex flex-col gap-3">
                 <div className="flex items-center gap-2 mb-2">
                   <User className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-gray-700">Name:</span>
-                  <span className="text-gray-800">{p.name}</span>
+                  <span className="text-gray-800">{p.tab1?.name || 'N/A'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Hash className="w-5 h-5 text-blue-600" />
-                  <span className="font-semibold text-gray-700">Registration number:</span>
-                  <span className="text-gray-800">{p.registrationNumber}</span>
+                  <span className="font-semibold text-gray-700">Patient ID:</span>
+                  <span className="text-gray-800">{p.patientId || 'N/A'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <IdCard className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-gray-700">NIC:</span>
-                  <span className="text-gray-800">{p.nic}</span>
+                  <span className="text-gray-800">{p.tab1?.nic || 'N/A'}</span>
                 </div>
               </div>
             ))

@@ -10,4 +10,10 @@ router.post('/login', loginStaff);
 const savePatient = require('../Functions/user/savePatient');
 router.post('/patient/save', savePatient);
 
+const getPatient = require('../Functions/user/getPatient');
+router.get('/patient/:patientId', getPatient);
+
+const getAllPatients = require('../Functions/user/getAllPatients');
+router.get('/patients', getAllPatients);
+
 module.exports = router;

@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from "react-icons/fa";
 import SideBar from "../functions/SideBar";
 import { User, Phone, MapPin, Heart, Calendar, IdCard, Hash, Users, GraduationCap } from "lucide-react";
+import { generatePatientId } from "../utils/patientIdGenerator";
 
 const TABS = [1, 2, 3, 4, 5, 6];
 
@@ -41,15 +42,8 @@ const PersonalDetails = () => {
 
   // Generate unique patient ID when component mounts
   useEffect(() => {
-    const generatePatientId = () => {
-      const timestamp = Date.now();
-      const random = Math.random().toString(36).substr(2, 9);
-      const uniqueId = `PAT${timestamp}${random}`.toUpperCase();
-      setPatientId(uniqueId);
-      console.log('Generated Patient ID:', uniqueId);
-    };
-    
-    generatePatientId();
+    // Patient ID will be generated when form is submitted with NIC and DOB
+    setPatientId(null);
   }, []);
 
   const Navigate = useNavigate();
@@ -114,11 +108,13 @@ const PersonalDetails = () => {
   };
 
   const regeneratePatientId = () => {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substr(2, 9);
-    const uniqueId = `PAT${timestamp}${random}`.toUpperCase();
-    setPatientId(uniqueId);
-    console.log('Regenerated Patient ID:', uniqueId);
+    if (formData[tabIndex].nic && selectedDate) {
+      const uniqueId = generatePatientId(formData[tabIndex].nic, selectedDate);
+      setPatientId(uniqueId);
+      console.log('Regenerated Patient ID:', uniqueId);
+    } else {
+      alert('Please fill in NIC and Date of Birth first to generate Patient ID');
+    }
   };
 
   const clearForm = () => {
@@ -152,11 +148,6 @@ const PersonalDetails = () => {
   };
 
   const handleNext = async () => {
-    if (!patientId) {
-      alert('Patient ID is being generated. Please wait a moment and try again.');
-      return;
-    }
-
     // Basic validation - check if required fields are filled
     const requiredFields = ['name', 'nic', 'age', 'gender'];
     const missingFields = requiredFields.filter(field => !formData[tabIndex][field]);
@@ -166,10 +157,14 @@ const PersonalDetails = () => {
       return;
     }
 
+    // Generate patient ID based on NIC and date of birth
+    const generatedPatientId = generatePatientId(formData[tabIndex].nic, selectedDate);
+    setPatientId(generatedPatientId);
+    
     try {
       // Prepare data for saving
       const dataToSave = {
-        patientId,
+        patientId: generatedPatientId,
         tabIndex,
         data: {
           ...formData[tabIndex],
@@ -182,10 +177,10 @@ const PersonalDetails = () => {
       // Save current tab data
       await axios.post('http://localhost:3000/patient/save', dataToSave);
       
-      console.log('Data saved successfully for patient:', patientId);
+      console.log('Data saved successfully for patient:', generatedPatientId);
       
-      // Navigate to next page
-      Navigate("/personalDetails3");
+      // Navigate to next page with patient ID
+      Navigate(`/personalDetails3?patientId=${generatedPatientId}`);
     } catch (error) {
       console.error('Error saving data:', error);
       alert('Error saving data. Please try again.');
@@ -202,32 +197,12 @@ const PersonalDetails = () => {
           </h2>
           
           {/* Patient ID Display */}
-          {patientId ? (
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-4 px-4 py-2 bg-blue-100 text-blue-800 rounded-lg border border-blue-300">
-                <div className="flex items-center gap-2">
-                  <IdCard className="w-4 h-4" />
-                  <span className="font-medium">Patient ID:</span>
-                  <span className="font-mono text-sm">{patientId}</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={regeneratePatientId}
-                  className="px-2 py-1 text-xs bg-blue-200 hover:bg-blue-300 text-blue-800 rounded transition-colors"
-                  title="Regenerate Patient ID"
-                >
-                  ↻
-                </button>
-              </div>
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
+              <IdCard className="w-4 h-4" />
+              <span className="font-medium">Patient ID will be generated after form submission based on NIC and Date of Birth</span>
             </div>
-          ) : (
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg border border-yellow-300">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-600"></div>
-                <span className="font-medium">Generating Patient ID...</span>
-              </div>
-            </div>
-          )}
+          </div>
           <div className="max-w-7xl mx-auto">
             <form className="space-y-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -608,15 +583,10 @@ const PersonalDetails = () => {
                 </button>
                 <button
                   type="button"
-                  disabled={!patientId}
-                  className={`px-8 py-3 font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 ${
-                    patientId 
-                      ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
-                      : 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                  }`}
+                  className="px-8 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                   onClick={handleNext}
                 >
-                  {patientId ? 'Next' : 'Generating ID...'}
+                  Next
                 </button>
               </div>
             </form>

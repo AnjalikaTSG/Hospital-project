@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Calendar, Scale, Ruler, Heart, Eye, Stethoscope } from "lucide-react";
 import SideBar from "../functions/SideBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from 'axios';
 
 const PersonalDetails5 = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [patientId, setPatientId] = useState(null);
+  
   const [formData, setFormData] = useState({
     date: '',
     age: '',
@@ -33,29 +38,177 @@ const PersonalDetails5 = () => {
     lipidTCHDL: ''
   });
 
-  const navigate = useNavigate();
-
-  // Set today's date on component mount
+  // Get patient ID from URL params
   useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const idFromUrl = urlParams.get('patientId');
+    
+    if (idFromUrl) {
+      setPatientId(idFromUrl);
+      localStorage.setItem('currentPatientId', idFromUrl);
+    } else {
+      // If no patient ID, redirect back to PersonalDetails
+      navigate('/personalDetails');
+      return;
+    }
+
+    // Set today's date on component mount
     const today = new Date().toISOString().split("T")[0];
     setFormData(prev => ({ ...prev, date: today }));
-  }, []);
+
+    // Load existing data if available
+    loadExistingData();
+  }, [location, navigate]);
+
+  const loadExistingData = async () => {
+    if (!patientId) return;
+    
+    try {
+      // Try to load from backend first
+      const response = await axios.get(`http://localhost:3000/patient/${patientId}`);
+      if (response.data && response.data.tab5) {
+        const existingData = response.data.tab5;
+        setFormData(prev => ({
+          ...prev,
+          ...existingData.examinationData
+        }));
+        console.log('Data loaded from backend');
+        return;
+      }
+    } catch (error) {
+      console.log('Backend not available or no existing data found, checking localStorage...');
+    }
+    
+    // Fallback to localStorage
+    try {
+      const localStorageKey = `patient_${patientId}_tab5`;
+      const savedData = localStorage.getItem(localStorageKey);
+      
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        
+        if (parsedData.examinationData) {
+          setFormData(prev => ({
+            ...prev,
+            ...parsedData.examinationData
+          }));
+        }
+        
+        console.log('Data loaded from localStorage');
+      }
+    } catch (localStorageError) {
+      console.log('No data found in localStorage:', localStorageError);
+    }
+  };
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
+    console.log(`Updated ${field} to:`, value);
   };
 
-  const handleNext = () => {
-    console.log('Form Data:', formData);
-    alert('Form submitted successfully! Moving to next step...');
-    navigate('/dashboard');
+  const handleNext = async () => {
+    if (!patientId) {
+      alert('Patient ID is missing. Please go back to the previous page.');
+      return;
+    }
+
+    // Basic validation - check if at least some examination data is filled
+    const hasExaminationData = Object.values(formData).some(value => value !== '');
+    
+    if (!hasExaminationData) {
+      alert('Please fill in at least some examination information before proceeding.');
+      return;
+    }
+
+    try {
+      // Prepare data for saving
+      const dataToSave = {
+        patientId,
+        tabIndex: 5,
+        data: {
+          examinationData: formData,
+          timestamp: new Date().toISOString()
+        }
+      };
+      
+      console.log('Saving PersonalDetails5 data:', dataToSave);
+      
+      // Save data to backend
+      await axios.post('http://localhost:3000/patient/save', dataToSave);
+      
+      console.log('PersonalDetails5 data saved successfully for patient:', patientId);
+      
+      // Also save to localStorage as backup
+      const localStorageKey = `patient_${patientId}_tab5`;
+      localStorage.setItem(localStorageKey, JSON.stringify(dataToSave.data));
+      
+      alert('Form submitted successfully! Moving to next step...');
+      navigate(`/successfulRegistration?patientId=${patientId}`);
+    } catch (error) {
+      console.error('Error saving data to backend:', error);
+      
+      // If backend fails, save to localStorage only
+      try {
+        const localStorageKey = `patient_${patientId}_tab5`;
+        const dataToSave = {
+          examinationData: formData,
+          timestamp: new Date().toISOString()
+        };
+        localStorage.setItem(localStorageKey, JSON.stringify(dataToSave));
+        
+        console.log('Data saved to localStorage as backup');
+        alert('Data saved locally. Backend connection failed. You can continue to the next step.');
+        
+        // Navigate to successful registration even if backend failed
+        navigate(`/successfulRegistration?patientId=${patientId}`);
+      } catch (localStorageError) {
+        console.error('Error saving to localStorage:', localStorageError);
+        alert('Error saving data. Please try again.');
+      }
+    }
   };
 
   const handleBack = () => {
-    navigate('/personalDetails3');
+    if (patientId) {
+      navigate(`/personalDetails3?patientId=${patientId}`);
+    } else {
+      navigate('/personalDetails3');
+    }
+  };
+
+  const clearForm = () => {
+    setFormData({
+      date: new Date().toISOString().split("T")[0],
+      age: '',
+      weight: '',
+      bmi: '',
+      idealBodyWeight: '',
+      waistCircumference: '',
+      waistHeightRatio: '',
+      bloodPressure: '',
+      oralExamination: '',
+      breastExamination: '',
+      distantVisionLeft: '',
+      distantVisionRight: '',
+      hearingLeft: '',
+      hearingRight: '',
+      pefr: '',
+      bloodSugarRandom: '',
+      bloodSugarFasting: '',
+      papSmearDate: '',
+      papSmearReport: '',
+      serumCreatinine: '',
+      lipidTC: '',
+      lipidLDL: '',
+      lipidTG: '',
+      lipidHDL: '',
+      lipidTCHDL: ''
+    });
+    
+    alert('Form cleared successfully!');
   };
 
   const tabs = [
@@ -496,8 +649,20 @@ const PersonalDetails5 = () => {
               </button>
               <button
                 type="button"
+                onClick={clearForm}
+                className="flex items-center gap-2 px-8 py-3 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                Clear Form
+              </button>
+              <button
+                type="button"
                 onClick={handleNext}
-                className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                disabled={!patientId}
+                className={`flex items-center gap-2 px-8 py-3 font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg ${
+                  patientId 
+                    ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                    : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                }`}
               >
                 Next
                 <ChevronRight className="w-4 h-4" />

@@ -7,11 +7,11 @@ import Dashboard from './pages/Dashboard';
 import RegisterScreen from './pages/RegisterScreen';
 import LoginScreen from './pages/LoginScreen';
 import PersonalDetails from './pages/PersonalDetails';
-import PersonalDetails2 from './pages/PersonalDetails2';
+
 import PersonalDetails3 from './pages/PersonalDetails3';
-import PersonalDetails4 from './pages/PersonalDetails4';
+
 import PersonalDetails5 from './pages/PersonalDetails5';
-import PersonalDetails6 from './pages/PersonalDetails6';
+
 import RefferedTo from './pages/RefferedTo';
 import AddSurgicalRecords from './pages/AddSurgicalRecords';
 import PsychologicalRecords from './pages/PsychologicalRecords';
