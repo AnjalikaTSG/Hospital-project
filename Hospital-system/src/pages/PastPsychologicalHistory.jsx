@@ -1,7 +1,7 @@
+
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import SideBar from "../functions/SideBar";
-import { Calendar, Brain, FileText, History, User, ChevronLeft } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, User, Brain } from "lucide-react";
 
 // Mock data for demonstration
 const mockPsychologicalHistory = [
@@ -26,8 +26,7 @@ const mockPsychologicalHistory = [
 ];
 
 const PastPsychologicalHistory = () => {
-  const navigate = useNavigate();
-  // In a real app, patient info and psychological history would come from props, context, or API
+  // Mock patient info for demonstration
   const patient = {
     name: "John Doe",
     id: "P123456",
@@ -36,65 +35,69 @@ const PastPsychologicalHistory = () => {
 
   return (
     <SideBar>
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-          <div className="px-8 py-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                <History className="w-6 h-6 text-blue-600" />
-                Past Psychological Disease History
-              </h2>
-              <p className="text-gray-600 mt-2 flex items-center gap-2">
-                <User className="w-4 h-4 text-blue-600" />
-                <span className="font-medium">{patient.name}</span> | ID: {patient.id} | DOB: {patient.dob}
-              </p>
-            </div>
+      <div className="space-y-6">
+        {/* Header with back button */}
+        <div className="flex items-center justify-between bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center gap-4">
             <button
-              className="flex items-center gap-2 px-6 py-2 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-all duration-200 shadow-md hover:shadow-lg"
-              onClick={() => navigate(-1)}
+              onClick={() => window.history.back()}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4" />
               Back
             </button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Past Psychological Disease History</h1>
+              <p className="text-gray-600">Patient: {patient.name} | ID: {patient.id} | DOB: {patient.dob}</p>
+            </div>
           </div>
+        </div>
 
-          <div className="p-8">
-            {mockPsychologicalHistory.length === 0 ? (
-              <div className="text-center text-gray-500">No psychological disease history found for this patient.</div>
-            ) : (
-              <div className="space-y-6">
-                {mockPsychologicalHistory.map((record, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-gray-300 transition-all flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-                  >
-                    <div>
-                      <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-2">
-                        <Brain className="w-4 h-4 text-blue-600" />
-                        {record.name}
-                      </h4>
-                      <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
-                        <Calendar className="w-4 h-4 text-blue-600" />
-                        <span className="font-medium">Date:</span> {record.date}
-                      </p>
-                      <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
-                        <FileText className="w-4 h-4 text-blue-600" />
-                        <span className="font-medium">Comments:</span> {record.comments}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+        {/* Psychological History Content */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+            <FileText className="w-6 h-6 text-blue-600" />
+            Psychological Records
+          </h2>
+
+          {mockPsychologicalHistory.length === 0 ? (
+            <div className="text-center py-12">
+              <Brain className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-600 mb-2">No psychological disease history found for this patient.</h3>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {mockPsychologicalHistory.map((record, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-gray-300 transition-all flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                >
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-2">
+                      <Brain className="w-4 h-4 text-blue-600" />
+                      {record.name}
+                    </h4>
+                    <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                      <Calendar className="w-4 h-4 text-blue-600" />
+                      <span className="font-medium">Date:</span> {record.date}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
+                      <FileText className="w-4 h-4 text-blue-600" />
+                      <span className="font-medium">Comments:</span> {record.comments}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
                       <User className="w-4 h-4 text-blue-600" />
-                      <span>Doctor:</span> {record.doctor}
-                    </div>
+                      <span className="font-medium">Doctor:</span> {record.doctor}
+                    </p>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </SideBar>
   );
 };
 
-export default PastPsychologicalHistory; 
+export default PastPsychologicalHistory;

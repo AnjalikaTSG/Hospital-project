@@ -92,7 +92,7 @@ const SideBar = ({ children }) => {
                     navigate(`/patient/${currentPatientId}/lifestyles`);
                     break;
                   case 5: // Immunization
-                    navigate(`/patient/${currentPatientId}/immunization`);
+                    navigate(`/patient/${currentPatientId}/immunizationpage`);
                     break;
                   case 6: // Surgical history
                     navigate(`/patient/${currentPatientId}/surgical`);
@@ -111,8 +111,8 @@ const SideBar = ({ children }) => {
                 }
               }}
               className={`text-white bg-blue-400 border border-black cursor-pointer
-                transition-colors duration-200 flex items-center justify-center
-                hover:bg-blue-600 ${activeTab === index ? 'bg-blue-600' : ''}`}
+  transition-colors duration-200 flex items-center justify-center
+  hover:bg-blue-600 ${activeTab === index ? 'bg-blue-600 font-bold border-b-4' : ''}`}
               style={{
                 width: `${100 / tabs.length}%`,
                 fontSize: `${styles.tabFontSize || 12}px`,

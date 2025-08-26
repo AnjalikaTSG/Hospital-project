@@ -18,7 +18,7 @@ const PatientOPDRecords = () => {
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Patient Details
+              Back
             </button>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">OPD Records</h1>

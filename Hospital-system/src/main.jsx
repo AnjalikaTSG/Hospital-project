@@ -32,6 +32,7 @@ import PatientBasicInfo from './pages/PatientBasicInfo';
 import PatientReport from './pages/PatientReport';
 import AdminStaffVerification from './pages/AdminStaffVerification';
 import Notifications from './pages/Notifications';
+import ImmunizationPage from './pages/ImmunizationPage';
 
 import SideBar from './functions/SideBar';
 
@@ -67,11 +68,11 @@ createRoot(document.getElementById('root')).render(
         <Route path="/patient/:patientId/hospitalization" element={<PatientHospitalization />} />
         <Route path="/patient/:patientId/medication" element={<PatientMedication />} />
         <Route path="/patient/:patientId/lifestyles" element={<PatientLifestyles />} />
-        <Route path="/patient/:patientId/immunization" element={<PastImmunizationHistory />} />
         <Route path="/patient/:patientId/surgical" element={<PastSurgicalHistory />} />
         <Route path="/patient/:patientId/gyn" element={<GynHistoryPage />} />
         <Route path="/patient/:patientId/occupational" element={<OccupationalHistory />} />
         <Route path="/patient/:patientId/psychological" element={<PastPsychologicalHistory />} />
+  <Route path="/patient/:patientId/immunizationpage" element={<ImmunizationPage />} /> 
         <Route path="/PatientBasicInfo" element={<PatientBasicInfo />} />
         <Route path="/PatientReport" element={<PatientReport />} />
         <Route path="/AdminStaffVerification" element={<AdminStaffVerification />} />
