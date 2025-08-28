@@ -1,51 +1,15 @@
 
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import SideBar from "../functions/SideBar";
-import { ArrowLeft, FileText, Calendar, User, Syringe, Shield, Stethoscope } from "lucide-react";
 
-// Mock data for demonstration
-const mockImmunizationHistory = [
-  {
-    vaccineName: "BCG",
-    vaccineType: "Live attenuated",
-    doseNumber: "1",
-    dateGiven: "2024-01-15",
-    nextDueDate: "2024-07-15",
-    status: "Completed",
-    comments: "No reaction"
-  },
-  {
-    vaccineName: "DPT",
-    vaccineType: "Inactivated",
-    doseNumber: "2",
-    dateGiven: "2024-01-10",
-    nextDueDate: "2024-04-10",
-    status: "Completed",
-    comments: "Mild fever for 1 day"
-  },
-  {
-    vaccineName: "MMR",
-    vaccineType: "Live attenuated",
-    doseNumber: "1",
-    dateGiven: "2024-01-05",
-    nextDueDate: "2024-07-05",
-    status: "Pending",
-    comments: ""
-  }
-];
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { FileText, Calendar, Syringe, Shield, Stethoscope } from "lucide-react";
+import axios from "axios";
 
-const PastImmunizationHistory = () => {
-  const navigate = useNavigate();
-  // In a real app, patient info and immunization history would come from props, context, or API
-  const patient = {
-    name: "John Doe",
-    id: "P123456",
-    dob: "1985-07-12"
-  };
+
+const PastImmunizationHistory = ({ patientId: propPatientId, immunizationRecords = [], loading = false, error = "" }) => {
 
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'completed': return 'text-green-600 bg-green-50 border-green-200';
       case 'pending': return 'text-orange-600 bg-orange-50 border-orange-200';
       case 'overdue': return 'text-red-600 bg-red-50 border-red-200';
@@ -59,14 +23,18 @@ const PastImmunizationHistory = () => {
         <FileText className="w-6 h-6 text-blue-600" />
         Past Immunization History
       </h3>
-      {mockImmunizationHistory.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-12 text-gray-500">Loading...</div>
+      ) : error ? (
+        <div className="text-center py-12 text-red-600">{error}</div>
+      ) : immunizationRecords.length === 0 ? (
         <div className="text-center py-12">
           <Stethoscope className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-600 mb-2">No immunization history found for this patient.</h3>
         </div>
       ) : (
         <div className="space-y-6">
-          {mockImmunizationHistory.map((record, idx) => (
+          {immunizationRecords.map((record, idx) => (
             <div
               key={idx}
               className="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-gray-300 transition-all flex flex-col md:flex-row md:items-center md:justify-between gap-4"

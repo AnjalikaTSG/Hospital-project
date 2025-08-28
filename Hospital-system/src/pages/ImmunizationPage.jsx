@@ -1,13 +1,37 @@
 
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import SideBar from "../functions/SideBar";
 import ImmunizationRecords from "./ImmunizationRecords";
 import PastImmunizationHistory from "./PastImmunizationHistory";
 
 const ImmunizationPage = () => {
-  const patientId = "P123456"; // Replace with actual patientId logic if needed
+  const { patientId } = useParams();
+  const [immunizationRecords, setImmunizationRecords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = () => window.history.back();
+
+  // Fetch immunization records from DB on mount and when patientId changes
+  useEffect(() => {
+    const fetchRecords = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`http://localhost:3000/patient/${patientId}`);
+        const patient = await res.json();
+        const records = patient.tab4?.immunizationRecords || [];
+        setImmunizationRecords(records);
+        setError("");
+      } catch (err) {
+        setError("Failed to fetch immunization records");
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (patientId) fetchRecords();
+  }, [patientId]);
+
   return (
     <SideBar>
       <div className="space-y-6">
@@ -35,14 +59,23 @@ const ImmunizationPage = () => {
           <div>
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Add Immunization Record</h2>
-              <ImmunizationRecords />
+              <ImmunizationRecords
+                patientId={patientId}
+                immunizationRecords={immunizationRecords}
+                setImmunizationRecords={setImmunizationRecords}
+              />
             </div>
           </div>
           {/* Right: Display Immunization History */}
           <div>
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Immunization History</h2>
-              <PastImmunizationHistory />
+              <PastImmunizationHistory
+                patientId={patientId}
+                immunizationRecords={immunizationRecords}
+                loading={loading}
+                error={error}
+              />
             </div>
           </div>
         </div>

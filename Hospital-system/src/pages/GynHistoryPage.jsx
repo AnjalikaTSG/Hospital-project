@@ -1,5 +1,6 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { ArrowLeft, FileText, Calendar, User, Baby, AlertCircle, CheckCircle, ChevronRight, HeartPulse } from "lucide-react";
 import SideBar from "../functions/SideBar";
 
@@ -16,12 +17,22 @@ const GynHistoryPage = () => {
     "Irritability",
   ];
 
-  // Mock patient info for demonstration
-  const patient = {
-    name: "Jane Doe",
-    id: "P654321",
-    dob: "1990-05-22"
-  };
+  const { patientId } = useParams();
+  const [patient, setPatient] = useState({ name: "", id: patientId, dob: "" });
+  useEffect(() => {
+    // Fetch patient details from backend if patientId exists
+    if (patientId) {
+      fetch(`http://localhost:3000/patient/${patientId}`)
+        .then(res => res.json())
+        .then(data => {
+          setPatient({
+            name: data.tab1?.name || "",
+            id: data.patientId || patientId,
+            dob: data.tab1?.dob || ""
+          });
+        });
+    }
+  }, [patientId]);
 
   return (
     <SideBar>
@@ -38,7 +49,7 @@ const GynHistoryPage = () => {
             </button>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">Obstetrics and Gynaecological History</h1>
-              <p className="text-gray-600">Patient: {patient.name} | ID: {patient.id} | DOB: {patient.dob}</p>
+              <p className="text-gray-600">Patient ID: {patient.id}</p>
             </div>
           </div>
         </div>

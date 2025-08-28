@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Briefcase, MapPin, Calendar, Clock, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import SideBar from '../functions/SideBar';
 
@@ -62,7 +63,7 @@ const OccupationalHistory = () => {
     setDurationOfWork('');
   };
 
-  const patientId = "P123456"; // Replace with actual patientId logic if needed
+  const { patientId } = useParams();
   const navigate = () => window.history.back();
   return (
     <SideBar>

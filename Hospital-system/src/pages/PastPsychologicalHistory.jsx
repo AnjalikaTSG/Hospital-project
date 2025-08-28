@@ -1,5 +1,6 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import SideBar from "../functions/SideBar";
 import { ArrowLeft, FileText, Calendar, User, Brain } from "lucide-react";
 
@@ -26,12 +27,22 @@ const mockPsychologicalHistory = [
 ];
 
 const PastPsychologicalHistory = () => {
-  // Mock patient info for demonstration
-  const patient = {
-    name: "John Doe",
-    id: "P123456",
-    dob: "1985-07-12"
-  };
+  const { patientId } = useParams();
+  const [patient, setPatient] = useState({ name: "", id: patientId, dob: "" });
+  useEffect(() => {
+    // Fetch patient details from backend if patientId exists
+    if (patientId) {
+      fetch(`http://localhost:3000/patient/${patientId}`)
+        .then(res => res.json())
+        .then(data => {
+          setPatient({
+            name: data.tab1?.name || "",
+            id: data.patientId || patientId,
+            dob: data.tab1?.dob || ""
+          });
+        });
+    }
+  }, [patientId]);
 
   return (
     <SideBar>
@@ -48,7 +59,7 @@ const PastPsychologicalHistory = () => {
             </button>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">Past Psychological Disease History</h1>
-              <p className="text-gray-600">Patient: {patient.name} | ID: {patient.id} | DOB: {patient.dob}</p>
+              <p className="text-gray-600">Patient ID: {patient.id}</p>
             </div>
           </div>
         </div>

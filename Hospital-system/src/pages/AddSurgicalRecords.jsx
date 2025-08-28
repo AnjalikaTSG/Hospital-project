@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../functions/SideBar";
 import { Calendar, Stethoscope, FileText, History } from "lucide-react";
 
 const AddSurgicalRecords = () => {
   const navigate = useNavigate();
+  const { patientId } = useParams();
   const today = new Date().toISOString().split("T")[0]; // Get today's date
   const [surgery, setSurgery] = useState("");
   const [comment, setComment] = useState("");
@@ -22,7 +24,7 @@ const AddSurgicalRecords = () => {
     setComment(""); // Clear input after adding comment
   };
 
-  const patientId = "P123456"; // Replace with actual patientId logic if needed
+  // patientId now comes from useParams
   return (
     <SideBar>
       <div className="space-y-6">

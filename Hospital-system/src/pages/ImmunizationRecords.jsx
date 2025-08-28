@@ -1,13 +1,15 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Calendar, Syringe, Shield, FileText, History, AlertCircle, CheckCircle } from "lucide-react";
-import SideBar from "../functions/SideBar";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
 
-const ImmunizationRecords = () => {
-  const navigate = useNavigate();
-  const today = new Date().toISOString().split("T")[0]; // Get today's date
+const ImmunizationRecords = ({ patientId: propPatientId, immunizationRecords, setImmunizationRecords }) => {
+  const params = useParams();
+  const patientId = propPatientId || params.patientId;
+  const today = new Date().toISOString().split("T")[0];
   const [immunizationData, setImmunizationData] = useState({
     vaccineName: "",
     vaccineType: "",
@@ -20,34 +22,11 @@ const ImmunizationRecords = () => {
     site: "",
     route: "",
     adverseReaction: "",
-    notes: ""
+    notes: "",
+    status: "Pending"
   });
-  const [immunizationRecords, setImmunizationRecords] = useState([
-    { 
-      vaccineName: "BCG", 
-      vaccineType: "Live attenuated",
-      doseNumber: "1",
-      dateGiven: "2024-01-15", 
-      nextDueDate: "2024-07-15",
-      status: "Completed"
-    },
-    { 
-      vaccineName: "DPT", 
-      vaccineType: "Inactivated",
-      doseNumber: "2",
-      dateGiven: "2024-01-10", 
-      nextDueDate: "2024-04-10",
-      status: "Completed"
-    },
-    { 
-      vaccineName: "MMR", 
-      vaccineType: "Live attenuated",
-      doseNumber: "1",
-      dateGiven: "2024-01-05", 
-      nextDueDate: "2024-07-05",
-      status: "Pending"
-    },
-  ]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleInputChange = (field, value) => {
     setImmunizationData(prev => ({
@@ -56,39 +35,49 @@ const ImmunizationRecords = () => {
     }));
   };
 
-  const handleAddImmunization = () => {
+  const handleAddImmunization = async () => {
     if (!immunizationData.vaccineName.trim() || !immunizationData.dateGiven) return;
-    
     const newRecord = {
-      vaccineName: immunizationData.vaccineName,
-      vaccineType: immunizationData.vaccineType,
-      doseNumber: immunizationData.doseNumber,
+      ...immunizationData,
       dateGiven: immunizationData.dateGiven ? immunizationData.dateGiven.toISOString().split("T")[0] : "",
-      nextDueDate: immunizationData.nextDueDate ? immunizationData.nextDueDate.toISOString().split("T")[0] : "",
-      status: "Completed"
+      nextDueDate: immunizationData.nextDueDate ? immunizationData.nextDueDate.toISOString().split("T")[0] : ""
     };
-    
-    setImmunizationRecords([...immunizationRecords, newRecord]);
-    
-    // Clear form
-    setImmunizationData({
-      vaccineName: "",
-      vaccineType: "",
-      doseNumber: "",
-      dateGiven: null,
-      nextDueDate: null,
-      batchNumber: "",
-      manufacturer: "",
-      administeredBy: "",
-      site: "",
-      route: "",
-      adverseReaction: "",
-      notes: ""
-    });
+    try {
+      setLoading(true);
+      // Save to DB (tab4 for immunization)
+      const res = await axios.post("http://localhost:3000/patient/save", {
+        patientId,
+        tabIndex: 4,
+        data: {
+          immunizationRecords: [...immunizationRecords, newRecord]
+        }
+      });
+      setImmunizationRecords(res.data.tab4.immunizationRecords);
+      // Clear form
+      setImmunizationData({
+        vaccineName: "",
+        vaccineType: "",
+        doseNumber: "",
+        dateGiven: null,
+        nextDueDate: null,
+        batchNumber: "",
+        manufacturer: "",
+        administeredBy: "",
+        site: "",
+        route: "",
+        adverseReaction: "",
+        notes: "",
+        status: "Pending"
+      });
+    } catch (err) {
+      setError("Failed to save immunization record");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'completed': return 'text-green-600 bg-green-50 border-green-200';
       case 'pending': return 'text-orange-600 bg-orange-50 border-orange-200';
       case 'overdue': return 'text-red-600 bg-red-50 border-red-200';
@@ -235,6 +224,11 @@ const ImmunizationRecords = () => {
             options={["Intramuscular","Subcutaneous","Intradermal","Oral","Nasal","Intranasal"]}
           />
         </div>
+        <SelectField
+          field="status"
+          label="Status"
+          options={["Pending","Completed","Overdue"]}
+        />
         <TextAreaField
           field="adverseReaction"
           label="Adverse Reactions"
@@ -250,24 +244,20 @@ const ImmunizationRecords = () => {
         {/* Buttons */}
         <div className="flex gap-4 pt-4">
           <button
-            className="flex items-center gap-2 px-8 py-3 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-all duration-200 shadow-md hover:shadow-lg"
-            onClick={() => navigate("/dashboard")}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back
-          </button>
-          <button
             type="button"
             className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
             onClick={handleAddImmunization}
+            disabled={loading}
           >
             Add Immunization
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+        {error && <div className="text-red-600 mt-2">{error}</div>}
       </div>
+      {/* Immunization History (right side) can be rendered by parent or here if needed */}
     </div>
   );
-};
+}
 
 export default ImmunizationRecords;
