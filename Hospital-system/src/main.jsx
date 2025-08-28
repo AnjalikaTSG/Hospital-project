@@ -68,7 +68,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/patient/:patientId/hospitalization" element={<PatientHospitalization />} />
         <Route path="/patient/:patientId/medication" element={<PatientMedication />} />
         <Route path="/patient/:patientId/lifestyles" element={<PatientLifestyles />} />
-        <Route path="/patient/:patientId/surgical" element={<PastSurgicalHistory />} />
+  <Route path="/patient/:patientId/surgical" element={<AddSurgicalRecords />} />
         <Route path="/patient/:patientId/gyn" element={<GynHistoryPage />} />
         <Route path="/patient/:patientId/occupational" element={<OccupationalHistory />} />
         <Route path="/patient/:patientId/psychological" element={<PastPsychologicalHistory />} />

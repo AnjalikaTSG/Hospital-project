@@ -93,9 +93,12 @@ const PsychologicalRecords = () => {
                   {/* Buttons */}
                   <div className="flex gap-4 pt-4">
                     <button
-                      className="flex items-center gap-2 px-8 py-3 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-all duration-200 shadow-md hover:shadow-lg"
-                      onClick={() => navigate("/dashboard")}
+                      className="flex items-center text-gray-700 hover:text-blue-600 font-medium px-3 py-2 rounded transition"
+                      onClick={() => window.history.back()}
                     >
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                      </svg>
                       Back
                     </button>
                     <button
