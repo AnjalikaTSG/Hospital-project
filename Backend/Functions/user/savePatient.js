@@ -1,12 +1,15 @@
 const Patient = require('../Model/patient');
 
 module.exports = async (req, res) => {
-  const { patientId, tabIndex, data } = req.body;
-  if (!patientId || !tabIndex || !data) return res.status(400).json({ error: 'Missing fields' });
+  const { patientId, tabs } = req.body;
+  if (!patientId || !tabs) return res.status(400).json({ error: 'Missing fields' });
 
   try {
     const update = {};
-    update[`tab${tabIndex}`] = data;
+    // tabs is an object: { tab1: {...}, tab2: {...}, ... }
+    Object.keys(tabs).forEach(tabKey => {
+      update[tabKey] = tabs[tabKey];
+    });
     const patient = await Patient.findOneAndUpdate(
       { patientId },
       { $set: update },

@@ -23,7 +23,9 @@ const patientSchema = new mongoose.Schema({
   tab2: Object,
   tab3: Object,
   tab4: {
-    immunizationRecords: [immunizationRecordSchema]
+    immunizationRecords: [immunizationRecordSchema],
+    occupationalRecords: { type: [Object], default: [] },
+    psychologicalRecords: { type: [Object], default: [] }
   },
   tab5: Object,
   tab6: Object,

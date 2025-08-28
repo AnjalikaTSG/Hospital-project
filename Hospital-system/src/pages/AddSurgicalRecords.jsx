@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../functions/SideBar";
@@ -7,21 +7,58 @@ import { Calendar, Stethoscope, FileText, History } from "lucide-react";
 const AddSurgicalRecords = () => {
   const navigate = useNavigate();
   const { patientId } = useParams();
-  const today = new Date().toISOString().split("T")[0]; // Get today's date
+  const today = new Date().toISOString().split("T")[0];
   const [surgery, setSurgery] = useState("");
   const [comment, setComment] = useState("");
-  const [surgicalRecords, setSurgicalRecords] = useState([
-    { name: "Surgery 1", date: "2021-09-01", comments: "Comment 1" },
-    { name: "Surgery 2", date: "2021-09-02", comments: "Comment 2" },
-    { name: "Surgery 3", date: "2021-09-03", comments: "Comment 3" },
-  ]);
+  const [surgicalRecords, setSurgicalRecords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleAddSurgery = () => {
+  // Fetch surgical records from backend
+  useEffect(() => {
+    const fetchRecords = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`http://localhost:3000/patient/${patientId}`);
+        const patient = await res.json();
+        const records = patient.tab5?.surgicalRecords || [];
+        setSurgicalRecords(records);
+        setError("");
+      } catch (err) {
+        setError("Failed to fetch surgical records");
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (patientId) fetchRecords();
+  }, [patientId]);
+
+  const handleAddSurgery = async () => {
     if (surgery.trim() === "") return;
     const newRecord = { name: surgery, date: today, comments: comment };
-    setSurgicalRecords([...surgicalRecords, newRecord]);
-    setSurgery(""); // Clear input after adding
-    setComment(""); // Clear input after adding comment
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:3000/patient/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          patientId,
+          tabIndex: 5,
+          data: {
+            surgicalRecords: [...surgicalRecords, newRecord]
+          }
+        })
+      });
+      const updatedPatient = await res.json();
+      setSurgicalRecords(updatedPatient.tab5.surgicalRecords);
+      setSurgery("");
+      setComment("");
+      setError("");
+    } catch (err) {
+      setError("Failed to save surgical record");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // patientId now comes from useParams
@@ -94,10 +131,12 @@ const AddSurgicalRecords = () => {
                   <button
                     className="flex items-center gap-2 px-8 py-3 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-all duration-200 shadow-md hover:shadow-lg"
                     onClick={handleAddSurgery}
+                    disabled={loading}
                   >
                     Add Surgery
                   </button>
                 </div>
+                {error && <div className="text-red-600 mt-2">{error}</div>}
               </div>
             </div>
           </div>
@@ -106,25 +145,33 @@ const AddSurgicalRecords = () => {
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Surgical History</h2>
               {/* Display surgical history */}
-              <div className="space-y-4">
-                {surgicalRecords.map((record, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-all"
-                  >
-                    <h4 className="text-gray-800 font-semibold mb-2 flex items-center gap-2">
-                      <Stethoscope className="w-4 h-4 text-blue-600" />
-                      {record.name}
-                    </h4>
-                    <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-blue-600" /> Date: {record.date}
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-blue-600" /> Comments: {record.comments}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              {loading ? (
+                <div className="text-center py-8 text-gray-500">Loading...</div>
+              ) : error ? (
+                <div className="text-center py-8 text-red-600">{error}</div>
+              ) : surgicalRecords.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">No surgical history found for this patient.</div>
+              ) : (
+                <div className="space-y-4">
+                  {surgicalRecords.map((record, index) => (
+                    <div
+                      key={index}
+                      className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-all"
+                    >
+                      <h4 className="text-gray-800 font-semibold mb-2 flex items-center gap-2">
+                        <Stethoscope className="w-4 h-4 text-blue-600" />
+                        {record.name}
+                      </h4>
+                      <p className="text-sm text-gray-600 mb-1 flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-blue-600" /> Date: {record.date}
+                      </p>
+                      <p className="text-sm text-gray-600 flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-blue-600" /> Comments: {record.comments}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

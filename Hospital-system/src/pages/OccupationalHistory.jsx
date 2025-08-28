@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Briefcase, MapPin, Calendar, Clock, User, ChevronLeft, ChevronRight } from 'lucide-react';
 import SideBar from '../functions/SideBar';
+import axios from 'axios';
 
 const OccupationalHistory = () => {
   const [selectedYear, setSelectedYear] = useState('');
@@ -10,60 +11,77 @@ const OccupationalHistory = () => {
   const [workplaceAddress, setWorkplaceAddress] = useState('');
   const [ageOfInitiation, setAgeOfInitiation] = useState('');
   const [durationOfWork, setDurationOfWork] = useState('');
-  const [records, setRecords] = useState([
-    {
-      year: '2022',
-      occupation: 'Software Engineer',
-      natureOfWork: 'Developing and maintaining web applications.',
-      workplaceAddress: '123 Tech Park, Silicon Valley',
-      ageOfInitiation: '25',
-      durationOfWork: '3-5 years'
-    },
-    {
-      year: '2018',
-      occupation: 'Nurse',
-      natureOfWork: 'Patient care and medical assistance.',
-      workplaceAddress: '456 Health Ave, New York',
-      ageOfInitiation: '22',
-      durationOfWork: '6-10 years'
-    },
-    {
-      year: '2015',
-      occupation: 'Teacher',
-      natureOfWork: 'Teaching mathematics to high school students.',
-      workplaceAddress: '789 School Rd, Boston',
-      ageOfInitiation: '24',
-      durationOfWork: '11-20 years'
-    }
-  ]);
+  const [records, setRecords] = useState([]);
+  const [allTabs, setAllTabs] = useState({});
 
   const years = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i);
   const ages = Array.from({ length: 80 }, (_, i) => i + 1);
   const durations = ['< 1 year', '1-2 years', '3-5 years', '6-10 years', '11-20 years', '20+ years'];
 
-  const handleAddRecord = (e) => {
+  const { patientId } = useParams();
+
+  // Fetch records from backend on mount
+  React.useEffect(() => {
+    if (patientId) {
+      axios.get(`http://localhost:3000/patient/${patientId}`)
+        .then(res => {
+          const data = res.data;
+          const backendRecords = data.tab4?.occupationalRecords || [];
+          setRecords(backendRecords);
+          setAllTabs({
+            tab1: data.tab1 || {},
+            tab2: data.tab2 || {},
+            tab3: data.tab3 || {},
+            tab4: {
+              ...data.tab4,
+              occupationalRecords: backendRecords
+            },
+            tab5: data.tab5 || {},
+            tab6: data.tab6 || {}
+          });
+        })
+        .catch(() => {});
+    }
+  }, [patientId]);
+
+  const handleAddRecord = async (e) => {
     e.preventDefault();
     if (!selectedYear || !occupation || !natureOfWork || !workplaceAddress || !ageOfInitiation || !durationOfWork) return;
-    setRecords([
-      ...records,
-      {
-        year: selectedYear,
-        occupation,
-        natureOfWork,
-        workplaceAddress,
-        ageOfInitiation,
-        durationOfWork,
-      },
-    ]);
-    setSelectedYear('');
-    setOccupation('');
-    setNatureOfWork('');
-    setWorkplaceAddress('');
-    setAgeOfInitiation('');
-    setDurationOfWork('');
+    const newRecord = {
+      year: selectedYear,
+      occupation,
+      natureOfWork,
+      workplaceAddress,
+      ageOfInitiation,
+      durationOfWork,
+    };
+    try {
+      const updatedRecords = [...records, newRecord];
+      // Update allTabs with new occupationalRecords
+      const updatedTabs = {
+        ...allTabs,
+        tab4: {
+          ...allTabs.tab4,
+          occupationalRecords: updatedRecords
+        }
+      };
+      const res = await axios.post('http://localhost:3000/patient/save', {
+        patientId,
+        tabs: updatedTabs
+      });
+      setRecords(res.data.tab4.occupationalRecords || []);
+      setAllTabs(updatedTabs);
+      setSelectedYear('');
+      setOccupation('');
+      setNatureOfWork('');
+      setWorkplaceAddress('');
+      setAgeOfInitiation('');
+      setDurationOfWork('');
+    } catch {
+      // Optionally handle error
+    }
   };
 
-  const { patientId } = useParams();
   const navigate = () => window.history.back();
   return (
     <SideBar>

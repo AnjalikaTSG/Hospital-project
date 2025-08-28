@@ -35,6 +35,28 @@ const ImmunizationRecords = ({ patientId: propPatientId, immunizationRecords, se
     }));
   };
 
+  const [allTabs, setAllTabs] = useState({});
+
+  useEffect(() => {
+    if (patientId) {
+      axios.get(`http://localhost:3000/patient/${patientId}`)
+        .then(res => {
+          const data = res.data;
+          setAllTabs({
+            tab1: data.tab1 || {},
+            tab2: data.tab2 || {},
+            tab3: data.tab3 || {},
+            tab4: {
+              ...data.tab4,
+              immunizationRecords: data.tab4?.immunizationRecords || []
+            },
+            tab5: data.tab5 || {},
+            tab6: data.tab6 || {}
+          });
+        });
+    }
+  }, [patientId]);
+
   const handleAddImmunization = async () => {
     if (!immunizationData.vaccineName.trim() || !immunizationData.dateGiven) return;
     const newRecord = {
@@ -44,15 +66,20 @@ const ImmunizationRecords = ({ patientId: propPatientId, immunizationRecords, se
     };
     try {
       setLoading(true);
-      // Save to DB (tab4 for immunization)
+      // Update allTabs with new immunizationRecords
+      const updatedTabs = {
+        ...allTabs,
+        tab4: {
+          ...allTabs.tab4,
+          immunizationRecords: [...(allTabs.tab4?.immunizationRecords || []), newRecord]
+        }
+      };
       const res = await axios.post("http://localhost:3000/patient/save", {
         patientId,
-        tabIndex: 4,
-        data: {
-          immunizationRecords: [...immunizationRecords, newRecord]
-        }
+        tabs: updatedTabs
       });
       setImmunizationRecords(res.data.tab4.immunizationRecords);
+      setAllTabs(updatedTabs);
       // Clear form
       setImmunizationData({
         vaccineName: "",

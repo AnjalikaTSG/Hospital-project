@@ -1,36 +1,16 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import SideBar from "../functions/SideBar";
 import { ArrowLeft, FileText, Calendar, User, Brain } from "lucide-react";
-
-// Mock data for demonstration
-const mockPsychologicalHistory = [
-  {
-    name: "Major Depressive Disorder",
-    date: "2022-05-10",
-    comments: "Treated with CBT and medication",
-    doctor: "Dr. Adams"
-  },
-  {
-    name: "Generalized Anxiety Disorder",
-    date: "2021-12-01",
-    comments: "Ongoing therapy, stable",
-    doctor: "Dr. Lee"
-  },
-  {
-    name: "Panic Disorder",
-    date: "2020-08-15",
-    comments: "Episodes reduced, follow-up in 6 months",
-    doctor: "Dr. Patel"
-  }
-];
+import PsychologicalRecords from "./PsychologicalRecords";
 
 const PastPsychologicalHistory = () => {
   const { patientId } = useParams();
   const [patient, setPatient] = useState({ name: "", id: patientId, dob: "" });
+  const [psychologicalHistory, setPsychologicalHistory] = useState([]);
+
   useEffect(() => {
-    // Fetch patient details from backend if patientId exists
+    // Fetch patient details and psychological history from backend if patientId exists
     if (patientId) {
       fetch(`http://localhost:3000/patient/${patientId}`)
         .then(res => res.json())
@@ -40,9 +20,22 @@ const PastPsychologicalHistory = () => {
             id: data.patientId || patientId,
             dob: data.tab1?.dob || ""
           });
+          setPsychologicalHistory(data.tab4?.psychologicalRecords || []);
         });
     }
   }, [patientId]);
+
+  // Handler to update history after adding new record
+  const handleHistoryUpdate = () => {
+    // Re-fetch from backend to ensure latest data
+    if (patientId) {
+      fetch(`http://localhost:3000/patient/${patientId}`)
+        .then(res => res.json())
+        .then(data => {
+          setPsychologicalHistory(data.tab4?.psychologicalRecords || []);
+        });
+    }
+  };
 
   return (
     <SideBar>
@@ -65,47 +58,13 @@ const PastPsychologicalHistory = () => {
         </div>
 
         {/* Psychological History Content */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-            <FileText className="w-6 h-6 text-blue-600" />
-            Psychological Records
-          </h2>
-
-          {mockPsychologicalHistory.length === 0 ? (
-            <div className="text-center py-12">
-              <Brain className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-600 mb-2">No psychological disease history found for this patient.</h3>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {mockPsychologicalHistory.map((record, idx) => (
-                <div
-                  key={idx}
-                  className="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:border-gray-300 transition-all flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-                >
-                  <div>
-                    <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-2">
-                      <Brain className="w-4 h-4 text-blue-600" />
-                      {record.name}
-                    </h4>
-                    <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
-                      <Calendar className="w-4 h-4 text-blue-600" />
-                      <span className="font-medium">Date:</span> {record.date}
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
-                      <FileText className="w-4 h-4 text-blue-600" />
-                      <span className="font-medium">Comments:</span> {record.comments}
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center gap-2 mb-1">
-                      <User className="w-4 h-4 text-blue-600" />
-                      <span className="font-medium">Doctor:</span> {record.doctor}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        
+          {/* Left side: PsychologicalRecords component */}
+          <div className="flex flex-col h-full min-h-[400px] bg-white rounded-lg shadow-md border border-gray-200 p-6">
+            <PsychologicalRecords patientId={patientId} onHistoryUpdate={handleHistoryUpdate} />
+          </div>
+          {/* Right side: Past Psychological History */}
+        
       </div>
     </SideBar>
   );
