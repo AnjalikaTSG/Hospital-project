@@ -34,6 +34,8 @@ import AdminStaffVerification from './pages/AdminStaffVerification';
 import Notifications from './pages/Notifications';
 import ImmunizationPage from './pages/ImmunizationPage';
 import PendingStaffRequests from './pages/PendingStaffRequests';
+import RequestLostBook from './pages/RequestLostBook';
+import Reports from './pages/Reports';
 
 import SideBar from './functions/SideBar';
 
@@ -69,17 +71,19 @@ createRoot(document.getElementById('root')).render(
         <Route path="/patient/:patientId/hospitalization" element={<PatientHospitalization />} />
         <Route path="/patient/:patientId/medication" element={<PatientMedication />} />
         <Route path="/patient/:patientId/lifestyles" element={<PatientLifestyles />} />
-  <Route path="/patient/:patientId/surgical" element={<AddSurgicalRecords />} />
+        <Route path="/patient/:patientId/surgical" element={<AddSurgicalRecords />} />
         <Route path="/patient/:patientId/gyn" element={<GynHistoryPage />} />
         <Route path="/patient/:patientId/occupational" element={<OccupationalHistory />} />
         <Route path="/patient/:patientId/psychological" element={<PastPsychologicalHistory />} />
-  <Route path="/patient/:patientId/immunizationpage" element={<ImmunizationPage />} /> 
+        <Route path="/patient/:patientId/immunizationpage" element={<ImmunizationPage />} /> 
         <Route path="/PatientBasicInfo" element={<PatientBasicInfo />} />
         <Route path="/PatientReport" element={<PatientReport />} />
         <Route path="/AdminStaffVerification" element={<AdminStaffVerification />} />
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/sideBar" element={<SideBar />} />
         <Route path="/PendingStaffRequests" element={<PendingStaffRequests />} />
+        <Route path="/RequestLostBook" element={<RequestLostBook />} />
+        <Route path="/Reports" element={<Reports />} />
       </Routes>
     </Router>
   </StrictMode>,

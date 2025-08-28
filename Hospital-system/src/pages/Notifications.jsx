@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Home,
@@ -16,26 +16,41 @@ const sidebarItems = [
   { label: 'Home', path: '/dashboard', icon: <Home className="w-5 h-5 mr-2" /> },
   { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
   { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
-  { label: 'Reports & Alerts', path: '/reports', icon: <Bell className="w-5 h-5 mr-2" /> },
+  { label: 'Notifications', path: '/Notifications', icon: <Bell className="w-5 h-5 mr-2" /> },
   { label: 'Departments/Clinics', path: '/departments', icon: <Building2 className="w-5 h-5 mr-2" /> },
   { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
 ];
 
-const initialNotifications = [
-  { id: 1, message: 'New staff pending verification', time: '2 min ago', read: false },
-  { id: 2, message: 'Patient John Doe registered', time: '10 min ago', read: false },
-  { id: 3, message: 'Lab report FBC ready for Saman Perera', time: '1 hour ago', read: true },
-  { id: 4, message: 'Appointment reminder for Kumari Jayasinghe', time: '2 hours ago', read: true },
-  { id: 5, message: 'System maintenance scheduled for tonight', time: '1 day ago', read: false },
-];
 
 const Notifications = () => {
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const markAsRead = (id) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:3000/notifications');
+        if (!response.ok) throw new Error('Failed to fetch notifications');
+        const data = await response.json();
+        setNotifications(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNotifications();
+  }, []);
+
+  const markAsRead = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/notifications/${id}/read`, { method: 'PUT' });
+      setNotifications(notifications.map(n => n._id === id ? { ...n, read: true } : n));
+    } catch (err) {
+      // Optionally handle error
+    }
   };
 
   return (
@@ -76,32 +91,37 @@ const Notifications = () => {
         </div>
         {/* Notifications List */}
         <div className="w-full max-w-xl flex flex-col gap-4">
-          {notifications.length === 0 ? (
-            <div className="text-center text-gray-500">No notifications.</div>
-          ) : (
-            notifications.map((n) => (
-              <div
-                key={n.id}
-                className={`flex items-center justify-between p-4 rounded-lg border shadow-sm transition-all ${n.read ? 'bg-gray-100 border-gray-200' : 'bg-blue-50 border-blue-200'}`}
-              >
-                <div className="flex items-center gap-3">
-                  <Bell className={`w-6 h-6 ${n.read ? 'text-gray-400' : 'text-blue-600 animate-bounce'}`} />
-                  <div>
-                    <div className={`font-medium ${n.read ? 'text-gray-600' : 'text-blue-800'}`}>{n.message}</div>
-                    <div className="text-xs text-gray-500">{n.time}</div>
-                  </div>
-                </div>
-                {!n.read && (
-                  <button
-                    onClick={() => markAsRead(n.id)}
-                    className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold"
-                  >
-                    <CheckCircle className="w-4 h-4" /> Mark as read
-                  </button>
-                )}
-              </div>
-            ))
+          {loading && (
+            <div className="text-center text-gray-500">Loading notifications...</div>
           )}
+          {error && (
+            <div className="text-center text-red-600">Error: {error}</div>
+          )}
+          {!loading && !error && notifications.length === 0 && (
+            <div className="text-center text-gray-500">No notifications.</div>
+          )}
+          {!loading && !error && notifications.map((n) => (
+            <div
+              key={n._id}
+              className={`flex items-center justify-between p-4 rounded-lg border shadow-sm transition-all ${n.read ? 'bg-gray-100 border-gray-200' : 'bg-blue-50 border-blue-200'}`}
+            >
+              <div className="flex items-center gap-3">
+                <Bell className={`w-6 h-6 ${n.read ? 'text-gray-400' : 'text-blue-600 animate-bounce'}`} />
+                <div>
+                  <div className={`font-medium ${n.read ? 'text-gray-600' : 'text-blue-800'}`}>{n.message}</div>
+                  <div className="text-xs text-gray-500">{new Date(n.createdAt).toLocaleString()}</div>
+                </div>
+              </div>
+              {!n.read && (
+                <button
+                  onClick={() => markAsRead(n._id)}
+                  className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold"
+                >
+                  <CheckCircle className="w-4 h-4" /> Mark as read
+                </button>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 const express=require('express')
 const connectDB = require('./Services/Connection')
 const routes = require('./Routes/Routes');
+const notificationRoutes = require('./Routes/notifications');
 const app=express()
 const cors = require('cors');
 
@@ -9,6 +10,7 @@ app.use(cors());
 
 
 app.use('/', routes);
+app.use('/notifications', notificationRoutes);
 
 connectDB()
 
