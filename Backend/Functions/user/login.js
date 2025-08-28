@@ -1,8 +1,5 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-
-// Use the same Staff model as in registerStaff.js
-const Staff = mongoose.model('Staff');
+const Staff = require('../../Model/staff');
 
 async function loginStaff(req, res) {
   try {

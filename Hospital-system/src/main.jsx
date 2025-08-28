@@ -33,6 +33,7 @@ import PatientReport from './pages/PatientReport';
 import AdminStaffVerification from './pages/AdminStaffVerification';
 import Notifications from './pages/Notifications';
 import ImmunizationPage from './pages/ImmunizationPage';
+import PendingStaffRequests from './pages/PendingStaffRequests';
 
 import SideBar from './functions/SideBar';
 
@@ -78,6 +79,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/AdminStaffVerification" element={<AdminStaffVerification />} />
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/sideBar" element={<SideBar />} />
+        <Route path="/PendingStaffRequests" element={<PendingStaffRequests />} />
       </Routes>
     </Router>
   </StrictMode>,

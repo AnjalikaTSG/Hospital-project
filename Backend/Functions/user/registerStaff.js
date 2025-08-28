@@ -1,27 +1,17 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-
-// Define staff schema
-const staffSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  employeeNumber: { type: String, required: true, unique: true },
-  position: { type: String, enum: ['Doctor', 'Nurse', 'Pharmacist', 'Laboratorist'], required: true }
-});
-
-const Staff = mongoose.model('Staff', staffSchema);
+const Staff = require('../../Model/staff');
 
 async function registerStaff(req, res) {
   try {
-    const { username, password, employeeNumber, position } = req.body;
+  const { username, password, employee_number, position } = req.body;
 
     // Basic validation
-    if (!username || !password || !employeeNumber || !position) {
+    if (!username || !password || !employee_number || !position) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
 
     // Check for duplicate username or employee number
-    const existingUser = await Staff.findOne({ $or: [{ username }, { employeeNumber }] });
+    const existingUser = await Staff.findOne({ $or: [{ username }, { employee_number }] });
     if (existingUser) {
       return res.status(409).json({ message: 'Username or Employee Number already exists.' });
     }
@@ -33,8 +23,9 @@ async function registerStaff(req, res) {
     const newStaff = new Staff({
       username,
       password: hashedPassword,
-      employeeNumber,
-      position
+      employee_number,
+      position,
+      status: 'pending'
     });
 
     await newStaff.save();

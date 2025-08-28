@@ -132,7 +132,7 @@ const PsychologicalRecords = ({ patientId, onHistoryUpdate }) => {
         {records.length === 0 ? (
           <div className="text-center py-12">
             <Brain className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-600 mb-2">No psychological disease history found for this patient.</h3>
+            <h3 className="text-lg font-medium text-gray-600 mb-2"> No records loading yet</h3>
           </div>
         ) : (
           <div className="space-y-6">

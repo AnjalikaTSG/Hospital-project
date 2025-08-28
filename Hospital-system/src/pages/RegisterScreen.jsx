@@ -11,7 +11,7 @@ const RegisterScreen = () => {
     const [formData, setFormData] = useState({
         username: "",
         password: "",
-        employeeNumber: "",
+        employee_number: "",
         position: ""
     });
     const [focusedField, setFocusedField] = useState("");
@@ -21,7 +21,7 @@ const RegisterScreen = () => {
         e.preventDefault();
         
         // Validate form data
-        if (!formData.username || !formData.password || !formData.employeeNumber || !formData.position) {
+        if (!formData.username || !formData.password || !formData.employee_number || !formData.position) {
             setMessage({ type: 'error', text: 'Please fill in all fields' });
             return;
         }
@@ -30,7 +30,7 @@ const RegisterScreen = () => {
         setMessage({ type: '', text: '' });
 
         try {
-            const response = await fetch(`${API_BASE_URL}/register`, {
+            const response = await fetch(`${API_BASE_URL}/admin/staff`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,20 +38,21 @@ const RegisterScreen = () => {
                 body: JSON.stringify({
                     username: formData.username,
                     password: formData.password,
-                    employeeNumber: formData.employeeNumber,
-                    position: formData.position
-}),
+                    employee_number: formData.employee_number,
+                    position: formData.position,
+                    status: 'pending'
+                }),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                setMessage({ type: 'success', text: data.message || 'Registration submitted for admin approval!' });
+                setMessage({ type: 'success', text: 'Registration submitted! Await admin approval. You will be able to login once approved.' });
                 // Clear form after successful registration
                 setFormData({
                     username: "",
                     password: "",
-                    employeeNumber: "",
+                    employee_number: "",
                     position: ""
                 });
                 setSelectedPosition("");
@@ -222,9 +223,9 @@ const RegisterScreen = () => {
                                         }`} />
                                         <input
                                             type="text"
-                                            value={formData.employeeNumber}
-                                            onChange={(e) => handleInputChange('employeeNumber', e.target.value)}
-                                            onFocus={() => setFocusedField('employeeNumber')}
+                                            value={formData.employee_number}
+                                            onChange={(e) => handleInputChange('employee_number', e.target.value)}
+                                            onFocus={() => setFocusedField('employee_number')}
                                             onBlur={() => setFocusedField('')}
                                             className="w-full pl-12 pr-4 py-3 lg:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-white/50 outline-none focus:border-cyan-400 focus:shadow-lg focus:shadow-cyan-400/25 transition-all duration-300"
                                             placeholder="Enter your employee number"

@@ -145,20 +145,7 @@ const Dashboard = () => {
         </div>
 
         {/* Navigation Links */}
-        <div className="w-full max-w-5xl mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Link to="/personalDetails" className="flex items-center justify-center gap-2 px-6 py-4 bg-cyan-600 text-white font-semibold rounded-xl shadow hover:bg-cyan-700 transition-all">
-            <UserPlus className="w-5 h-5" />
-            Register Patient
-          </Link>
-          <Link to="/immunizationRecords" className="flex items-center justify-center gap-2 px-6 py-4 bg-cyan-600 text-white font-semibold rounded-xl shadow hover:bg-cyan-700 transition-all">
-            <ShieldCheck className="w-5 h-5" />
-            Immunization Records
-          </Link>
-          <Link to="/addSurgicalRecords" className="flex items-center justify-center gap-2 px-6 py-4 bg-cyan-600 text-white font-semibold rounded-xl shadow hover:bg-cyan-700 transition-all">
-            <BriefcaseMedical className="w-5 h-5" />
-            Surgical Records
-          </Link>
-        </div>
+        
       </div>
     </div>
   );

@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const registerStaff = require('../Functions/user/registerStaff');
-router.post('/register', registerStaff);
-
 const loginStaff = require('../Functions/user/login');
 router.post('/login', loginStaff);
 
@@ -15,5 +12,16 @@ router.get('/patient/:patientId', getPatient);
 
 const getAllPatients = require('../Functions/user/getAllPatients');
 router.get('/patients', getAllPatients);
+
+
+// Admin staff management routes
+const staffManagement = require('../Functions/admin/staffManagement');
+router.get('/admin/staff', staffManagement.getAllStaff);
+router.get('/admin/staff/pending', staffManagement.getPendingStaff);
+router.put('/admin/staff/:id/approve', staffManagement.approveStaff);
+router.put('/admin/staff/:id/reject', staffManagement.rejectStaff);
+
+const registerStaff = require('../Functions/user/registerStaff');
+router.post('/admin/staff', registerStaff);
 
 module.exports = router;
