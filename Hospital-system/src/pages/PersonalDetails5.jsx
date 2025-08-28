@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Calendar, Scale, Ruler, Heart, Eye, Stethoscope } from "lucide-react";
-import SideBar from "../functions/SideBar";
+import SideBar2 from "../functions/SideBar2";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios';
 
@@ -287,7 +287,7 @@ const PersonalDetails5 = () => {
   );
 
   return (
-    <SideBar>
+    <SideBar2>
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
@@ -671,7 +671,7 @@ const PersonalDetails5 = () => {
           </div>
         </div>
       </div>
-    </SideBar>
+    </SideBar2>
   );
 };
 

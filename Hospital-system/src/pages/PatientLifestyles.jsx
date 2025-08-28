@@ -3,9 +3,27 @@ import { useParams, useNavigate } from 'react-router-dom';
 import SideBar from '../functions/SideBar';
 import { ArrowLeft, FileText, Heart, Calendar, User } from 'lucide-react';
 
+
 const PatientLifestyles = () => {
   const { patientId } = useParams();
   const navigate = useNavigate();
+  const [records, setRecords] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+
+  React.useEffect(() => {
+    if (patientId) {
+      setLoading(true);
+      fetch(`http://localhost:3000/patient/${patientId}`)
+        .then(res => res.json())
+        .then(data => {
+          setRecords(data.tab3?.lifestyleRecords || []);
+          setError("");
+        })
+        .catch(() => setError("Failed to fetch lifestyle records"))
+        .finally(() => setLoading(false));
+    }
+  }, [patientId]);
 
   return (
     <SideBar>
@@ -26,19 +44,29 @@ const PatientLifestyles = () => {
             </div>
           </div>
         </div>
-        
         {/* Lifestyle Content */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
             <Heart className="w-6 h-6 text-blue-600" />
             Lifestyle Information
           </h2>
-          
-          <div className="text-center py-12">
-            <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-600 mb-2">Lifestyle Information</h3>
-            <p className="text-gray-500">Content for lifestyle information will be added here as specified.</p>
-          </div>
+          {loading ? (
+            <div className="text-center py-12">Loading...</div>
+          ) : error ? (
+            <div className="text-center py-12 text-red-500">{error}</div>
+          ) : records.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">No lifestyle records found.</div>
+          ) : (
+            <div className="space-y-4">
+              {records.map((rec, idx) => (
+                <div key={idx} className="border rounded-lg p-4 bg-gray-50">
+                  <div className="font-semibold">Date: {rec.date}</div>
+                  <div>Type: {rec.type}</div>
+                  <div>Details: {rec.details}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </SideBar>

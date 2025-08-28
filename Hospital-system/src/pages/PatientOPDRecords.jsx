@@ -1,6 +1,6 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import SideBar from '../functions/SideBar';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, FileText, Calendar, User, Stethoscope } from 'lucide-react';
 
 const PatientOPDRecords = () => {
@@ -44,5 +44,6 @@ const PatientOPDRecords = () => {
     </SideBar>
   );
 };
+
 
 export default PatientOPDRecords;

@@ -5,8 +5,32 @@ module.exports = async (req, res) => {
   if (!patientId || !tabs) return res.status(400).json({ error: 'Missing fields' });
 
   try {
+    // Check for duplicate patientId and duplicate NIC only on initial registration (tab1)
+    if (tabs.tab1) {
+      // Check for duplicate patientId
+      const existingPatient = await Patient.findOne({ patientId });
+      if (existingPatient && Object.keys(existingPatient.tab1 || {}).length > 0) {
+        // Duplicate detected, send alert response
+        return res.status(409).json({
+          error: 'Duplicate patient ID detected. This patient already exists.',
+          duplicate: true,
+          patient: existingPatient
+        });
+      }
+      // Check for duplicate NIC
+      const nic = tabs.tab1.nic;
+      if (nic) {
+        const nicPatient = await Patient.findOne({ 'tab1.nic': nic });
+        if (nicPatient && Object.keys(nicPatient.tab1 || {}).length > 0) {
+          return res.status(409).json({
+            error: 'Duplicate NIC detected. This NIC is already registered.',
+            duplicateNic: true,
+            patient: nicPatient
+          });
+        }
+      }
+    }
     const update = {};
-    // tabs is an object: { tab1: {...}, tab2: {...}, ... }
     Object.keys(tabs).forEach(tabKey => {
       update[tabKey] = tabs[tabKey];
     });

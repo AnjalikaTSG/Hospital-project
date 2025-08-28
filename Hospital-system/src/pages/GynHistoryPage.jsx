@@ -140,7 +140,7 @@ const GynHistoryPage = () => {
               <h1 className="text-2xl font-bold text-gray-800">Obstetrics and Gynaecological History</h1>
               <p className="text-gray-600">Patient ID: {patient.id}</p>
               {gynHistory && (
-                <div className="mt-2 text-sm text-green-700 bg-green-50 rounded px-3 py-2">
+                <div className="mt-2 text-sm text-gray-700 bg-blue-50 rounded px-3 py-2">
                   <strong>Saved Gyn History:</strong><br />
                   Consanguineous marriage: {gynHistory.consanguineousMarriage}<br />
                   Number of Pregnancies: {gynHistory.numberOfPregnancies}<br />

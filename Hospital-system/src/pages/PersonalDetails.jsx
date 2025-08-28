@@ -5,7 +5,7 @@ import axios from 'axios';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from "react-icons/fa";
-import SideBar from "../functions/SideBar";
+import SideBar2 from "../functions/SideBar2";
 import { User, Phone, MapPin, Heart, Calendar, IdCard, Hash, Users, GraduationCap } from "lucide-react";
 import { generatePatientId } from "../utils/patientIdGenerator";
 
@@ -160,35 +160,50 @@ const PersonalDetails = () => {
     // Generate patient ID based on NIC and date of birth
     const generatedPatientId = generatePatientId(formData[tabIndex].nic, selectedDate);
     setPatientId(generatedPatientId);
-    
+
+    // Check if patientId already exists before saving
     try {
-      // Prepare data for saving
-      const dataToSave = {
-        patientId: generatedPatientId,
-        tabIndex,
-        data: {
+      const checkRes = await axios.get(`http://localhost:3000/patient/${generatedPatientId}`);
+      if (checkRes.data && checkRes.data.tab1 && Object.keys(checkRes.data.tab1).length > 0) {
+        alert('This patient is already registered. Please check the patient ID or NIC.');
+        return;
+      } else {
+        // Only continue if not duplicate
+      }
+    } catch (checkErr) {
+      // If not found, continue
+    }
+
+    try {
+      // Prepare data for saving in new backend format
+      const tabsToSave = {
+        tab1: {
           ...formData[tabIndex],
           dateOfBirth: selectedDate ? selectedDate.toISOString() : null
         }
       };
-      
+      const dataToSave = {
+        patientId: generatedPatientId,
+        tabs: tabsToSave
+      };
       console.log('Saving data:', dataToSave);
-      
       // Save current tab data
-      await axios.post('http://localhost:3000/patient/save', dataToSave);
-      
+      const saveRes = await axios.post('http://localhost:3000/patient/save', dataToSave);
       console.log('Data saved successfully for patient:', generatedPatientId);
-      
       // Navigate to next page with patient ID
       Navigate(`/personalDetails3?patientId=${generatedPatientId}`);
     } catch (error) {
+      if (error.response && error.response.data && error.response.data.duplicateNic) {
+        alert('This NIC is already registered. Please check the NIC number.');
+        return;
+      }
       console.error('Error saving data:', error);
       alert('Error saving data. Please try again.');
     }
   };
 
   return (
-    <SideBar>
+    <SideBar2>
       <div className="bg-white w-full min-h-screen">
         <div className="p-6">
           <h2 className="text-2xl text-gray-700 font-bold text-center mb-8 flex items-center justify-center gap-2">
@@ -586,7 +601,7 @@ const PersonalDetails = () => {
           </div>
         </div>
       </div>
-    </SideBar>
+    </SideBar2>
   );
 };
 

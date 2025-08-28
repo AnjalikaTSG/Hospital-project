@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Activity, Cigarette, Coffee, Wine } from "lucide-react";
-import SideBar from "../functions/SideBar";
+import SideBar2 from "../functions/SideBar2";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios';
 
@@ -136,33 +136,28 @@ const PersonalDetails3 = () => {
     }
 
     try {
-      // Prepare data for saving
-      const dataToSave = {
-        patientId,
-        tabIndex: 3,
-        data: {
+      // Prepare data for saving in new backend format
+      const tabsToSave = {
+        tab3: {
           lifestyleData: formData,
           familyHistory: familyHistory,
           timestamp: new Date().toISOString()
         }
       };
-      
+      const dataToSave = {
+        patientId,
+        tabs: tabsToSave
+      };
       console.log('Saving PersonalDetails3 data:', dataToSave);
-      
-      // Save data to backend
       await axios.post('http://localhost:3000/patient/save', dataToSave);
-      
       console.log('PersonalDetails3 data saved successfully for patient:', patientId);
-      
       // Also save to localStorage as backup
       const localStorageKey = `patient_${patientId}_tab3`;
-      localStorage.setItem(localStorageKey, JSON.stringify(dataToSave.data));
-      
+      localStorage.setItem(localStorageKey, JSON.stringify(tabsToSave.tab3));
       // Navigate to next page with patient ID
       Navigate(`/personalDetails5?patientId=${patientId}`);
     } catch (error) {
       console.error('Error saving data to backend:', error);
-      
       // If backend fails, save to localStorage only
       try {
         const localStorageKey = `patient_${patientId}_tab3`;
@@ -172,10 +167,8 @@ const PersonalDetails3 = () => {
           timestamp: new Date().toISOString()
         };
         localStorage.setItem(localStorageKey, JSON.stringify(dataToSave));
-        
         console.log('Data saved to localStorage as backup');
         alert('Data saved locally. Backend connection failed. You can continue to the next page.');
-        
         // Navigate to next page even if backend failed
         Navigate(`/personalDetails5?patientId=${patientId}`);
       } catch (localStorageError) {
@@ -252,7 +245,7 @@ const PersonalDetails3 = () => {
   );
 
   return (
-    <SideBar>
+    <SideBar2>
       <div className="bg-white w-full min-h-screen">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-white rounded-xl shadow-lg border border-gray-200">
@@ -410,7 +403,7 @@ const PersonalDetails3 = () => {
           </div>
         </div>
       </div>
-    </SideBar>
+    </SideBar2>
   );
 };
 
