@@ -17,6 +17,7 @@ const SideBar = ({ children }) => {
     "Gyn history",
     "Occupational history",
     "Psychological history",
+    "Referral history"
   ];
 
   useEffect(() => {
@@ -101,6 +102,9 @@ const SideBar = ({ children }) => {
                     break;
                   case 8: // Psychological history
                     navigate(`/patient/${currentPatientId}/psychological`);
+                    break;
+                  case 9: // Referral history
+                    navigate(`/patient/${currentPatientId}/referral`);
                     break;
                   default:
                     break;

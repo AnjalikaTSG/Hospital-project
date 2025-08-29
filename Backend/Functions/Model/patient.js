@@ -17,6 +17,17 @@ const immunizationRecordSchema = new mongoose.Schema({
   status: { type: String, enum: ["Pending", "Completed", "Overdue"], default: "Pending" }
 }, { _id: false });
 
+
+const referralRecordSchema = new mongoose.Schema({
+  referredToDoctor: String,
+  referredToHospital: String,
+  referredToDepartments: [String],
+  date: String,
+  urgency: String,
+  status: String,
+  // Add other fields as needed
+}, { _id: false });
+
 const patientSchema = new mongoose.Schema({
   patientId: { type: String, required: true, unique: true },
   tab1: Object,
@@ -32,7 +43,9 @@ const patientSchema = new mongoose.Schema({
     medicationRecords: { type: [Object], default: [] }
   },
   tab5: Object,
-  tab6: Object,
+  tab6: {
+    referralRecords: { type: [referralRecordSchema], default: [] }
+  },
 });
 
 module.exports = mongoose.model('Patient', patientSchema);

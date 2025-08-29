@@ -56,7 +56,6 @@ createRoot(document.getElementById('root')).render(
         {/* <Route path="/personalDetails4" element={<PersonalDetails4 />} /> */}
         <Route path="/personalDetails5" element={<PersonalDetails5 />} />
         {/* <Route path="/personalDetails6" element={<PersonalDetails6 />} /> */}
-        <Route path="/RefferedTo" element={<RefferedTo />} />
         <Route path="/AddSurgicalRecords" element={<AddSurgicalRecords />} />
         <Route path="/psychologicalRecords" element={<PsychologicalRecords />} />
         <Route path="/immunizationRecords" element={<ImmunizationRecords />} />
@@ -78,6 +77,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/patient/:patientId/occupational" element={<OccupationalHistory />} />
         <Route path="/patient/:patientId/psychological" element={<PastPsychologicalHistory />} />
         <Route path="/patient/:patientId/immunizationpage" element={<ImmunizationPage />} /> 
+        <Route path="/patient/:patientId/referral" element={<RefferedTo />} /> 
         <Route path="/PatientBasicInfo" element={<PatientBasicInfo />} />
         <Route path="/AdminStaffVerification" element={<AdminStaffVerification />} />
         <Route path="/Notifications" element={<Notifications />} />

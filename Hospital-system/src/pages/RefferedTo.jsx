@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Calendar, User, Building, Phone, Mail, MapPin, Stethoscope, FileText, Clock, AlertCircle } from "lucide-react";
 import SideBar from "../functions/SideBar";
 import DatePicker from "react-datepicker";
@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const RefferedTo = () => {
   const navigate = useNavigate();
+  const { patientId } = useParams();
   const today = new Date().toISOString().split("T")[0]; // Get today's date
   const [referralData, setReferralData] = useState({
     referringDoctor: "",
@@ -21,32 +22,28 @@ const RefferedTo = () => {
     address: "",
     notes: ""
   });
-  const [referralRecords, setReferralRecords] = useState([
-    { 
-      referredToDoctor: "Dr. Smith", 
-      referredToHospital: "City Hospital", 
-      referredToDepartments: ["Cardiology", "Neurology"],
-      date: "2024-01-15", 
-      urgency: "High",
-      status: "Pending"
-    },
-    { 
-      referredToDoctor: "Dr. Johnson", 
-      referredToHospital: "General Hospital", 
-      referredToDepartments: ["Orthopedics"],
-      date: "2024-01-10", 
-      urgency: "Medium",
-      status: "Completed"
-    },
-    { 
-      referredToDoctor: "Dr. Brown", 
-      referredToHospital: "Specialty Clinic", 
-      referredToDepartments: ["Dermatology", "Psychiatry"],
-      date: "2024-01-05", 
-      urgency: "Low",
-      status: "In Progress"
-    },
-  ]);
+  const [referralRecords, setReferralRecords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Fetch referral records from backend
+  React.useEffect(() => {
+    const fetchRecords = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`http://localhost:3000/patient/${patientId}`);
+        const patient = await res.json();
+        const records = patient.tab6?.referralRecords || [];
+        setReferralRecords(records);
+        setError("");
+      } catch (err) {
+        setError("Failed to fetch referral records");
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (patientId) fetchRecords();
+  }, [patientId]);
 
   const handleInputChange = (field, value) => {
     setReferralData(prev => ({
@@ -55,9 +52,8 @@ const RefferedTo = () => {
     }));
   };
 
-  const handleAddReferral = () => {
+  const handleAddReferral = async () => {
     if (referralData.referredToDoctor.trim() === "" || referralData.referredToDepartments.length === 0) return;
-    
     const newRecord = {
       referredToDoctor: referralData.referredToDoctor,
       referredToHospital: referralData.referredToHospital,
@@ -66,23 +62,41 @@ const RefferedTo = () => {
       urgency: referralData.urgency,
       status: "Pending"
     };
-    
-    setReferralRecords([...referralRecords, newRecord]);
-    
-    // Clear form
-    setReferralData({
-      referringDoctor: "",
-      referredToDoctor: "",
-      referredToHospital: "",
-      referredToDepartments: [],
-      referralReason: "",
-      urgency: "",
-      appointmentDate: null,
-      contactNumber: "",
-      email: "",
-      address: "",
-      notes: ""
-    });
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:3000/patient/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          patientId,
+          tabs: {
+            tab6: {
+              referralRecords: [...referralRecords, newRecord]
+            }
+          }
+        })
+      });
+      const updatedPatient = await res.json();
+      setReferralRecords(updatedPatient.tab6.referralRecords);
+      setReferralData({
+        referringDoctor: "",
+        referredToDoctor: "",
+        referredToHospital: "",
+        referredToDepartments: [],
+        referralReason: "",
+        urgency: "",
+        appointmentDate: null,
+        contactNumber: "",
+        email: "",
+        address: "",
+        notes: ""
+      });
+      setError("");
+    } catch (err) {
+      setError("Failed to save referral record");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getUrgencyColor = (urgency) => {
@@ -212,15 +226,6 @@ const RefferedTo = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-          <div className="px-8 py-6 border-b border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-800 text-center">
-              Patient Referral Management
-            </h2>
-            <p className="text-gray-600 text-center mt-2">
-              Manage patient referrals to specialists and other healthcare facilities
-            </p>
-          </div>
-
           <div className="p-8">
             <div className="grid md:grid-cols-2 gap-8">
               {/* Left Column - Add New Referral */}
@@ -313,20 +318,11 @@ const RefferedTo = () => {
                   {/* Buttons */}
                   <div className="flex gap-4 pt-4">
                     <button
-                      className="flex items-center text-gray-700 hover:text-blue-600 font-medium px-3 py-2 rounded transition"
-                      onClick={() => window.history.back()}
-                    >
-                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                      </svg>
-                      Back
-                    </button>
-                    <button
                       type="button"
                       className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
                       onClick={handleAddReferral}
                     >
-                      Add Referral
+                      Add
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -343,36 +339,43 @@ const RefferedTo = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {referralRecords.map((record, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-all"
-                    >
-                      <div className="flex justify-between items-start mb-3">
-                        <h4 className="text-gray-800 font-semibold">
-                          {record.referredToDoctor}
-                        </h4>
-                        <div className="flex gap-2">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getUrgencyColor(record.urgency)}`}>
-                            {record.urgency}
-                          </span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(record.status)}`}>
-                            {record.status}
-                          </span>
+                  {loading ? (
+                    <div className="text-center py-8 text-gray-500">Loading...</div>
+                  ) : error ? (
+                    <div className="text-center py-8 text-red-600">{error}</div>
+                  ) : referralRecords.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">No referral history found for this patient.</div>
+                  ) : (
+                    referralRecords.map((record, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-all"
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="text-gray-800 font-semibold">
+                            {record.referredToDoctor}
+                          </h4>
+                          <div className="flex gap-2">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getUrgencyColor(record.urgency)}`}>
+                              {record.urgency}
+                            </span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(record.status)}`}>
+                              {record.status}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="space-y-2 text-sm text-gray-600">
+                          <p><span className="font-medium">Referred to:</span> {record.referredToDoctor}</p>
+                          <p><span className="font-medium">Departments:</span> {record.referredToDepartments?.join(", ") || "Not specified"}</p>
+                          <p><span className="font-medium">Date:</span> {record.date}</p>
                         </div>
                       </div>
-                      
-                      <div className="space-y-2 text-sm text-gray-600">
-                        <p><span className="font-medium">Referred to:</span> {record.referredToDoctor}</p>
-                        <p><span className="font-medium">Departments:</span> {record.referredToDepartments?.join(", ") || "Not specified"}</p>
-                        <p><span className="font-medium">Date:</span> {record.date}</p>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
 
                 {/* Summary Stats */}
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                {/* <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <h4 className="text-blue-800 font-semibold mb-2">Referral Summary</h4>
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div className="text-center">
@@ -392,7 +395,7 @@ const RefferedTo = () => {
                       <div className="text-green-500">Completed</div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
