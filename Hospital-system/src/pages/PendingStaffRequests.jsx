@@ -45,6 +45,7 @@ const PendingStaffRequests = () => {
 
   // Approve/Reject handlers
   const [actionMessage, setActionMessage] = useState({ type: '', text: '' });
+  const [lastAction, setLastAction] = useState('');
   const handleApprove = async (_id) => {
     try {
       setActionMessage({ type: '', text: '' });
@@ -54,13 +55,16 @@ const PendingStaffRequests = () => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to approve staff member');
-      setActionMessage({ type: 'success', text: data.message || 'Staff member approved!' });
+      setActionMessage({ type: 'success', text: 'Approved' });
+      setLastAction('approved');
       setTimeout(() => {
         setActionMessage({ type: '', text: '' });
+        setLastAction('');
         navigate(0); // Refresh the page
       }, 1000);
     } catch (err) {
       setActionMessage({ type: 'error', text: err.message });
+      setLastAction('');
       setTimeout(() => setActionMessage({ type: '', text: '' }), 3000);
     }
   };
@@ -73,13 +77,16 @@ const PendingStaffRequests = () => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to reject staff member');
-      setActionMessage({ type: 'success', text: data.message || 'Staff member rejected!' });
+      setActionMessage({ type: 'success', text: 'Rejected' });
+      setLastAction('rejected');
       setTimeout(() => {
         setActionMessage({ type: '', text: '' });
+        setLastAction('');
         navigate(0); // Refresh the page
       }, 1000);
     } catch (err) {
       setActionMessage({ type: 'error', text: err.message });
+      setLastAction('');
       setTimeout(() => setActionMessage({ type: '', text: '' }), 3000);
     }
   };

@@ -1,45 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle, User, Hash, MapPin, Phone, IdCard, Landmark, Calendar } from 'lucide-react';
+import { CheckCircle, User, Hash, MapPin, Phone, IdCard, Landmark, Calendar, ArrowLeft } from 'lucide-react';
 import SideBar from "../functions/SideBar";
 import { useLocation } from 'react-router-dom';
 import { generatePatientId } from '../utils/patientIdGenerator';
+import { useNavigate } from 'react-router-dom';
 
 const SuccessfulRegistration = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const [patientData, setPatientData] = useState(null);
   const [patientId, setPatientId] = useState('');
 
   useEffect(() => {
-    // Get patient data from localStorage or URL params
-    const urlParams = new URLSearchParams(location.search);
-    const patientIdFromUrl = urlParams.get('patientId');
-    
-    if (patientIdFromUrl) {
-      setPatientId(patientIdFromUrl);
-      
-      // Try to get patient data from localStorage
-      const tab1Data = localStorage.getItem(`patient_${patientIdFromUrl}_tab1`);
-      const tab3Data = localStorage.getItem(`patient_${patientIdFromUrl}_tab3`);
-      const tab5Data = localStorage.getItem(`patient_${patientIdFromUrl}_tab5`);
-      
-      if (tab1Data) {
-        const parsedTab1 = JSON.parse(tab1Data);
-        setPatientData(parsedTab1);
-      }
-    }
+    const params = new URLSearchParams(location.search);
+    const id = params.get('patientId');
+    if (id) setPatientId(id);
   }, [location]);
-
-  // Default values if no data is available
-  const displayData = {
-    name: patientData?.name || 'Patient Name',
-    nic: patientData?.nic || 'NIC Number',
-    address: patientData?.address || 'Address',
-    telephone: patientData?.emergencyContactPhone || 'Phone Number',
-    district: patientData?.district || 'District',
-    dateOfBirth: patientData?.dateOfBirth ? new Date(patientData.dateOfBirth).toLocaleDateString() : 'Date of Birth',
-    age: patientData?.age || 'Age',
-    gender: patientData?.gender || 'Gender'
-  };
 
   return (
     <SideBar>
@@ -55,53 +31,25 @@ const SuccessfulRegistration = () => {
               <Hash className="w-6 h-6 text-blue-600" />
               <span className="font-semibold text-blue-700">Patient ID:</span>
             </div>
-            <span className="text-xl font-extrabold text-blue-700 tracking-wide">{patientId || 'Generated ID'}</span>
+            <span className="text-xl font-extrabold text-blue-700 tracking-wide">{patientId}</span>
           </div>
 
-          {/* Patient Details */}
-          <div className="w-full space-y-4">
-            <div className="flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-600" />
-              <span className="font-semibold text-gray-700">Name:</span>
-              <span className="text-gray-800">{displayData.name}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <IdCard className="w-5 h-5 text-blue-600" />
-              <span className="font-semibold text-gray-700">NIC:</span>
-              <span className="text-gray-800">{displayData.nic}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-blue-600" />
-              <span className="font-semibold text-gray-700">Age:</span>
-              <span className="text-gray-800">{displayData.age}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-600" />
-              <span className="font-semibold text-gray-700">Gender:</span>
-              <span className="text-gray-800">{displayData.gender}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-blue-600" />
-              <span className="font-semibold text-gray-700">Address:</span>
-              <span className="text-gray-800">{displayData.address}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Phone className="w-5 h-5 text-blue-600" />
-              <span className="font-semibold text-gray-700">Phone:</span>
-              <span className="text-gray-800">{displayData.telephone}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Landmark className="w-5 h-5 text-blue-600" />
-              <span className="font-semibold text-gray-700">District:</span>
-              <span className="text-gray-800">{displayData.district}</span>
-            </div>
-          </div>
+          {/* Patient Details removed as requested */}
 
           {/* Success Message */}
           <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
             <p className="text-green-700 text-center text-sm">
               Your patient registration is complete. You can now access all patient services.
             </p>
+            <div className="flex justify-center w-full">
+              <button
+                className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center gap-2"
+                onClick={() => navigate('/dashboard')}
+              >
+                <ArrowLeft className="w-5 h-5" />
+                Go to Dashboard
+              </button>
+            </div>
           </div>
         </div>
       </div>
