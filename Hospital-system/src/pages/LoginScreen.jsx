@@ -61,7 +61,7 @@ const LoginScreen = () => {
     };
 
     return (
-        <div className="min-h-screen w-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-x-hidden">
+    <div className="min-h-screen w-screen bg-gradient-to-br from-blue-900 via-blue-950 to-purple-900 relative overflow-x-hidden">
             {/* Animated Background Elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -69,46 +69,13 @@ const LoginScreen = () => {
                 <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
             </div>
 
-            {/* Floating Particles Effect */}
-            <div className="absolute inset-0 overflow-hidden">
-                {[...Array(20)].map((_, i) => (
-                    <div
-                        key={i}
-                        className="absolute w-2 h-2 bg-white rounded-full opacity-20"
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
-                            animationDelay: `${Math.random() * 2}s`
-                        }}
-                    ></div>
-                ))}
-            </div>
 
-            <style jsx>{`
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px) rotate(0deg); }
-                    50% { transform: translateY(-20px) rotate(180deg); }
-                }
-                @keyframes slideInLeft {
-                    from { transform: translateX(-100px); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes slideInRight {
-                    from { transform: translateX(100px); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes fadeInUp {
-                    from { transform: translateY(30px); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
-                }
-            `}</style>
 
             <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8">
                 <div className="w-full max-w-6xl mx-auto flex items-center justify-between lg:flex-row flex-col gap-8">
                     
                     {/* Left Side - Welcome Info */}
-                    <div className="lg:flex flex-col justify-center w-full lg:w-1/2 lg:pr-12" style={{animation: 'slideInLeft 1s ease-out'}}>
+                    <div className="lg:flex flex-col justify-center w-full lg:w-1/2 lg:pr-12">
                         <div className="text-white space-y-6">
                             <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
                                 <Shield className="w-5 h-5 mr-2 text-cyan-300" />
@@ -143,10 +110,10 @@ const LoginScreen = () => {
                     </div>
 
                     {/* Right Side - Login Form */}
-                    <div className="w-full lg:w-1/2 max-w-md mx-auto" style={{animation: 'slideInRight 1s ease-out'}}>
-                        <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 lg:p-8">
-                            <div className="text-center mb-6 lg:mb-8" style={{animation: 'fadeInUp 1s ease-out 0.2s both'}}>
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl mb-4 shadow-lg">
+                    <div className="w-full lg:w-1/2 max-w-md mx-auto">
+                        <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-blue-200 shadow-2xl p-6 lg:p-8">
+                            <div className="text-center mb-6 lg:mb-8">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4 shadow-lg">
                                     <LogIn className="w-8 h-8 text-white" />
                                 </div>
                                 <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2">Welcome Back</h2>
@@ -155,7 +122,7 @@ const LoginScreen = () => {
 
                             <form onSubmit={handleLogin} className="space-y-4 lg:space-y-6">
                                 {/* Username Field */}
-                                <div style={{animation: 'fadeInUp 1s ease-out 0.3s both'}}>
+                                <div>
                                     <label className="block text-sm font-medium text-white/90 mb-2">Username</label>
                                     <div className="relative">
                                         <User className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-200 ${
@@ -175,7 +142,7 @@ const LoginScreen = () => {
                                 </div>
 
                                 {/* Password Field */}
-                                <div style={{animation: 'fadeInUp 1s ease-out 0.4s both'}}>
+                                <div>
                                     <label className="block text-sm font-medium text-white/90 mb-2">Password</label>
                                     <div className="relative">
                                         <Lock className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-200 ${
@@ -202,7 +169,7 @@ const LoginScreen = () => {
                                 </div>
 
                                 {/* Forgot Password Link */}
-                                <div className="text-right" style={{animation: 'fadeInUp 1s ease-out 0.5s both'}}>
+                                <div className="text-right">
                                     <button 
                                         type="button"
                                         onClick={() => console.log('Navigate to forgot password')}
@@ -213,21 +180,20 @@ const LoginScreen = () => {
                                 </div>
 
                                 {/* Login Button */}
-                                <div style={{animation: 'fadeInUp 1s ease-out 0.6s both'}}>
+                                <div>
                                     <button
                                         type="submit"
-                                        className="w-full py-3 lg:py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 transform hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group"
+                                        className="w-full py-3 lg:py-4 bg-blue-600 text-white font-semibold rounded-xl shadow-2xl hover:bg-blue-700 transform hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group"
                                     >
                                         <span className="relative z-10 flex items-center justify-center">
                                             <LogIn className="w-5 h-5 mr-2" />
                                             Sign In
                                         </span>
-                                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     </button>
                                 </div>
 
                                 {/* Register Link */}
-                                <div className="text-center" style={{animation: 'fadeInUp 1s ease-out 0.7s both'}}>
+                                <div className="text-center">
                                     <p className="text-white/70">
                                         Don't have an account?{" "}
                                         <button 
@@ -241,7 +207,7 @@ const LoginScreen = () => {
                                 </div>
 
                                 {/* Security Notice */}
-                                <div className="text-center mt-6" style={{animation: 'fadeInUp 1s ease-out 0.8s both'}}>
+                                <div className="text-center mt-6">
                                     <div className="inline-flex items-center px-3 py-2 bg-green-500/20 backdrop-blur-sm rounded-lg border border-green-400/30">
                                         <Shield className="w-4 h-4 mr-2 text-green-400" />
                                         <span className="text-xs text-green-300">Secured with end-to-end encryption</span>

@@ -12,7 +12,6 @@ const SideBar = ({ children }) => {
     "OPD records",
     "Hospitalization",
     "Currently medication",
-    "Lifestyles",
     "Immunization",
     "Surgical history",
     "Gyn history",
@@ -88,22 +87,19 @@ const SideBar = ({ children }) => {
                   case 3: // Currently medication
                     navigate(`/patient/${currentPatientId}/medication`);
                     break;
-                  case 4: // Lifestyles
-                    navigate(`/patient/${currentPatientId}/lifestyles`);
-                    break;
-                  case 5: // Immunization
+                  case 4: // Immunization
                     navigate(`/patient/${currentPatientId}/immunizationpage`);
                     break;
-                  case 6: // Surgical history
+                  case 5: // Surgical history
                     navigate(`/patient/${currentPatientId}/surgical`);
                     break;
-                  case 7: // Gyn history
+                  case 6: // Gyn history
                     navigate(`/patient/${currentPatientId}/gyn`);
                     break;
-                  case 8: // Occupational history
+                  case 7: // Occupational history
                     navigate(`/patient/${currentPatientId}/occupational`);
                     break;
-                  case 9: // Psychological history
+                  case 8: // Psychological history
                     navigate(`/patient/${currentPatientId}/psychological`);
                     break;
                   default:

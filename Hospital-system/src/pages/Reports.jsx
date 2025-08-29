@@ -4,10 +4,11 @@ import { FileText, Users, BookOpen, Hospital } from 'lucide-react';
 
 const sidebarItems = [
   { label: 'Home', path: '/dashboard', icon: <Hospital className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Summary Report', path: '/reports/patient', icon: <Users className="w-5 h-5 mr-2" /> },
-  { label: 'Staff Activity Report', path: '/reports/staff', icon: <FileText className="w-5 h-5 mr-2" /> },
-  { label: 'Book Issuance & Lost Book Report', path: '/reports/book', icon: <BookOpen className="w-5 h-5 mr-2" /> },
+  { label: 'Patient Summary Report', path: '/PatientReport', icon: <Users className="w-5 h-5 mr-2" /> },
+  { label: 'Staff Activity Report', path: '/StaffReport', icon: <FileText className="w-5 h-5 mr-2" /> },
+  { label: 'Book Issuance & Lost Book Report', path: '/BookReport', icon: <BookOpen className="w-5 h-5 mr-2" /> },
 ];
+
 
 const Reports = () => {
   return (
@@ -39,7 +40,47 @@ const Reports = () => {
             Reports
           </h1>
         </div>
-        
+        <div className="w-full max-w-xl flex flex-col gap-6">
+          <a
+            href="http://localhost:3000/reports/patient/download"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between bg-white rounded-xl shadow border border-blue-200 px-6 py-4 hover:bg-blue-50 transition"
+          >
+            <span className="flex items-center gap-3 text-blue-800 font-semibold text-lg">
+              <FileText className="w-6 h-6 text-cyan-600" /> Patient Summary Report
+            </span>
+            <span className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2">
+              <FileText className="w-5 h-5" />
+            </span>
+          </a>
+          <a
+            href="http://localhost:3000/reports/staff/download"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between bg-white rounded-xl shadow border border-blue-200 px-6 py-4 hover:bg-blue-50 transition"
+          >
+            <span className="flex items-center gap-3 text-blue-800 font-semibold text-lg">
+              <FileText className="w-6 h-6 text-cyan-600" /> Staff Activity Report
+            </span>
+            <span className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2">
+              <FileText className="w-5 h-5" />
+            </span>
+          </a>
+          <a
+            href="http://localhost:3000/reports/book/download"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between bg-white rounded-xl shadow border border-blue-200 px-6 py-4 hover:bg-blue-50 transition"
+          >
+            <span className="flex items-center gap-3 text-blue-800 font-semibold text-lg">
+              <BookOpen className="w-6 h-6 text-cyan-600" /> Book Issuance & Lost Book Report
+            </span>
+            <span className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2">
+              <BookOpen className="w-5 h-5" />
+            </span>
+          </a>
+        </div>
       </div>
     </div>
   );

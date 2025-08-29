@@ -13,6 +13,17 @@ router.get('/patient/:patientId', getPatient);
 const getAllPatients = require('../Functions/user/getAllPatients');
 router.get('/patients', getAllPatients);
 
+// Medication routes
+const medicationRoutes = require('./medication');
+router.use('/patient', medicationRoutes);
+
+// Hospitalization routes
+const hospitalizationRoutes = require('./hospitalization');
+router.use('/patient', hospitalizationRoutes);
+
+// OPD routes
+const opdRoutes = require('./opd');
+router.use('/patient', opdRoutes);
 
 // Admin staff management routes
 const staffManagement = require('../Functions/admin/staffManagement');

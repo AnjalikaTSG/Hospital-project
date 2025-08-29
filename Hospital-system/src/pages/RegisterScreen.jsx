@@ -74,7 +74,7 @@ const RegisterScreen = () => {
     };
 
     return (
-        <div className="min-h-screen w-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-x-hidden">
+    <div className="min-h-screen w-screen bg-gradient-to-br from-blue-900 via-blue-950 to-purple-900 relative overflow-x-hidden">
             {/* Animated Background Elements */}
            <div className="absolute inset-0 overflow-hidden">
 
@@ -83,40 +83,7 @@ const RegisterScreen = () => {
                 <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
             </div>
 
-            {/* Floating Particles Effect */}
-            <div className="absolute inset-0 overflow-hidden">
-                {[...Array(20)].map((_, i) => (
-                    <div
-                        key={i}
-                        className="absolute w-2 h-2 bg-white rounded-full opacity-20"
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
-                            animationDelay: `${Math.random() * 2}s`
-                        }}
-                    ></div>
-                ))}
-            </div>
 
-            <style jsx>{`
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px) rotate(0deg); }
-                    50% { transform: translateY(-20px) rotate(180deg); }
-                }
-                @keyframes slideInLeft {
-                    from { transform: translateX(-100px); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes slideInRight {
-                    from { transform: translateX(100px); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes fadeInUp {
-                    from { transform: translateY(30px); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
-                }
-            `}</style>
 
             <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8">
 
@@ -159,9 +126,9 @@ const RegisterScreen = () => {
 
                     {/* Right Side - Registration Form */}
                     <div className="w-full lg:w-1/2 max-w-md mx-auto" style={{animation: 'slideInRight 1s ease-out'}}>
-                        <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 lg:p-8">
+                        <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-blue-200 shadow-2xl p-6 lg:p-8">
                             <div className="text-center mb-6 lg:mb-8" style={{animation: 'fadeInUp 1s ease-out 0.2s both'}}>
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-2xl mb-4 shadow-lg">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r bg-blue-600 rounded-2xl mb-4 shadow-lg">
                                     <UserPlus className="w-8 h-8 text-white" />
                                 </div>
                                 <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2">Create Account</h2>
@@ -281,7 +248,7 @@ const RegisterScreen = () => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full py-3 lg:py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-cyan-500/25 transform hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full py-3 lg:py-4 bg-blue-600 text-white font-semibold rounded-xl shadow-2xl hover:bg-blue-700 transform hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         <span className="relative z-10 flex items-center justify-center">
                                             {loading ? (
@@ -291,7 +258,6 @@ const RegisterScreen = () => {
                                             )}
                                             {loading ? 'Creating Account...' : 'Create Account'}
                                         </span>
-                                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     </button>
                                 </div>
 

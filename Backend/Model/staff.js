@@ -5,7 +5,8 @@ const staffSchema = new mongoose.Schema({
   employee_number: { type: String, required: true, unique: true },
   position: { type: String, required: true },
   status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
-  created_at: { type: Date, default: Date.now }
+  created_at: { type: Date, default: Date.now },
+  password: { type: String, required: true }
 });
 
 // Prevent OverwriteModelError

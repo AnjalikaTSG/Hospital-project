@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Home,
@@ -23,34 +23,15 @@ const sidebarItems = [
   { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
 ];
 
-const reportData = [
-  {
-    registrationNumber: 'REG2024005',
-    name: 'Saman Perera',
-    nic: '200045678912',
-    reports: ['FBC', 'LFT', 'KFT']
-  },
-  {
-    registrationNumber: 'REG2024006',
-    name: 'Nimal Silva',
-    nic: '198765432109',
-    reports: ['FBC', 'RBS']
-  },
-  {
-    registrationNumber: 'REG2024007',
-    name: 'Kumari Jayasinghe',
-    nic: '199012345678',
-    reports: ['LFT', 'TSH', 'CRP']
-  },
-  {
-    registrationNumber: 'REG2024008',
-    name: 'Amal Fernando',
-    nic: '200112345678',
-    reports: ['FBC', 'Lipid Profile']
-  },
-];
+
 
 const PatientReport = () => {
+  const [patients, setPatients] = useState([]);
+  useEffect(() => {
+    fetch('http://localhost:3000/reports/patient')
+      .then(res => res.json())
+      .then(data => setPatients(data));
+  }, []);
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
       {/* Sidebar */}
@@ -74,12 +55,6 @@ const PatientReport = () => {
       </div>
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center w-full py-10 px-4">
-        {/* Hospital Bar */}
-        <div className="w-full max-w-xl mb-2">
-          <div className="bg-blue-700 rounded-t-xl py-3 px-6 text-center">
-            <span className="text-white text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
-          </div>
-        </div>
         {/* Header */}
         <div className="w-full max-w-xl mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-blue-800 flex items-center gap-3 bg-white rounded-b-xl py-6 px-6 shadow">
@@ -87,38 +62,16 @@ const PatientReport = () => {
             Patient Reports
           </h1>
         </div>
-        {/* Report Cards */}
-        <div className="w-full max-w-xl flex flex-col gap-8">
-          {reportData.map((patient, idx) => (
-            <div key={idx} className="bg-white rounded-xl shadow-lg border border-blue-200 p-6 flex flex-col gap-4">
-              <div className="flex items-center gap-2">
-                <Hash className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold text-gray-700">Registration No:</span>
-                <span className="text-gray-800">{patient.registrationNumber}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold text-gray-700">Name:</span>
-                <span className="text-gray-800">{patient.name}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <IdCard className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold text-gray-700">NIC:</span>
-                <span className="text-gray-800">{patient.nic}</span>
-              </div>
-              <div className="flex items-center gap-2 mt-2">
-                <ReportIcon className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold text-gray-700">Reports:</span>
-                <div className="flex flex-wrap gap-2 ml-2">
-                  {patient.reports.map((report, rIdx) => (
-                    <span key={rIdx} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold border border-blue-200">
-                      {report}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* Download PDF Button */}
+        <div className="w-full max-w-xl mb-4 flex justify-end">
+          <a
+            href="http://localhost:3000/reports/patient/download"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow flex items-center gap-2"
+          >
+            <ReportIcon className="w-5 h-5" /> Download PDF
+          </a>
         </div>
       </div>
     </div>

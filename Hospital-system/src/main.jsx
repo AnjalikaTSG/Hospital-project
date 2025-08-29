@@ -29,13 +29,15 @@ import PatientHospitalization from './pages/PatientHospitalization';
 import PatientMedication from './pages/PatientMedication';
 import PatientLifestyles from './pages/PatientLifestyles';
 import PatientBasicInfo from './pages/PatientBasicInfo';
-import PatientReport from './pages/PatientReport';
 import AdminStaffVerification from './pages/AdminStaffVerification';
 import Notifications from './pages/Notifications';
 import ImmunizationPage from './pages/ImmunizationPage';
 import PendingStaffRequests from './pages/PendingStaffRequests';
 import RequestLostBook from './pages/RequestLostBook';
 import Reports from './pages/Reports';
+import PatientReport from './pages/PatientReport';
+import StaffReport from './pages/StaffReport';
+import BookReport from './pages/BookReport';
 
 import SideBar from './functions/SideBar';
 
@@ -77,13 +79,15 @@ createRoot(document.getElementById('root')).render(
         <Route path="/patient/:patientId/psychological" element={<PastPsychologicalHistory />} />
         <Route path="/patient/:patientId/immunizationpage" element={<ImmunizationPage />} /> 
         <Route path="/PatientBasicInfo" element={<PatientBasicInfo />} />
-        <Route path="/PatientReport" element={<PatientReport />} />
         <Route path="/AdminStaffVerification" element={<AdminStaffVerification />} />
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/sideBar" element={<SideBar />} />
         <Route path="/PendingStaffRequests" element={<PendingStaffRequests />} />
         <Route path="/RequestLostBook" element={<RequestLostBook />} />
         <Route path="/Reports" element={<Reports />} />
+        <Route path="/PatientReport" element={<PatientReport />} />
+        <Route path="/StaffReport" element={<StaffReport />} />
+        <Route path="/BookReport" element={<BookReport />} />
       </Routes>
     </Router>
   </StrictMode>,

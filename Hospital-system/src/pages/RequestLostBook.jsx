@@ -8,9 +8,11 @@ const sidebarItems = [
   { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
   { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
   { label: 'Notifications', path: '/Notifications', icon: <Bell className="w-5 h-5 mr-2" /> },
+  { label: 'Reports', path: '/Reports', icon: <FileText className="w-5 h-5 mr-2" /> },
   { label: 'Departments/Clinics', path: '/departments', icon: <Building2 className="w-5 h-5 mr-2" /> },
   { label: 'Request Lost Book', path: '/RequestLostBook', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
   { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
+  
 ];
 
 const RequestLostBook = () => {
