@@ -32,7 +32,12 @@ router.get('/admin/staff/pending', staffManagement.getPendingStaff);
 router.put('/admin/staff/:id/approve', staffManagement.approveStaff);
 router.put('/admin/staff/:id/reject', staffManagement.rejectStaff);
 
+
 const registerStaff = require('../Functions/user/registerStaff');
 router.post('/admin/staff', registerStaff);
+
+// Stats route
+const getStats = require('../Functions/getStats');
+router.get('/stats', getStats);
 
 module.exports = router;

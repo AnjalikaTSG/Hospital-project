@@ -36,59 +36,75 @@ const sidebarItems = [
   
 ];
 
-const stats = [
+// Dynamic stats state
+const initialStats = [
   {
     label: 'Doctors',
-    value: 54,
+    value: 0,
     icon: <Stethoscope className="w-8 h-8 text-cyan-600 mb-2" />,
     img: docImg,
   },
   {
     label: 'Nurses',
-    value: 152,
+    value: 0,
     icon: <UserCog className="w-8 h-8 text-cyan-600 mb-2" />,
     img: nurImg,
   },
   {
     label: 'Pharmacists',
-    value: 50,
+    value: 0,
     icon: <BriefcaseMedical className="w-8 h-8 text-cyan-600 mb-2" />,
     img: pharImg,
   },
   {
     label: 'Patients',
-    value: 2542,
+    value: 0,
     icon: <Users className="w-8 h-8 text-cyan-600 mb-2" />,
     img: patImg,
   },
   {
     label: 'Laboratorists',
-    value: 42,
+    value: 0,
     icon: <FlaskConical className="w-8 h-8 text-cyan-600 mb-2" />,
     img: labImg,
   },
   {
     label: 'Extra',
-    value: 230,
+    value: 0,
     icon: <ShieldCheck className="w-8 h-8 text-cyan-600 mb-2" />,
     img: docImg,
   },
 ];
 
 const Dashboard = () => {
-
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('/dashboard');
   const navigate = useNavigate();
+  const [stats, setStats] = useState(initialStats);
 
   // Update active tab based on current location
   React.useEffect(() => {
     setActiveTab(location.pathname);
   }, [location.pathname]);
 
+  // Fetch stats from backend
+  React.useEffect(() => {
+    fetch('http://localhost:3000/stats')
+      .then(res => res.json())
+      .then(data => {
+        setStats(prev => prev.map(stat => {
+          if (stat.label === 'Doctors') return { ...stat, value: data.doctors };
+          if (stat.label === 'Nurses') return { ...stat, value: data.nurses };
+          if (stat.label === 'Pharmacists') return { ...stat, value: data.pharmacists };
+          if (stat.label === 'Laboratorists') return { ...stat, value: data.laboratorists };
+          if (stat.label === 'Patients') return { ...stat, value: data.patients };
+          return stat;
+        }));
+      });
+  }, []);
+
   // Logout handler
   const handleLogout = () => {
-    // Remove only authentication data (customize as needed)
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/loginScreen');
