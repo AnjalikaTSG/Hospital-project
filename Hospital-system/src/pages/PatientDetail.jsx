@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import SideBar from '../functions/SideBar';
 import { ArrowLeft, User, Hash, IdCard, Calendar, Phone, MapPin } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 const PatientDetail = () => {
   const { patientId } = useParams();
@@ -88,15 +89,16 @@ const PatientDetail = () => {
             </div>
           </div>
         </div>
-        
-        {/* Default content - Personal Details */}
+
+        {/* Personal Details Section */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
             <User className="w-6 h-6 text-blue-600" />
             Personal Details
           </h2>
           {patient?.tab1 ? (
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Basic Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-700 mb-3">Basic Information</h3>
                 <div className="flex items-center gap-3">
@@ -114,23 +116,75 @@ const PatientDetail = () => {
                   <span className="font-semibold text-gray-700">NIC:</span>
                   <span className="text-gray-800 font-mono">{patient.tab1.nic || 'N/A'}</span>
                 </div>
-              </div>
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-700 mb-3">Contact Details</h3>
                 <div className="flex items-center gap-3">
                   <Calendar className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-gray-700">Date of Birth:</span>
                   <span className="text-gray-800">{patient.tab1.dob || 'N/A'}</span>
                 </div>
                 <div className="flex items-center gap-3">
+                  <Heart className="w-5 h-5 text-blue-500" />
+                  <span className="font-semibold text-gray-700">Marital Status:</span>
+                  <span className="text-gray-800">{patient.tab1.maritalStatus || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-blue-600" />
-                  <span className="font-semibold text-gray-700">Phone:</span>
+                  <span className="font-semibold text-gray-700">Phone Number:</span>
                   <span className="text-gray-800">{patient.tab1.phone || 'N/A'}</span>
                 </div>
+              </div>
+
+              {/* Emergency Contact Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Emergency Contact Details</h3>
+                <div className="flex items-center gap-3">
+                  <User className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-gray-700">Name:</span>
+                  <span className="text-gray-800">{patient.tab1.emergencyContactName || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <IdCard className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-gray-700">Relationship:</span>
+                  <span className="text-gray-800">{patient.tab1.emergencyContactRelationship || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-gray-700">Phone:</span>
+                  <span className="text-gray-800">{patient.tab1.emergencyContactPhone || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <User className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-gray-700">Gender:</span>
+                  <span className="text-gray-800">{patient.tab1.emergencyContactGender || 'N/A'}</span>
+                </div>
+              </div>
+
+              {/* Contact Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Contact Details</h3>
                 <div className="flex items-center gap-3">
                   <MapPin className="w-5 h-5 text-blue-600" />
                   <span className="font-semibold text-gray-700">Address:</span>
                   <span className="text-gray-800">{patient.tab1.address || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-gray-700">District:</span>
+                  <span className="text-gray-800">{patient.tab1.district || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-gray-700">MOH Area:</span>
+                  <span className="text-gray-800">{patient.tab1.mohArea || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-gray-700">PHM Area:</span>
+                  <span className="text-gray-800">{patient.tab1.phmArea || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                  <span className="font-semibold text-gray-700">PHI Area:</span>
+                  <span className="text-gray-800">{patient.tab1.phiArea || 'N/A'}</span>
                 </div>
               </div>
             </div>

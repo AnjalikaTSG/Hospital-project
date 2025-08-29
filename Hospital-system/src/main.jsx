@@ -40,6 +40,7 @@ import StaffReport from './pages/StaffReport';
 import BookReport from './pages/BookReport';
 
 import SideBar from './functions/SideBar';
+import NavBar from './functions/NavBar';
 
 
 createRoot(document.getElementById('root')).render(
@@ -88,6 +89,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/PatientReport" element={<PatientReport />} />
         <Route path="/StaffReport" element={<StaffReport />} />
         <Route path="/BookReport" element={<BookReport />} />
+        <Route path="/NavBar" element={<NavBar />} />
       </Routes>
     </Router>
   </StrictMode>,

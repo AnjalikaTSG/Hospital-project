@@ -75,7 +75,7 @@ const stats = [
   },
 ];
 
-const Dashboard = () => {
+const NavBar = () => {
 
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('/dashboard');
@@ -137,45 +137,23 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center w-full py-10 px-4">
+      {/* <div className="flex-1 flex flex-col items-center w-full py-10 px-4"> */}
         {/* Hospital Bar */}
-        <div className="w-full max-w-5xl mb-2">
+        {/* <div className="w-full max-w-5xl mb-2">
           <div className="bg-blue-700 rounded-t-xl py-3 px-6 text-center">
             <span className="text-white text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
           </div>
-        </div>
-        {/* Header */}
+        </div> */}
+        {/* Header
         <div className="w-full max-w-5xl mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-blue-800 flex items-center gap-3 bg-white rounded-b-xl py-6 px-6 shadow">
             <ShieldCheck className="w-7 h-7 text-cyan-600" />
             Patient Checkup Management System
           </h1>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-          {stats.slice(0, 3).map((stat, idx) => (
-            <div key={stat.label} className="flex flex-col items-center p-6 rounded-2xl bg-white shadow-lg border border-blue-100 hover:shadow-xl transition-all">
-              {stat.icon}
-              <img src={stat.img} alt={stat.label} className="w-16 h-16 mb-2" />
-              <span className="text-lg font-semibold text-blue-800">{stat.label}</span>
-              <span className="text-2xl font-bold text-cyan-700">{stat.value}</span>
-            </div>
-          ))}
-        </div>
-        <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-          {stats.slice(3).map((stat, idx) => (
-            <div key={stat.label} className="flex flex-col items-center p-6 rounded-2xl bg-white shadow-lg border border-blue-100 hover:shadow-xl transition-all">
-              {stat.icon}
-              <img src={stat.img} alt={stat.label} className="w-16 h-16 mb-2" />
-              <span className="text-lg font-semibold text-blue-800">{stat.label}</span>
-              <span className="text-2xl font-bold text-cyan-700">{stat.value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
     </div>
   );
 };
 
-export default Dashboard;
+export default NavBar;

@@ -32,15 +32,22 @@ const Reports = () => {
           ))}
         </nav>
       </div>
+      
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center w-full py-10 px-4">
-        <div className="w-full max-w-xl mb-8">
+        {/* Hospital Bar */}
+        <div className="w-full max-w-5xl mb-2">
+          <div className="bg-blue-700 rounded-t-xl py-3 px-6 text-center">
+            <span className="text-white text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
+          </div>
+        </div>
+        <div className="w-full max-w-5xl mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-blue-800 flex items-center gap-3 bg-white rounded-b-xl py-6 px-6 shadow">
             <FileText className="w-7 h-7 text-cyan-600" />
             Reports
           </h1>
         </div>
-        <div className="w-full max-w-xl flex flex-col gap-6">
+        <div className="w-full max-w-5xl flex flex-col gap-6">
           <a
             href="http://localhost:3000/reports/patient/download"
             target="_blank"
