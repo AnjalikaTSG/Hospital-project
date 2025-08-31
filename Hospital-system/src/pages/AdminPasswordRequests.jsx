@@ -16,7 +16,6 @@ const sidebarItems = [
     { label: 'Admin Staff Verification', path: '/AdminStaffVerification', icon: <ShieldCheck className="w-5 h-5 mr-2" /> },
     { label: 'Pending Staff Requests', path: '/PendingStaffRequests', icon: <Users className="w-5 h-5 mr-2" /> },
     { label: 'Admin Password Requests', path: '/AdminPasswordRequests', icon: <KeyRound className="w-5 h-5 mr-2" /> },
-    { label: 'Accepted/Rejected Password Requests', path: '/AcceptedRejectedPasswordRequests', icon: <KeyRound className="w-5 h-5 mr-2" /> },
     { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
     { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
     { label: 'Notifications', path: '/Notifications', icon: <Bell className="w-5 h-5 mr-2" /> },
@@ -24,6 +23,7 @@ const sidebarItems = [
     { label: 'Request Lost Book', path: '/RequestLostBook', icon: <Building2 className="w-5 h-5 mr-2" /> },
     { label: 'Logout', path: '/loginScreen', icon: <LogOut className="w-5 h-5 mr-2" />, action: 'logout' },
 ];
+
 const API_BASE_URL = 'http://localhost:3000';
 
 const AdminPasswordRequests = () => {
