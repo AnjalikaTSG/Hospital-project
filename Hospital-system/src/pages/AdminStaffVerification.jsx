@@ -11,7 +11,8 @@ import {
   Hospital,
   RefreshCw,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  LogOut
 } from 'lucide-react';
 
 
@@ -19,9 +20,12 @@ const sidebarItems = [
   { label: 'Home', path: '/dashboard', icon: <Home className="w-5 h-5 mr-2" /> },
   { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
   { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
-  { label: 'Reports & Alerts', path: '/reports', icon: <Bell className="w-5 h-5 mr-2" /> },
-  { label: 'Departments/Clinics', path: '/departments', icon: <Building2 className="w-5 h-5 mr-2" /> },
-  { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
+  { label: 'Notifications', path: '/Notifications', icon: <Bell className="w-5 h-5 mr-2" /> },
+  { label: 'Reports', path: '/Reports', icon: <FileText className="w-5 h-5 mr-2" /> },
+  // { label: 'Departments/Clinics', path: '/departments', icon: <Building2 className="w-5 h-5 mr-2" /> },
+  { label: 'Request Lost Book', path: '/RequestLostBook', icon: <Building2 className="w-5 h-5 mr-2" /> },
+  // { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
+  { label: 'Logout', path: '/loginScreen', icon: <LogOut className="w-5 h-5 mr-2" />, action: 'logout' },
 ];
 
 const AdminStaffVerification = () => {
@@ -124,13 +128,13 @@ const AdminStaffVerification = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center w-full py-10 px-4">
         {/* Hospital Bar */}
-        <div className="w-full max-w-3xl mb-2">
+        <div className="w-full max-w-5xl mb-2">
           <div className="bg-blue-700 rounded-t-xl py-3 px-6 text-center">
             <span className="text-white text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
           </div>
         </div>
         {/* Header */}
-        <div className="w-full max-w-3xl mb-8">
+        <div className="w-full max-w-5xl mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-blue-800 flex items-center gap-3 bg-white rounded-b-xl py-6 px-6 shadow">
             <ShieldCheck className="w-7 h-7 text-cyan-600" />
             Staff Verification
@@ -155,7 +159,7 @@ const AdminStaffVerification = () => {
           </div>
         )}
         {/* Staff Cards */}
-        <div className="w-full max-w-3xl flex flex-col gap-8">
+        <div className="w-full max-w-5xl flex flex-col gap-8">
           {/* Loading State */}
           {loading && (
             <div className="bg-white rounded-xl shadow-lg border border-blue-200 p-8 text-center">

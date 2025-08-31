@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import NavBar2 from '../functions/NavBar2';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, XCircle, User, Briefcase, IdCard, Hash, RefreshCw, AlertCircle } from 'lucide-react';
+import { Home, UserPlus, FileText, Bell, Building2, MoreHorizontal, LogOut } from 'lucide-react';
+const sidebarItems = [
+  { label: 'Home', path: '/dashboard', icon: <Home className="w-5 h-5 mr-2" /> },
+  { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
+  { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
+  { label: 'Notifications', path: '/Notifications', icon: <Bell className="w-5 h-5 mr-2" /> },
+  { label: 'Reports', path: '/Reports', icon: <FileText className="w-5 h-5 mr-2" /> },
+  // { label: 'Departments/Clinics', path: '/departments', icon: <Building2 className="w-5 h-5 mr-2" /> },
+  { label: 'Request Lost Book', path: '/RequestLostBook', icon: <Building2 className="w-5 h-5 mr-2" /> },
+  // { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
+  { label: 'Logout', path: '/loginScreen', icon: <LogOut className="w-5 h-5 mr-2" />, action: 'logout' },
+];
 import { Link } from 'react-router-dom';
 
-const sidebarItems = [
-  { label: 'Home', path: '/dashboard', icon: <ShieldCheck className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <User className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Records', path: '/patientRecords', icon: <Briefcase className="w-5 h-5 mr-2" /> },
-  { label: 'Reports & Alerts', path: '/reports', icon: <AlertCircle className="w-5 h-5 mr-2" /> },
-  { label: 'Departments/Clinics', path: '/departments', icon: <IdCard className="w-5 h-5 mr-2" /> },
-  { label: 'Other', path: '/other', icon: <Hash className="w-5 h-5 mr-2" /> },
-];
 
 const PendingStaffRequests = () => {
   const navigate = useNavigate();
@@ -115,13 +120,13 @@ const PendingStaffRequests = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center w-full py-10 px-4">
         {/* Hospital Bar */}
-        <div className="w-full max-w-3xl mb-2">
+        <div className="w-full max-w-5xl mb-2">
           <div className="bg-blue-700 rounded-t-xl py-3 px-6 text-center">
             <span className="text-white text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
           </div>
         </div>
         {/* Header */}
-        <div className="w-full max-w-3xl mb-8">
+        <div className="w-full max-w-5xl mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-blue-800 flex items-center gap-3 bg-white rounded-b-xl py-6 px-6 shadow">
             <ShieldCheck className="w-7 h-7 text-cyan-600" />
             Pending Staff Registration Requests
@@ -145,7 +150,7 @@ const PendingStaffRequests = () => {
           </div>
         )}
         {/* Staff Cards */}
-        <div className="w-full max-w-3xl flex flex-col gap-8">
+        <div className="w-full max-w-5xl flex flex-col gap-8">
           {/* Loading State */}
           {loading && (
             <div className="bg-white rounded-xl shadow-lg border border-blue-200 p-8 text-center">
