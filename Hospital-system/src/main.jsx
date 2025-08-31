@@ -1,3 +1,5 @@
+import AdminPasswordRequests from './pages/AdminPasswordRequests';
+import AcceptedRejectedPasswordRequests from './pages/AcceptedRejectedPasswordRequests';
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -78,6 +80,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/patient/:patientId/occupational" element={<OccupationalHistory />} />
         <Route path="/patient/:patientId/psychological" element={<PastPsychologicalHistory />} />
         <Route path="/patient/:patientId/immunizationpage" element={<ImmunizationPage />} /> 
+  <Route path="/AdminPasswordRequests" element={<AdminPasswordRequests />} />
+  <Route path="/AcceptedRejectedPasswordRequests" element={<AcceptedRejectedPasswordRequests />} />
         <Route path="/patient/:patientId/referral" element={<RefferedTo />} /> 
         <Route path="/PatientBasicInfo" element={<PatientBasicInfo />} />
         <Route path="/AdminStaffVerification" element={<AdminStaffVerification />} />
@@ -89,6 +93,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/PatientReport" element={<PatientReport />} />
         <Route path="/StaffReport" element={<StaffReport />} />
         <Route path="/BookReport" element={<BookReport />} />
+        <Route path="/AdminPasswordRequests" element={<AdminPasswordRequests />} />
         <Route path="/NavBar" element={<NavBar />} />
       </Routes>
     </Router>

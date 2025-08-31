@@ -10,7 +10,37 @@ const LoginScreen = () => {
         password: ""
     });
     const [focusedField, setFocusedField] = useState("");
+    const [showForgotModal, setShowForgotModal] = useState(false);
+    const [forgotData, setForgotData] = useState({ username: '', employeeNumber: '' });
+    const [forgotStatus, setForgotStatus] = useState('');
     const API_BASE_URL = 'http://localhost:3000';
+    const handleForgotChange = (field, value) => {
+        setForgotData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleForgotSubmit = async (e) => {
+        e.preventDefault();
+        if (!forgotData.username.trim() || !forgotData.employeeNumber.trim()) {
+            setForgotStatus('Please fill both fields.');
+            return;
+        }
+        try {
+            const response = await fetch(`${API_BASE_URL}/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(forgotData),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setForgotStatus('Request submitted. Await admin approval.');
+                setForgotData({ username: '', employeeNumber: '' });
+            } else {
+                setForgotStatus(data.message || 'Error submitting request.');
+            }
+        } catch (err) {
+            setForgotStatus('Network error. Try again.');
+        }
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -62,6 +92,29 @@ const LoginScreen = () => {
 
     return (
     <div className="min-h-screen w-screen bg-gradient-to-br from-blue-900 via-blue-950 to-purple-900 relative overflow-x-hidden">
+        {/* Forgot Password Modal */}
+        {showForgotModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-sm">
+                    <h3 className="text-xl font-bold mb-4 text-gray-500">Forgot Password</h3>
+                    <form onSubmit={handleForgotSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-1 text-gray-500">Username</label>
+                            <input type="text" value={forgotData.username} onChange={e => handleForgotChange('username', e.target.value)} className="w-full border rounded px-3 py-2 text-gray-500 placeholder-gray-400" placeholder="Enter username" required />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1 text-gray-500">Employee Number</label>
+                            <input type="text" value={forgotData.employeeNumber} onChange={e => handleForgotChange('employeeNumber', e.target.value)} className="w-full border rounded px-3 py-2 text-gray-500 placeholder-gray-400" placeholder="Enter employee number" required />
+                        </div>
+                        {forgotStatus && <div className="text-sm text-gray-500">{forgotStatus}</div>}
+                        <div className="flex gap-2 mt-4">
+                            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+                            <button type="button" className="bg-gray-300 px-4 py-2 rounded text-gray-500" onClick={() => { setShowForgotModal(false); setForgotStatus(""); }}>Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
             {/* Animated Background Elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -172,7 +225,7 @@ const LoginScreen = () => {
                                 <div className="text-right">
                                     <button 
                                         type="button"
-                                        onClick={() => console.log('Navigate to forgot password')}
+                                        onClick={() => setShowForgotModal(true)}
                                         className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
                                     >
                                         Forgot Password?
