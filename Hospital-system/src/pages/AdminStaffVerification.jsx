@@ -1,32 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, XCircle, User, Briefcase, IdCard, Hash } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import {
-  Home,
-  UserPlus,
-  FileText,
-  Bell,
-  Building2,
-  MoreHorizontal,
-  Hospital,
-  RefreshCw,
-  CheckCircle,
-  AlertCircle,
-  LogOut
-} from 'lucide-react';
-
-
-const sidebarItems = [
-  { label: 'Home', path: '/dashboard', icon: <Home className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
-  { label: 'Notifications', path: '/Notifications', icon: <Bell className="w-5 h-5 mr-2" /> },
-  { label: 'Reports', path: '/Reports', icon: <FileText className="w-5 h-5 mr-2" /> },
-  // { label: 'Departments/Clinics', path: '/departments', icon: <Building2 className="w-5 h-5 mr-2" /> },
-  { label: 'Request Lost Book', path: '/RequestLostBook', icon: <Building2 className="w-5 h-5 mr-2" /> },
-  // { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
-  { label: 'Logout', path: '/loginScreen', icon: <LogOut className="w-5 h-5 mr-2" />, action: 'logout' },
-];
+import { ShieldCheck, XCircle, User, Briefcase, IdCard, Hash, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
+import AdminLayout from '../components/AdminLayout';
 
 const AdminStaffVerification = () => {
   const [staff, setStaff] = useState([]);
@@ -105,41 +79,8 @@ const AdminStaffVerification = () => {
   const verifiedStaff = staff.filter(s => s.status === 'accepted' || s.status === 'rejected');
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
-      {/* Sidebar */}
-      <div className="w-64 min-h-screen bg-gradient-to-b from-blue-700 via-blue-600 to-cyan-600 shadow-xl flex flex-col divide-y divide-blue-500 text-white">
-        <div className="flex items-center gap-3 px-6 py-6">
-          <Hospital className="w-10 h-10 text-white" />
-          <span className="text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
-        </div>
-        <nav className="flex-1 flex flex-col py-4">
-          {sidebarItems.map((item, idx) => (
-            <Link
-              key={idx}
-              to={item.path}
-              className={`flex items-center px-6 py-3 hover:bg-blue-500/60 transition rounded-r-full font-medium text-white/90 hover:text-white`}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center w-full py-10 px-4">
-        {/* Hospital Bar */}
-        <div className="w-full max-w-5xl mb-2">
-          <div className="bg-blue-700 rounded-t-xl py-3 px-6 text-center">
-            <span className="text-white text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
-          </div>
-        </div>
-        {/* Header */}
-        <div className="w-full max-w-5xl mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-800 flex items-center gap-3 bg-white rounded-b-xl py-6 px-6 shadow">
-            <ShieldCheck className="w-7 h-7 text-cyan-600" />
-            Staff Verification
-          </h1>
-        </div>
+    <AdminLayout title="Staff Verification">
+      <div className="flex flex-col items-center w-full py-10 px-4">
 
         {/* Message Display */}
         {message.text && (
@@ -220,7 +161,7 @@ const AdminStaffVerification = () => {
           ))}
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 };
 

@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import NavBar from '../functions/NavBar';
-import {
-  Home,
-  UserPlus,
-  FileText,
-  Bell,
-  Building2,
-  MoreHorizontal,
-  Hospital,
-  CheckCircle,
-  XCircle
-} from 'lucide-react';
+import { Bell, CheckCircle } from 'lucide-react';
+import StaffLayout from '../components/StaffLayout';
 
 
 
@@ -48,23 +37,8 @@ const Notifications = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
-      <NavBar />
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center w-full py-10">
-        {/* Hospital Bar */}
-        <div className="w-full max-w-5xl mb-2">
-          <div className="bg-blue-700 rounded-t-xl py-3 px-6 text-center">
-            <span className="text-white text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
-          </div>
-        </div>
-        {/* Header */}
-        <div className="w-full max-w-5xl mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-800 flex items-center gap-3 bg-white rounded-b-xl py-6 px-6 shadow">
-            <Bell className="w-7 h-7 text-cyan-600" />
-            Notifications
-          </h1>
-        </div>
+    <StaffLayout title="Notifications">
+      <div className="flex flex-col items-center w-full py-10">
         {/* Notifications List */}
         <div className="w-full max-w-5xl flex flex-col gap-4">
           {loading && (
@@ -100,7 +74,7 @@ const Notifications = () => {
           ))}
         </div>
       </div>
-    </div>
+    </StaffLayout>
   );
 };
 

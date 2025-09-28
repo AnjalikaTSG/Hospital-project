@@ -1,30 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  Home,
-  UserPlus,
-  FileText,
-  Bell,
-  Building2,
-  MoreHorizontal,
-  Hospital,
-  User,
-  Hash,
-  IdCard,
-  Search
-} from 'lucide-react';
-
-const sidebarItems = [
-  { label: 'Home', path: '/dashboard', icon: <Home className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
-  { label: 'Notifications', path: '/Notifications', icon: <Bell className="w-5 h-5 mr-2" /> },
-  { label: 'Reports', path: '/Reports', icon: <FileText className="w-5 h-5 mr-2" /> },
-  { label: 'Departments/Clinics', path: '/departments', icon: <Building2 className="w-5 h-5 mr-2" /> },
-  { label: 'Request Lost Book', path: '/RequestLostBook', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
-  { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
-  
-];
+import { useNavigate } from 'react-router-dom';
+import { FileText, User, Hash, IdCard, Search } from 'lucide-react';
+import StaffLayout from '../components/StaffLayout';
 
 // API base URL
 const API_BASE_URL = 'http://localhost:3000';
@@ -99,41 +76,8 @@ const PatientRecords = () => {
   });
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
-      {/* Sidebar */}
-      <div className="w-64 min-h-screen bg-gradient-to-b from-blue-700 via-blue-600 to-cyan-600 shadow-xl flex flex-col divide-y divide-blue-500 text-white">
-        <div className="flex items-center gap-3 px-6 py-6">
-          <Hospital className="w-10 h-10 text-white" />
-          <span className="text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
-        </div>
-        <nav className="flex-1 flex flex-col py-4">
-          {sidebarItems.map((item, idx) => (
-            <Link
-              key={idx}
-              to={item.path}
-              className={`flex items-center px-6 py-3 hover:bg-blue-500/60 transition rounded-r-full font-medium text-white/90 hover:text-white ${item.path === '/patientRecords' ? 'bg-blue-500/80' : ''}`}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center w-full py-10 px-4">
-        {/* Hospital Bar */}
-        <div className="w-full max-w-5xl mb-2">
-          <div className="bg-blue-700 rounded-t-xl py-3 px-6 text-center">
-            <span className="text-white text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
-          </div>
-        </div>
-        {/* Header */}
-        <div className="w-full max-w-5xl mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-800 flex items-center gap-3 bg-white rounded-b-xl py-6 px-6 shadow">
-            <FileText className="w-7 h-7 text-cyan-600" />
-            Patient Records
-          </h1>
-        </div>
+    <StaffLayout title="Patient Records">
+      <div className="flex flex-col items-center w-full py-10 px-4">
         {/* Search Bar */}
         <div className="w-full max-w-5xl mb-8">
           <div className="bg-white rounded-xl shadow-lg border border-blue-200">
@@ -215,7 +159,7 @@ const PatientRecords = () => {
             filtered.map((p, idx) => (
               <div 
                 key={p._id || idx} 
-                className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-6 flex flex-col gap-3 hover:shadow-md transition-shadow cursor-pointer transform hover:scale-105 transition-transform duration-200"
+                className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm p-6 flex flex-col gap-3 hover:shadow-md cursor-pointer transform hover:scale-105 transition-all duration-200"
                 onClick={() => navigate(`/patient/${p.patientId || p._id}`)}
               >
                 <div className="flex items-center gap-2 mb-2">
@@ -261,7 +205,7 @@ const PatientRecords = () => {
           )}
         </div>
       </div>
-    </div>
+    </StaffLayout>
   );
 };
 

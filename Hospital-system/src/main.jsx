@@ -15,7 +15,7 @@ import AdminRegister from './pages/AdminRegister';
 
 // Main Pages
 import Dashboard from './pages/Dashboard';
-import AdminDashboard from './pages/AdminDashboard';
+import AdminDashboard from './pages/AdminDashboardNew';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 
 // Admin Pages

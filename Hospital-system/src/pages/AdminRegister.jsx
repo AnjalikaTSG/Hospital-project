@@ -126,25 +126,6 @@ const AdminRegister = () => {
                                     Hospital Management System
                                 </span>
                             </h1>
-                            
-                            <p className="text-lg lg:text-xl text-white/80 leading-relaxed">
-                                Set up administrative access for hospital management system. 
-                                Admin accounts have full system privileges.
-                            </p>
-                            
-                            <div className="space-y-4">
-                                {[
-                                    "Full system access & control",
-                                    "Staff management privileges", 
-                                    "System configuration rights",
-                                    "Immediate account activation"
-                                ].map((feature, index) => (
-                                    <div key={index} className="flex items-center space-x-3">
-                                        <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
-                                        <span className="text-white/90">{feature}</span>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     </div>
 
@@ -158,26 +139,6 @@ const AdminRegister = () => {
                                 <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2">Admin Registration</h2>
                                 <p className="text-white/70">Create your administrative account</p>
                             </div>
-
-                            {/* Quick Initial Admin Creation */}
-                            <div className="mb-6 p-4 bg-yellow-500/20 backdrop-blur-sm rounded-xl border border-yellow-400/30">
-                                <h3 className="text-yellow-300 font-semibold mb-2">Quick Setup</h3>
-                                <p className="text-yellow-200/80 text-sm mb-3">
-                                    Create initial admin with default credentials (admin/admin123)
-                                </p>
-                                <button
-                                    onClick={handleCreateInitialAdmin}
-                                    disabled={loading}
-                                    className="w-full py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {loading ? 'Creating...' : 'Create Initial Admin'}
-                                </button>
-                            </div>
-
-                            <div className="text-center mb-4">
-                                <span className="text-white/50 text-sm">OR</span>
-                            </div>
-
                             <form onSubmit={handleRegister} className="space-y-4 lg:space-y-6">
                                 {/* Username Field */}
                                 <div>

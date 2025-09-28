@@ -1,10 +1,4 @@
-import React, { useState } from 'react';
-import LogoImg from '../assets/logo.png';
-import docImg from '../assets/doctor.png';
-import nurImg from '../assets/nurse.png';
-import pharImg from '../assets/phar.png';
-import patImg from '../assets/patient.png';
-import labImg from '../assets/lab.png';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Home,
@@ -13,85 +7,35 @@ import {
   Bell,
   BarChart3,
   Building2,
-  MoreHorizontal,
-  Stethoscope,
-  UserCog,
-  BriefcaseMedical,
-  Users,
-  FlaskConical,
-  ShieldCheck,
   Hospital,
   LogOut,
 } from 'lucide-react';
+import useAuth from '../utils/useAuth';
 
-const sidebarItems = [
+const staffSidebarItems = [
   { label: 'Home', path: '/dashboard', icon: <Home className="w-5 h-5 mr-2" /> },
   { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
   { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
   { label: 'Notifications', path: '/Notifications', icon: <Bell className="w-5 h-5 mr-2" /> },
   { label: 'Reports', path: '/Reports', icon: <BarChart3 className="w-5 h-5 mr-2" /> },
-  // { label: 'Departments/Clinics', path: '/departments', icon: <Building2 className="w-5 h-5 mr-2" /> },
   { label: 'Request Lost Book', path: '/RequestLostBook', icon: <Building2 className="w-5 h-5 mr-2" /> },
-  // { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
   { label: 'Logout', path: '/loginScreen', icon: <LogOut className="w-5 h-5 mr-2" />, action: 'logout' },
-  
 ];
 
-const stats = [
-  {
-    label: 'Doctors',
-    value: 54,
-    icon: <Stethoscope className="w-8 h-8 text-cyan-600 mb-2" />,
-    img: docImg,
-  },
-  {
-    label: 'Nurses',
-    value: 152,
-    icon: <UserCog className="w-8 h-8 text-cyan-600 mb-2" />,
-    img: nurImg,
-  },
-  {
-    label: 'Pharmacists',
-    value: 50,
-    icon: <BriefcaseMedical className="w-8 h-8 text-cyan-600 mb-2" />,
-    img: pharImg,
-  },
-  {
-    label: 'Patients',
-    value: 2542,
-    icon: <Users className="w-8 h-8 text-cyan-600 mb-2" />,
-    img: patImg,
-  },
-  {
-    label: 'Laboratorists',
-    value: 42,
-    icon: <FlaskConical className="w-8 h-8 text-cyan-600 mb-2" />,
-    img: labImg,
-  },
-  {
-    label: 'Extra',
-    value: 230,
-    icon: <ShieldCheck className="w-8 h-8 text-cyan-600 mb-2" />,
-    img: docImg,
-  },
-];
-
-const NavBar = () => {
-
+const StaffLayout = ({ children, title = "Patient Checkup Management System" }) => {
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState('/dashboard');
   const navigate = useNavigate();
+  const { logout, user } = useAuth();
+  const [activeTab, setActiveTab] = useState('/dashboard');
 
   // Update active tab based on current location
-  React.useEffect(() => {
+  useEffect(() => {
     setActiveTab(location.pathname);
   }, [location.pathname]);
 
   // Logout handler
   const handleLogout = () => {
-    // Remove only authentication data (customize as needed)
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    logout();
     navigate('/loginScreen');
   };
 
@@ -99,12 +43,32 @@ const NavBar = () => {
     <div className="min-h-screen flex bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300">
       {/* Sidebar */}
       <div className="w-64 min-h-screen bg-gradient-to-b from-blue-700 via-blue-600 to-cyan-600 shadow-xl flex flex-col divide-y divide-blue-500 text-white">
+        {/* Hospital Header */}
         <div className="flex items-center gap-3 px-6 py-6">
           <Hospital className="w-10 h-10 text-white" />
           <span className="text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
         </div>
+        
+        {/* User Info */}
+        {user && (
+          <div className="px-6 py-4 bg-blue-800/30">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-cyan-400 rounded-full flex items-center justify-center">
+                <span className="text-blue-800 font-semibold text-sm">
+                  {user.username?.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white">{user.username}</p>
+                <p className="text-xs text-blue-200">{user.position}</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Navigation */}
         <nav className="flex-1 flex flex-col py-4">
-          {sidebarItems.map((item, idx) => (
+          {staffSidebarItems.map((item, idx) => (
             item.action === 'logout' ? (
               <button
                 key={idx}
@@ -138,23 +102,28 @@ const NavBar = () => {
       </div>
 
       {/* Main Content */}
-      {/* <div className="flex-1 flex flex-col items-center w-full py-10 px-4"> */}
-        {/* Hospital Bar */}
-        {/* <div className="w-full max-w-5xl mb-2">
-          <div className="bg-blue-700 rounded-t-xl py-3 px-6 text-center">
-            <span className="text-white text-lg font-bold tracking-wide">Base Hospital - Avissawella</span>
+      <div className="flex-1 flex flex-col">
+        {/* Header Bar */}
+        <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-semibold text-gray-800">{title}</h1>
+            <div className="flex items-center gap-4">
+              {user && (
+                <div className="text-sm text-gray-600">
+                  Welcome, <span className="font-medium">{user.username}</span>
+                </div>
+              )}
+            </div>
           </div>
-        </div> */}
-        {/* Header
-        <div className="w-full max-w-5xl mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-800 flex items-center gap-3 bg-white rounded-b-xl py-6 px-6 shadow">
-            <ShieldCheck className="w-7 h-7 text-cyan-600" />
-            Patient Checkup Management System
-          </h1>
-        </div> */}
-      {/* </div> */}
+        </div>
+        
+        {/* Page Content */}
+        <div className="flex-1 overflow-auto">
+          {children}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default NavBar;
+export default StaffLayout;

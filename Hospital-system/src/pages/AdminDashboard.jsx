@@ -1,46 +1,25 @@
 import React, { useState } from 'react';
-import LogoImg from '../assets/logo.png';
 import docImg from '../assets/doctor.png';
 import nurImg from '../assets/nurse.png';
 import pharImg from '../assets/phar.png';
 import patImg from '../assets/patient.png';
 import labImg from '../assets/lab.png';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import AdminLayout from '../components/AdminLayout';
+import { Link } from 'react-router-dom';
 import {
-  Home,
   UserPlus,
-  FileText,
-  Bell,
-  Building2,
-  MoreHorizontal,
   Stethoscope,
   UserCog,
   BriefcaseMedical,
   Users,
   FlaskConical,
-  ShieldCheck,
-  Hospital,
-  LogOut,
-  Crown,
   UserCheck,
   Settings,
   BarChart3,
   Shield,
 } from 'lucide-react';
 
-const adminSidebarItems = [
-  { label: 'Admin Home', path: '/admin-dashboard', icon: <Home className="w-5 h-5 mr-2" /> },
-  { label: 'Staff Management', path: '/AdminStaffVerification', icon: <UserCheck className="w-5 h-5 mr-2" /> },
-  { label: 'Pending Staff Requests', path: '/PendingStaffRequests', icon: <UserCog className="w-5 h-5 mr-2" /> },
-  { label: 'Password Requests', path: '/AdminPasswordRequests', icon: <Shield className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
-  { label: 'Notifications', path: '/Notifications', icon: <Bell className="w-5 h-5 mr-2" /> },
-  { label: 'Reports & Analytics', path: '/Reports', icon: <BarChart3 className="w-5 h-5 mr-2" /> },
-  { label: 'Request Lost Book', path: '/RequestLostBook', icon: <Building2 className="w-5 h-5 mr-2" /> },
-  { label: 'System Settings', path: '/settings', icon: <Settings className="w-5 h-5 mr-2" /> },
-  { label: 'Logout', path: '/admin-login', icon: <LogOut className="w-5 h-5 mr-2" />, action: 'logout' },
-];
+// Admin sidebar items moved to AdminLayout component
 
 // Dynamic stats state
 const initialStats = [
@@ -83,24 +62,7 @@ const initialStats = [
 ];
 
 const AdminDashboard = () => {
-  const location = useLocation();
-  const [activeTab, setActiveTab] = useState('/admin-dashboard');
-  const navigate = useNavigate();
   const [stats, setStats] = useState(initialStats);
-  const [user, setUser] = useState(null);
-
-  // Update active tab based on current location
-  React.useEffect(() => {
-    setActiveTab(location.pathname);
-  }, [location.pathname]);
-
-  // Get user data from localStorage
-  React.useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
 
   // Fetch stats from backend
   React.useEffect(() => {

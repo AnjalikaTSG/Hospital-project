@@ -115,24 +115,7 @@ const AdminLogin = () => {
                                     Hospital Management System
                                 </span>
                             </h1>
-                            
-                            <p className="text-lg lg:text-xl text-white/80 leading-relaxed">
-                                Secure administrative access to manage hospital operations, staff, and system configurations.
-                            </p>
-                            
-                            <div className="space-y-4">
-                                {[
-                                    "Staff management & verification",
-                                    "System configuration & settings", 
-                                    "Reports & analytics dashboard",
-                                    "Security & access control"
-                                ].map((feature, index) => (
-                                    <div key={index} className="flex items-center space-x-3">
-                                        <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
-                                        <span className="text-white/90">{feature}</span>
-                                    </div>
-                                ))}
-                            </div>
+
                         </div>
                     </div>
 

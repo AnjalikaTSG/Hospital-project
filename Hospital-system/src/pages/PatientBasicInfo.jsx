@@ -21,15 +21,6 @@ import {
   MapPinned
 } from 'lucide-react';
 
-const sidebarItems = [
-  { label: 'Home', path: '/dashboard', icon: <Home className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Registration & Book Issuance', path: '/personalDetails', icon: <UserPlus className="w-5 h-5 mr-2" /> },
-  { label: 'Patient Records', path: '/patientRecords', icon: <FileText className="w-5 h-5 mr-2" /> },
-  { label: 'Reports & Alerts', path: '/reports', icon: <Bell className="w-5 h-5 mr-2" /> },
-  { label: 'Departments/Clinics', path: '/departments', icon: <Building2 className="w-5 h-5 mr-2" /> },
-  { label: 'Other', path: '/other', icon: <MoreHorizontal className="w-5 h-5 mr-2" /> },
-];
-
 const patient = {
   registrationNumber: 'REG2024001',
   name: 'John Doe',
