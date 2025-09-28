@@ -64,14 +64,19 @@ const LoginScreen = () => {
             const data = await response.json();
             
             if (response.ok) {
-                // Login success: store token/user data and navigate
+                // Login success: store user data and navigate
                 console.log('Login successful:', data);
-                // You can store the token in localStorage here
-                if (data.token) {
-                    localStorage.setItem('token', data.token);
+                
+                // Store user data in localStorage
+                localStorage.setItem('user', JSON.stringify(data.staff));
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                // Navigate based on user role
+                if (data.staff.isAdmin) {
+                    navigate('/admin-dashboard'); // Admin dashboard
+                } else {
+                    navigate('/dashboard'); // Regular user dashboard
                 }
-                // Navigate to dashboard or home page
-                navigate('/dashboard'); // Change this to your desired route
             } else {
                 // Show error message
                 alert(data.message || 'Login failed. Please check your credentials.');
@@ -255,6 +260,20 @@ const LoginScreen = () => {
                                             className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
                                         >
                                             Create Account
+                                        </button>
+                                    </p>
+                                </div>
+
+                                {/* Admin Login Link */}
+                                <div className="text-center">
+                                    <p className="text-white/70">
+                                        Administrator access?{" "}
+                                        <button 
+                                            type="button"
+                                            onClick={() => navigate('/admin-login')}
+                                            className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
+                                        >
+                                            Admin Login
                                         </button>
                                     </p>
                                 </div>

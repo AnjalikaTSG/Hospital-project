@@ -19,13 +19,18 @@ async function registerStaff(req, res) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Determine status - admins are auto-approved
+    const adminPositions = ['admin', 'administrator', 'system admin', 'admin user'];
+    const isAdmin = adminPositions.includes(position.toLowerCase());
+    const status = isAdmin ? 'accepted' : 'pending';
+
     // Create new staff
     const newStaff = new Staff({
       username,
       password: hashedPassword,
       employee_number,
       position,
-      status: 'pending'
+      status: status
     });
 
     await newStaff.save();

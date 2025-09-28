@@ -16,8 +16,20 @@ async function loginStaff(req, res) {
       return res.status(401).json({ message: 'Invalid username or password.' });
     }
 
-    // Check if staff registration is approved
-    if (staff.status !== 'accepted') {
+    // Check if staff registration is approved (admins bypass this check)
+    const adminPositions = ['admin', 'administrator', 'system admin', 'admin user'];
+    const isAdmin = adminPositions.includes(staff.position.toLowerCase());
+    
+    // Debug logging
+    console.log('Login attempt:', {
+      username: staff.username,
+      position: staff.position,
+      positionLower: staff.position.toLowerCase(),
+      isAdmin: isAdmin,
+      status: staff.status
+    });
+    
+    if (!isAdmin && staff.status !== 'accepted') {
       if (staff.status === 'pending') {
         return res.status(403).json({ message: 'Your registration is pending admin approval. Please wait for approval before logging in.' });
       } else if (staff.status === 'rejected') {
@@ -34,7 +46,15 @@ async function loginStaff(req, res) {
     }
 
     // Login successful
-    res.status(200).json({ message: 'Login successful.', staff: { username: staff.username, position: staff.position, employeeNumber: staff.employeeNumber } });
+    res.status(200).json({ 
+      message: 'Login successful.', 
+      staff: { 
+        username: staff.username, 
+        position: staff.position, 
+        employeeNumber: staff.employee_number,
+        isAdmin: isAdmin
+      } 
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error.', error: error.message });
   }

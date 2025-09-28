@@ -39,15 +39,19 @@ const RegisterScreen = () => {
                     username: formData.username,
                     password: formData.password,
                     employee_number: formData.employee_number,
-                    position: formData.position,
-                    status: 'pending'
+                    position: formData.position
                 }),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                setMessage({ type: 'success', text: 'Registration submitted! Await admin approval. You will be able to login once approved.' });
+                setMessage({ 
+                    type: 'success', 
+                    text: formData.position.toLowerCase().includes('admin') 
+                        ? 'Admin registration submitted! You can login immediately.' 
+                        : 'Registration submitted! Await admin approval. You will be able to login once approved.' 
+                });
                 // Clear form after successful registration
                 setFormData({
                     username: "",
@@ -57,7 +61,7 @@ const RegisterScreen = () => {
                 });
                 setSelectedPosition("");
             } else {
-                setMessage({ type: 'error', text: data.error || 'Registration failed. Please try again.' });
+                setMessage({ type: 'error', text: data.message || 'Registration failed. Please try again.' });
             }
         } catch (error) {
             setMessage({ type: 'error', text: 'Network error. Please check your connection.' });
@@ -217,6 +221,7 @@ const RegisterScreen = () => {
                                             }`}
                                         >
                                             <option value="" disabled className="bg-gray-800 text-white/70">Select your position</option>
+                                            <option value="Admin" className="bg-gray-800 text-white">Admin</option>
                                             <option value="Doctor" className="bg-gray-800 text-white">Doctor</option>
                                             <option value="Nurse" className="bg-gray-800 text-white">Nurse</option>
                                             <option value="Pharmacist" className="bg-gray-800 text-white">Pharmacist</option>
@@ -271,6 +276,20 @@ const RegisterScreen = () => {
                                             className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
                                         >
                                             Sign In
+                                        </button>
+                                    </p>
+                                </div>
+
+                                {/* Admin Registration Link */}
+                                <div className="text-center" style={{animation: 'fadeInUp 1s ease-out 1.0s both'}}>
+                                    <p className="text-white/70">
+                                        Need admin access?{" "}
+                                        <button 
+                                            type="button"
+                                            onClick={() => navigate('/admin-register')}
+                                            className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
+                                        >
+                                            Admin Registration
                                         </button>
                                     </p>
                                 </div>

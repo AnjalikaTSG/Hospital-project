@@ -32,6 +32,18 @@ router.get('/admin/staff/pending', staffManagement.getPendingStaff);
 router.put('/admin/staff/:id/approve', staffManagement.approveStaff);
 router.put('/admin/staff/:id/reject', staffManagement.rejectStaff);
 
+// Admin creation route (for initial setup)
+const { createAdmin } = require('../Functions/admin/createInitialAdmin');
+router.post('/admin/create-initial', createAdmin);
+
+// Debug route to check user data
+const checkUser = require('../Functions/debug/checkUser');
+router.get('/debug/user/:username', checkUser);
+
+// Debug route to reset admin user
+const resetAdmin = require('../Functions/debug/resetAdmin');
+router.post('/debug/reset-admin', resetAdmin);
+
 
 const registerStaff = require('../Functions/user/registerStaff');
 router.post('/admin/staff', registerStaff);

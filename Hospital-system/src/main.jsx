@@ -1,13 +1,22 @@
-import AdminPasswordRequests from './pages/AdminPasswordRequests';
-import AcceptedRejectedPasswordRequests from './pages/AcceptedRejectedPasswordRequests';
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import App from './App';
 import './index.css';
-import Dashboard from './pages/Dashboard';
-import RegisterScreen from './pages/RegisterScreen';
+
+// Authentication Pages
 import LoginScreen from './pages/LoginScreen';
+import RegisterScreen from './pages/RegisterScreen';
+import AdminLogin from './pages/AdminLogin';
+import AdminRegister from './pages/AdminRegister';
+
+// Main Pages
+import Dashboard from './pages/Dashboard';
+import AdminDashboard from './pages/AdminDashboard';
+
+// Admin Pages
+import AdminPasswordRequests from './pages/AdminPasswordRequests';
+import AcceptedRejectedPasswordRequests from './pages/AcceptedRejectedPasswordRequests';
 import PersonalDetails from './pages/PersonalDetails';
 
 import PersonalDetails3 from './pages/PersonalDetails3';
@@ -49,10 +58,16 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Router>
       <Routes>
+        {/* Authentication Routes */}
         <Route path="/" element={<LoginScreen/>} />
-        <Route path="/registerScreen" element={<RegisterScreen />} />
         <Route path="/loginScreen" element={<LoginScreen />} />
+        <Route path="/registerScreen" element={<RegisterScreen />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin-register" element={<AdminRegister />} />
+        
+        {/* Main Dashboard Routes */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/personalDetails" element={<PersonalDetails />} />
         {/* <Route path="/personalDetails2" element={<PersonalDetails2 />} /> */}
         <Route path="/personalDetails3" element={<PersonalDetails3 />} />
