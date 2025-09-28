@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
+// Route Guards
+import { ProtectedRoute, AdminRoute, GuestRoute } from './utils/RouteGuards';
+
 // Authentication Pages
 import LoginScreen from './pages/LoginScreen';
 import RegisterScreen from './pages/RegisterScreen';
@@ -13,6 +16,7 @@ import AdminRegister from './pages/AdminRegister';
 // Main Pages
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import UnauthorizedPage from './pages/UnauthorizedPage';
 
 // Admin Pages
 import AdminPasswordRequests from './pages/AdminPasswordRequests';
@@ -58,58 +62,67 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Router>
       <Routes>
-        {/* Authentication Routes */}
-        <Route path="/" element={<LoginScreen/>} />
-        <Route path="/loginScreen" element={<LoginScreen />} />
-        <Route path="/registerScreen" element={<RegisterScreen />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/admin-register" element={<AdminRegister />} />
+        {/* Public Authentication Routes - Only accessible when not logged in */}
+        <Route path="/" element={<GuestRoute><LoginScreen/></GuestRoute>} />
+        <Route path="/loginScreen" element={<GuestRoute><LoginScreen /></GuestRoute>} />
+        <Route path="/registerScreen" element={<GuestRoute><RegisterScreen /></GuestRoute>} />
+        <Route path="/admin-login" element={<GuestRoute><AdminLogin /></GuestRoute>} />
+        <Route path="/admin-register" element={<GuestRoute><AdminRegister /></GuestRoute>} />
         
-        {/* Main Dashboard Routes */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/personalDetails" element={<PersonalDetails />} />
-        {/* <Route path="/personalDetails2" element={<PersonalDetails2 />} /> */}
-        <Route path="/personalDetails3" element={<PersonalDetails3 />} />
-        {/* <Route path="/personalDetails4" element={<PersonalDetails4 />} /> */}
-        <Route path="/personalDetails5" element={<PersonalDetails5 />} />
-        {/* <Route path="/personalDetails6" element={<PersonalDetails6 />} /> */}
-        <Route path="/AddSurgicalRecords" element={<AddSurgicalRecords />} />
-        <Route path="/psychologicalRecords" element={<PsychologicalRecords />} />
-        <Route path="/immunizationRecords" element={<ImmunizationRecords />} />
-        <Route path="/PastSurgicalHistory" element={<PastSurgicalHistory />} />
-        <Route path="/PastPsychologicalHistory" element={<PastPsychologicalHistory />} />
-        <Route path="/PastImmunizationHistory" element={<PastImmunizationHistory />} />
-        <Route path="/GynHistoryPage" element={<GynHistoryPage />} />
-        <Route path="/OccupationalHistory" element={<OccupationalHistory />} />
-        <Route path="/SuccessfulRegistration" element={<SuccessfulRegistration />} />
-        <Route path="/PatientRecords" element={<PatientRecords />} />
-        <Route path="/patient/:patientId" element={<PatientDetail />} />
-        <Route path="/patient/:patientId/personal" element={<PatientDetail />} />
-        <Route path="/patient/:patientId/opd" element={<PatientOPDRecords />} />
-        <Route path="/patient/:patientId/hospitalization" element={<PatientHospitalization />} />
-        <Route path="/patient/:patientId/medication" element={<PatientMedication />} />
-        <Route path="/patient/:patientId/lifestyles" element={<PatientLifestyles />} />
-        <Route path="/patient/:patientId/surgical" element={<AddSurgicalRecords />} />
-        <Route path="/patient/:patientId/gyn" element={<GynHistoryPage />} />
-        <Route path="/patient/:patientId/occupational" element={<OccupationalHistory />} />
-        <Route path="/patient/:patientId/psychological" element={<PastPsychologicalHistory />} />
-        <Route path="/patient/:patientId/immunizationpage" element={<ImmunizationPage />} /> 
-  <Route path="/AdminPasswordRequests" element={<AdminPasswordRequests />} />
-  <Route path="/AcceptedRejectedPasswordRequests" element={<AcceptedRejectedPasswordRequests />} />
-        <Route path="/patient/:patientId/referral" element={<RefferedTo />} /> 
-        <Route path="/PatientBasicInfo" element={<PatientBasicInfo />} />
-        <Route path="/AdminStaffVerification" element={<AdminStaffVerification />} />
-        <Route path="/Notifications" element={<Notifications />} />
-        <Route path="/sideBar" element={<SideBar />} />
-        <Route path="/PendingStaffRequests" element={<PendingStaffRequests />} />
-        <Route path="/RequestLostBook" element={<RequestLostBook />} />
-        <Route path="/Reports" element={<Reports />} />
-        <Route path="/PatientReport" element={<PatientReport />} />
-        <Route path="/StaffReport" element={<StaffReport />} />
-        <Route path="/BookReport" element={<BookReport />} />
-        <Route path="/AdminPasswordRequests" element={<AdminPasswordRequests />} />
-        <Route path="/NavBar" element={<NavBar />} />
+        {/* Protected Staff Dashboard Routes */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        
+        {/* Admin Only Routes */}
+        <Route path="/admin-dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+        <Route path="/AdminPasswordRequests" element={<AdminRoute><AdminPasswordRequests /></AdminRoute>} />
+        <Route path="/AcceptedRejectedPasswordRequests" element={<AdminRoute><AcceptedRejectedPasswordRequests /></AdminRoute>} />
+        <Route path="/AdminStaffVerification" element={<AdminRoute><AdminStaffVerification /></AdminRoute>} />
+        <Route path="/PendingStaffRequests" element={<AdminRoute><PendingStaffRequests /></AdminRoute>} />
+        
+        {/* Protected Patient Management Routes */}
+        <Route path="/personalDetails" element={<ProtectedRoute><PersonalDetails /></ProtectedRoute>} />
+        <Route path="/personalDetails3" element={<ProtectedRoute><PersonalDetails3 /></ProtectedRoute>} />
+        <Route path="/personalDetails5" element={<ProtectedRoute><PersonalDetails5 /></ProtectedRoute>} />
+        <Route path="/AddSurgicalRecords" element={<ProtectedRoute><AddSurgicalRecords /></ProtectedRoute>} />
+        <Route path="/psychologicalRecords" element={<ProtectedRoute><PsychologicalRecords /></ProtectedRoute>} />
+        <Route path="/immunizationRecords" element={<ProtectedRoute><ImmunizationRecords /></ProtectedRoute>} />
+        <Route path="/PastSurgicalHistory" element={<ProtectedRoute><PastSurgicalHistory /></ProtectedRoute>} />
+        <Route path="/PastPsychologicalHistory" element={<ProtectedRoute><PastPsychologicalHistory /></ProtectedRoute>} />
+        <Route path="/PastImmunizationHistory" element={<ProtectedRoute><PastImmunizationHistory /></ProtectedRoute>} />
+        <Route path="/GynHistoryPage" element={<ProtectedRoute><GynHistoryPage /></ProtectedRoute>} />
+        <Route path="/OccupationalHistory" element={<ProtectedRoute><OccupationalHistory /></ProtectedRoute>} />
+        <Route path="/SuccessfulRegistration" element={<ProtectedRoute><SuccessfulRegistration /></ProtectedRoute>} />
+        
+        {/* Protected Patient Records Routes */}
+        <Route path="/PatientRecords" element={<ProtectedRoute><PatientRecords /></ProtectedRoute>} />
+        <Route path="/patient/:patientId" element={<ProtectedRoute><PatientDetail /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/personal" element={<ProtectedRoute><PatientDetail /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/opd" element={<ProtectedRoute><PatientOPDRecords /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/hospitalization" element={<ProtectedRoute><PatientHospitalization /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/medication" element={<ProtectedRoute><PatientMedication /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/lifestyles" element={<ProtectedRoute><PatientLifestyles /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/surgical" element={<ProtectedRoute><AddSurgicalRecords /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/gyn" element={<ProtectedRoute><GynHistoryPage /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/occupational" element={<ProtectedRoute><OccupationalHistory /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/psychological" element={<ProtectedRoute><PastPsychologicalHistory /></ProtectedRoute>} />
+        <Route path="/patient/:patientId/immunizationpage" element={<ProtectedRoute><ImmunizationPage /></ProtectedRoute>} /> 
+        <Route path="/patient/:patientId/referral" element={<ProtectedRoute><RefferedTo /></ProtectedRoute>} /> 
+        <Route path="/PatientBasicInfo" element={<ProtectedRoute><PatientBasicInfo /></ProtectedRoute>} />
+        
+        {/* Protected General Routes */}
+        <Route path="/Notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+        <Route path="/RequestLostBook" element={<ProtectedRoute><RequestLostBook /></ProtectedRoute>} />
+        <Route path="/Reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+        <Route path="/PatientReport" element={<ProtectedRoute><PatientReport /></ProtectedRoute>} />
+        <Route path="/StaffReport" element={<ProtectedRoute><StaffReport /></ProtectedRoute>} />
+        <Route path="/BookReport" element={<ProtectedRoute><BookReport /></ProtectedRoute>} />
+        
+        {/* Component Routes */}
+        <Route path="/sideBar" element={<ProtectedRoute><SideBar /></ProtectedRoute>} />
+        <Route path="/NavBar" element={<ProtectedRoute><NavBar /></ProtectedRoute>} />
+        
+        {/* Unauthorized Access Page */}
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
       </Routes>
     </Router>
   </StrictMode>,

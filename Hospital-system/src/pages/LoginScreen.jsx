@@ -73,8 +73,10 @@ const LoginScreen = () => {
                 
                 // Navigate based on user role
                 if (data.staff.isAdmin) {
+                    localStorage.setItem('userRole', 'admin');
                     navigate('/admin-dashboard'); // Admin dashboard
                 } else {
+                    localStorage.setItem('userRole', 'staff');
                     navigate('/dashboard'); // Regular user dashboard
                 }
             } else {
