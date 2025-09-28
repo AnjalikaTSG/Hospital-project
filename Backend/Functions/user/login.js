@@ -16,6 +16,17 @@ async function loginStaff(req, res) {
       return res.status(401).json({ message: 'Invalid username or password.' });
     }
 
+    // Check if staff registration is approved
+    if (staff.status !== 'accepted') {
+      if (staff.status === 'pending') {
+        return res.status(403).json({ message: 'Your registration is pending admin approval. Please wait for approval before logging in.' });
+      } else if (staff.status === 'rejected') {
+        return res.status(403).json({ message: 'Your registration has been rejected. Please contact the administrator.' });
+      } else {
+        return res.status(403).json({ message: 'Your account is not active. Please contact the administrator.' });
+      }
+    }
+
     // Compare password
     const isMatch = await bcrypt.compare(password, staff.password);
     if (!isMatch) {
