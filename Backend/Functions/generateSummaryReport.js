@@ -53,9 +53,13 @@ async function generateSummaryReport(res, query = {}) {
     const Patient = require('./Model/patient'); // Use comprehensive patient model
     const patients = await Patient.find(dateFilter);
     const staff = await Staff.find(dateFilter);
-    const notifications = await Notification.find({ 
-      createdAt: dateFilter.created_at ? { $gte: dateFilter.created_at } : undefined 
-    });
+    
+    // Fix notification query - use proper date filter
+    let notificationFilter = {};
+    if (dateFilter.created_at) {
+      notificationFilter.createdAt = dateFilter.created_at;
+    }
+    const notifications = await Notification.find(notificationFilter);
     
     // Calculate comprehensive medical statistics
     let totalOPDVisits = 0;
@@ -121,115 +125,76 @@ async function generateSummaryReport(res, query = {}) {
     doc.moveDown(0.5);
     
     // Report Title
-    doc.fontSize(20).font('Helvetica-Bold').text(`${periodName} Hospital Summary Report`, { align: 'center' });
-    doc.fontSize(12).font('Helvetica').text(`Generated on: ${new Date().toLocaleString('en-US', { timeZone: hospitalConfig.hospital.timezone })}`, { align: 'center' });
-    doc.text(`Report Period: ${periodName}`, { align: 'center' });
-    doc.moveDown(1);
+    doc.fontSize(16).font('Helvetica-Bold').text(`${periodName} Hospital Summary Report`, { align: 'center' });
+    doc.fontSize(10).font('Helvetica').text(`Generated on: ${new Date().toLocaleString('en-US', { timeZone: hospitalConfig.hospital.timezone })}`, { align: 'center' });
+    doc.text(`Report Period: ${periodName} | Total Records: ${stats.totalPatients + stats.totalStaff + stats.totalNotifications}`, { align: 'center' });
+    
+    // Summary Statistics
+    doc.moveDown(0.3);
+    doc.fontSize(9).font('Helvetica').text(`Hospital Overview: Patients: ${stats.totalPatients} | Staff: ${stats.totalStaff} | Active Issues: ${stats.systemAlerts + stats.duplicateIssues + stats.lostBookIssues} | Medical Activities: ${stats.totalOPDVisits + stats.totalHospitalizations}`, { align: 'center' });
+    doc.moveDown(0.5);
     
     // Add line separator
     doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
-    doc.moveDown(1);
+    doc.moveDown(0.3);
     
-    // Statistics Section
-    doc.fontSize(16).font('Helvetica-Bold').text('Hospital Management Statistics Overview', { align: 'left' });
-    doc.moveDown(0.5);
+    // Table header
+    doc.fontSize(10).font('Helvetica-Bold');
+    const headerY = doc.y;
+    doc.text('#', 50, headerY);
+    doc.text('Category', 80, headerY);
+    doc.text('Metric', 160, headerY);
+    doc.text('Count', 280, headerY);
+    doc.text('Percentage', 320, headerY);
+    doc.text('Status', 380, headerY);
+    doc.text('Notes', 420, headerY);
     
-    // Patient Demographics & Medical Activity
-    doc.fontSize(14).font('Helvetica-Bold').text('Patient Demographics & Medical Activity:', { align: 'left' });
-    doc.fontSize(12).font('Helvetica');
-    doc.text(`• Total Registered Patients: ${stats.totalPatients}`, { indent: 20 });
-    doc.text(`• Male Patients: ${stats.malePatients} (${stats.totalPatients > 0 ? ((stats.malePatients/stats.totalPatients)*100).toFixed(1) : 0}%)`, { indent: 20 });
-    doc.text(`• Female Patients: ${stats.femalePatients} (${stats.totalPatients > 0 ? ((stats.femalePatients/stats.totalPatients)*100).toFixed(1) : 0}%)`, { indent: 20 });
-    doc.text(`• Average Patient Age: ${stats.avgAge} years`, { indent: 20 });
-    doc.text(`• Total OPD Visits: ${stats.totalOPDVisits}`, { indent: 20 });
-    doc.text(`• Total Hospitalizations: ${stats.totalHospitalizations}`, { indent: 20 });
-    doc.text(`• Active Medication Records: ${stats.activeMedications}`, { indent: 20 });
-    doc.text(`• Completed Immunizations: ${stats.completedImmunizations}`, { indent: 20 });
-    doc.moveDown(0.5);
+    // Add header underline
+    doc.moveDown(0.3);
+    doc.moveTo(50, doc.y).lineTo(500, doc.y).stroke();
+    doc.moveDown(0.3);
     
-    // Staff Management
-    doc.fontSize(14).font('Helvetica-Bold').text('Staff Management:', { align: 'left' });
-    doc.fontSize(12).font('Helvetica');
-    doc.text(`• Total Staff Members: ${stats.totalStaff}`, { indent: 20 });
-    doc.text(`• Active Staff: ${stats.activeStaff} (${stats.totalStaff > 0 ? ((stats.activeStaff/stats.totalStaff)*100).toFixed(1) : 0}%)`, { indent: 20 });
-    doc.text(`• Pending Staff Approvals: ${stats.pendingStaff}`, { indent: 20 });
-    doc.text(`• Administrative Staff: ${stats.adminStaff}`, { indent: 20 });
-    doc.moveDown(0.5);
+    doc.font('Helvetica');
     
-    // System Health & Issues
-    doc.fontSize(14).font('Helvetica-Bold').text('System Health & Issues:', { align: 'left' });
-    doc.fontSize(12).font('Helvetica');
-    doc.text(`• Total System Notifications: ${stats.totalNotifications}`, { indent: 20 });
-    doc.text(`• System Alerts: ${stats.systemAlerts}`, { indent: 20 });
-    doc.text(`• Lost Book Issues: ${stats.lostBookIssues}`, { indent: 20 });
-    doc.text(`• Duplicate Record Issues: ${stats.duplicateIssues}`, { indent: 20 });
-    doc.moveDown(1);
+    // Create summary data rows
+    const summaryData = [
+      { category: 'Patients', metric: 'Total Registered', count: stats.totalPatients, percentage: '100%', status: 'Active', notes: 'All Records' },
+      { category: 'Patients', metric: 'Male Patients', count: stats.malePatients, percentage: `${stats.totalPatients > 0 ? ((stats.malePatients/stats.totalPatients)*100).toFixed(1) : 0}%`, status: 'Active', notes: 'Demographics' },
+      { category: 'Patients', metric: 'Female Patients', count: stats.femalePatients, percentage: `${stats.totalPatients > 0 ? ((stats.femalePatients/stats.totalPatients)*100).toFixed(1) : 0}%`, status: 'Active', notes: 'Demographics' },
+      { category: 'Medical', metric: 'OPD Visits', count: stats.totalOPDVisits, percentage: '-', status: 'Complete', notes: 'Outpatient' },
+      { category: 'Medical', metric: 'Hospitalizations', count: stats.totalHospitalizations, percentage: '-', status: 'Complete', notes: 'Inpatient' },
+      { category: 'Medical', metric: 'Medications', count: stats.activeMedications, percentage: '-', status: 'Active', notes: 'Prescriptions' },
+      { category: 'Medical', metric: 'Immunizations', count: stats.completedImmunizations, percentage: '-', status: 'Complete', notes: 'Vaccines' },
+      { category: 'Staff', metric: 'Total Staff', count: stats.totalStaff, percentage: '100%', status: 'All', notes: 'All Records' },
+      { category: 'Staff', metric: 'Active Staff', count: stats.activeStaff, percentage: `${stats.totalStaff > 0 ? ((stats.activeStaff/stats.totalStaff)*100).toFixed(1) : 0}%`, status: 'Active', notes: 'Working' },
+      { category: 'Staff', metric: 'Pending Staff', count: stats.pendingStaff, percentage: `${stats.totalStaff > 0 ? ((stats.pendingStaff/stats.totalStaff)*100).toFixed(1) : 0}%`, status: 'Pending', notes: 'Awaiting' },
+      { category: 'Staff', metric: 'Admin Staff', count: stats.adminStaff, percentage: `${stats.totalStaff > 0 ? ((stats.adminStaff/stats.totalStaff)*100).toFixed(1) : 0}%`, status: 'Admin', notes: 'Privileged' },
+      { category: 'System', metric: 'Notifications', count: stats.totalNotifications, percentage: '100%', status: 'All', notes: 'All Alerts' },
+      { category: 'System', metric: 'System Alerts', count: stats.systemAlerts, percentage: `${stats.totalNotifications > 0 ? ((stats.systemAlerts/stats.totalNotifications)*100).toFixed(1) : 0}%`, status: 'Alert', notes: 'Technical' },
+      { category: 'System', metric: 'Lost Books', count: stats.lostBookIssues, percentage: `${stats.totalNotifications > 0 ? ((stats.lostBookIssues/stats.totalNotifications)*100).toFixed(1) : 0}%`, status: 'Issue', notes: 'Missing' },
+      { category: 'System', metric: 'Duplicates', count: stats.duplicateIssues, percentage: `${stats.totalNotifications > 0 ? ((stats.duplicateIssues/stats.totalNotifications)*100).toFixed(1) : 0}%`, status: 'Issue', notes: 'Cleanup' }
+    ];
     
-    // Department Breakdown (if available)
-    const departments = {};
-    staff.forEach(s => {
-      const dept = s.position || 'Unspecified';
-      departments[dept] = (departments[dept] || 0) + 1;
+    summaryData.forEach((item, idx) => {
+      doc.fontSize(9);
+      const rowY = doc.y;
+      doc.text(String(idx + 1), 50, rowY, { width: 20 });
+      doc.text(item.category.substring(0, 8), 80, rowY, { width: 75 });
+      doc.text(item.metric.substring(0, 12), 160, rowY, { width: 115 });
+      doc.text(String(item.count), 280, rowY, { width: 35 });
+      doc.text(item.percentage, 320, rowY, { width: 55 });
+      doc.text(item.status.substring(0, 8), 380, rowY, { width: 35 });
+      doc.text(item.notes.substring(0, 10), 420, rowY, { width: 75 });
+      
+      doc.moveDown(0.4); // Space between rows
     });
-    
-    if (Object.keys(departments).length > 0) {
-      doc.fontSize(14).font('Helvetica-Bold').text('Staff by Department:', { align: 'left' });
-      doc.fontSize(12).font('Helvetica');
-      Object.entries(departments).forEach(([dept, count]) => {
-        doc.text(`• ${dept}: ${count}`, { indent: 20 });
-      });
-      doc.moveDown(1);
-    }
-    
-    // Clinical Insights & Recommendations
-    doc.fontSize(14).font('Helvetica-Bold').text('Clinical Insights & Recommendations:', { align: 'left' });
-    doc.fontSize(12).font('Helvetica');
-    
-    // Staff-related recommendations
-    if (stats.pendingStaff > 0) {
-      doc.text(`• URGENT: Review ${stats.pendingStaff} pending staff applications for hospital operations`, { indent: 20 });
-    }
-    
-    // Patient care recommendations
-    if (stats.totalOPDVisits > 0 && stats.totalPatients > 0) {
-      const visitsPerPatient = (stats.totalOPDVisits / stats.totalPatients).toFixed(1);
-      doc.text(`• Average OPD visits per patient: ${visitsPerPatient} - Monitor high-frequency patients`, { indent: 20 });
-    }
-    
-    if (stats.totalHospitalizations > stats.totalPatients * 0.1) {
-      doc.text(`• High hospitalization rate detected - Review patient care protocols`, { indent: 20 });
-    }
-    
-    // System health recommendations
-    if (stats.duplicateIssues > 5) {
-      doc.text(`• ATTENTION: ${stats.duplicateIssues} duplicate record issues - Data cleanup required`, { indent: 20 });
-    }
-    
-    if (stats.systemAlerts > 10) {
-      doc.text(`• High system alert volume (${stats.systemAlerts}) - Technical review recommended`, { indent: 20 });
-    }
-    
-    // Positive indicators
-    if (stats.completedImmunizations > 0) {
-      doc.text(`• Positive: ${stats.completedImmunizations} immunizations completed - Good preventive care`, { indent: 20 });
-    }
-    
-    if (stats.totalPatients === 0) {
-      doc.text(`• No patient data found for this period - Check data collection systems`, { indent: 20 });
-    }
-    
-    doc.moveDown(2);
-    
-    // Signature Section
-    doc.fontSize(12).font('Helvetica');
-    doc.text('Report Generated By: Hospital Management System', { align: 'left' });
-    doc.text(`Authorized By: ${hospitalConfig.hospital.director}`, { align: 'left' });
-    doc.text(`${hospitalConfig.hospital.directorTitle}`, { align: 'left' });
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, { align: 'left' });
+
     
     // Footer
-    doc.fontSize(8).font('Helvetica').text(hospitalConfig.reportSettings.footerText, 40, 750, { align: 'center', width: 515 });
-    doc.text(hospitalConfig.reportSettings.confidentialityNotice, 40, 765, { align: 'center', width: 515 });
+    doc.moveDown(1);
+    doc.fontSize(8).font('Helvetica').text(hospitalConfig.reportSettings.footerText, 40, doc.y, { align: 'center', width: 515 });
+    doc.moveDown(0.3);
+    doc.text(hospitalConfig.reportSettings.confidentialityNotice, 40, doc.y, { align: 'center', width: 515 });
     
     doc.end();
     doc.pipe(res);

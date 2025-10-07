@@ -65,21 +65,21 @@ async function generateBookReport(res, query = {}) {
   doc.fontSize(12).font('Helvetica').text(hospitalConfig.hospital.ministry, { align: 'center' });
   doc.text(`${hospitalConfig.hospital.address}`, { align: 'center' });
   doc.text(`Contact: ${hospitalConfig.hospital.phone} | Email: ${hospitalConfig.hospital.email}`, { align: 'center' });
-  doc.moveDown(0.5);
+  doc.moveDown(0.3);
   
   // Report Title
-  doc.fontSize(18).font('Helvetica-Bold').text(`${periodName} System Activity & Notifications Report`, { align: 'center' });
-  doc.fontSize(12).font('Helvetica').text(`Generated on: ${new Date().toLocaleString('en-US', { timeZone: hospitalConfig.hospital.timezone })}`, { align: 'center' });
+  doc.fontSize(16).font('Helvetica-Bold').text(`${periodName} System Activity & Notifications Report`, { align: 'center' });
+  doc.fontSize(10).font('Helvetica').text(`Generated on: ${new Date().toLocaleString('en-US', { timeZone: hospitalConfig.hospital.timezone })}`, { align: 'center' });
   doc.text(`Report Period: ${periodName} | Total Issues: ${totalIssues}`, { align: 'center' });
   
   // Issue Statistics
+  doc.moveDown(0.3);
+  doc.fontSize(9).font('Helvetica').text(`Issue Breakdown: Duplicates: ${duplicateIssues} | Lost Books: ${lostBookIssues} | System Alerts: ${systemAlerts}`, { align: 'center' });
   doc.moveDown(0.5);
-  doc.fontSize(10).font('Helvetica').text(`Issue Breakdown: Duplicates: ${duplicateIssues} | Lost Books: ${lostBookIssues} | System Alerts: ${systemAlerts}`, { align: 'center' });
-  doc.moveDown(1);
   
   // Add line separator
   doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
-  doc.moveDown(0.5);
+  doc.moveDown(0.3);
   // Table header
   doc.fontSize(10).font('Helvetica-Bold');
   const headerY = doc.y;
@@ -108,12 +108,14 @@ async function generateBookReport(res, query = {}) {
     doc.text(status, 305, rowY, { width: 40 });
     doc.text(n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'N/A', 350, rowY, { width: 60 });
     
-    doc.moveDown(0.8); // Space between rows
+    doc.moveDown(0.4); // Reduced space between rows
   });
   
   // Footer
-  doc.fontSize(8).font('Helvetica').text(hospitalConfig.reportSettings.footerText, 40, 750, { align: 'center', width: 515 });
-  doc.text(hospitalConfig.reportSettings.confidentialityNotice, 40, 765, { align: 'center', width: 515 });
+  doc.moveDown(1);
+  doc.fontSize(8).font('Helvetica').text(hospitalConfig.reportSettings.footerText, 40, doc.y, { align: 'center', width: 515 });
+  doc.moveDown(0.3);
+  doc.text(hospitalConfig.reportSettings.confidentialityNotice, 40, doc.y, { align: 'center', width: 515 });
   
   doc.end();
   doc.pipe(res);
