@@ -44,8 +44,17 @@ function getPeriodDisplayName(period) {
 
 async function generateBookReport(res, query = {}) {
   const periodFilter = getSummaryPeriod(query);
-  const notifications = await Notification.find({ type: { $in: ['duplicate', 'lost_book'] }, ...periodFilter }, 'message createdAt');
+  const notifications = await Notification.find({ 
+    type: { $in: ['duplicate', 'lost_book', 'system', 'alert'] }, 
+    ...periodFilter 
+  });
   const periodName = getPeriodDisplayName(query.period);
+  
+  // Calculate notification statistics
+  const duplicateIssues = notifications.filter(n => n.type === 'duplicate').length;
+  const lostBookIssues = notifications.filter(n => n.type === 'lost_book').length;
+  const systemAlerts = notifications.filter(n => n.type === 'system').length;
+  const totalIssues = notifications.length;
   
   const doc = new PDFDocument({ margin: 40 });
   res.setHeader('Content-Type', 'application/pdf');
@@ -59,24 +68,47 @@ async function generateBookReport(res, query = {}) {
   doc.moveDown(0.5);
   
   // Report Title
-  doc.fontSize(18).font('Helvetica-Bold').text(`${periodName} Book Issuance & Lost Book Report`, { align: 'center' });
-  doc.fontSize(12).font('Helvetica').text(`Generated on: ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })}`, { align: 'center' });
-  doc.text(`Total Records: ${notifications.length}`, { align: 'center' });
+  doc.fontSize(18).font('Helvetica-Bold').text(`${periodName} System Activity & Notifications Report`, { align: 'center' });
+  doc.fontSize(12).font('Helvetica').text(`Generated on: ${new Date().toLocaleString('en-US', { timeZone: hospitalConfig.hospital.timezone })}`, { align: 'center' });
+  doc.text(`Report Period: ${periodName} | Total Issues: ${totalIssues}`, { align: 'center' });
+  
+  // Issue Statistics
+  doc.moveDown(0.5);
+  doc.fontSize(10).font('Helvetica').text(`Issue Breakdown: Duplicates: ${duplicateIssues} | Lost Books: ${lostBookIssues} | System Alerts: ${systemAlerts}`, { align: 'center' });
   doc.moveDown(1);
   
   // Add line separator
   doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
   doc.moveDown(0.5);
   // Table header
-  doc.fontSize(12).font('Helvetica-Bold');
-  doc.text('No', 50, doc.y, { width: 30, continued: true });
-  doc.text('Message', 90, doc.y, { width: 300, continued: true });
-  doc.text('Date', 400, doc.y, { width: 120 });
+  doc.fontSize(10).font('Helvetica-Bold');
+  const headerY = doc.y;
+  doc.text('#', 50, headerY);
+  doc.text('Type', 75, headerY);
+  doc.text('Details', 120, headerY);
+  doc.text('Status', 305, headerY);
+  doc.text('Date', 350, headerY);
+  
+  // Add header underline
+  doc.moveDown(0.3);
+  doc.moveTo(50, doc.y).lineTo(410, doc.y).stroke();
+  doc.moveDown(0.3);
+  
   doc.font('Helvetica');
+  
   notifications.forEach((n, idx) => {
-    doc.text(String(idx + 1), 50, doc.y, { width: 30, continued: true });
-    doc.text(n.message || '', 90, doc.y, { width: 300, continued: true, lineGap: 2 });
-    doc.text(n.createdAt ? new Date(n.createdAt).toLocaleString() : '', 400, doc.y, { width: 120 });
+    doc.fontSize(9);
+    const issueType = (n.type || 'unknown').charAt(0).toUpperCase() + (n.type || 'unknown').slice(1);
+    const status = n.resolved ? 'Resolved' : 'Pending';
+    
+    const rowY = doc.y;
+    doc.text(String(idx + 1), 50, rowY, { width: 20 });
+    doc.text(issueType.substring(0, 6), 75, rowY, { width: 40 });
+    doc.text((n.message || 'No description available').substring(0, 30), 120, rowY, { width: 180 });
+    doc.text(status, 305, rowY, { width: 40 });
+    doc.text(n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'N/A', 350, rowY, { width: 60 });
+    
+    doc.moveDown(0.8); // Space between rows
   });
   
   // Footer

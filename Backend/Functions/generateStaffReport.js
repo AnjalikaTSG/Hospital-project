@@ -44,8 +44,14 @@ function getPeriodDisplayName(period) {
 
 async function generateStaffReport(res, query = {}) {
   const dateFilter = getDateFilter(query);
-  const staffList = await Staff.find(dateFilter, 'employee_number name position status created_at lastLoginAt');
+  const staffList = await Staff.find(dateFilter);
   const periodName = getPeriodDisplayName(query.period);
+  
+  // Calculate staff statistics
+  const activeStaff = staffList.filter(s => s.status === 'accepted').length;
+  const pendingStaff = staffList.filter(s => s.status === 'pending').length;
+  const adminStaff = staffList.filter(s => s.isAdmin).length;
+  const recentLogins = staffList.filter(s => s.lastLoginAt && new Date(s.lastLoginAt) > new Date(Date.now() - 7*24*60*60*1000)).length;
   
   const doc = new PDFDocument({ margin: 40 });
   res.setHeader('Content-Type', 'application/pdf');
@@ -59,30 +65,49 @@ async function generateStaffReport(res, query = {}) {
   doc.moveDown(0.5);
   
   // Report Title
-  doc.fontSize(18).font('Helvetica-Bold').text(`${periodName} Staff Activity Report`, { align: 'center' });
-  doc.fontSize(12).font('Helvetica').text(`Generated on: ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })}`, { align: 'center' });
-  doc.text(`Total Staff: ${staffList.length}`, { align: 'center' });
+  doc.fontSize(18).font('Helvetica-Bold').text(`${periodName} Staff Management Report`, { align: 'center' });
+  doc.fontSize(12).font('Helvetica').text(`Generated on: ${new Date().toLocaleString('en-US', { timeZone: hospitalConfig.hospital.timezone })}`, { align: 'center' });
+  doc.text(`Report Period: ${periodName} | Total Staff: ${staffList.length}`, { align: 'center' });
+  
+  // Staff Statistics
+  doc.moveDown(0.5);
+  doc.fontSize(10).font('Helvetica').text(`Staff Status: Active: ${activeStaff} | Pending: ${pendingStaff} | Administrators: ${adminStaff} | Active This Week: ${recentLogins}`, { align: 'center' });
   doc.moveDown(1);
   
   // Add line separator
   doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
   doc.moveDown(0.5);
   // Table header
-  doc.fontSize(12).font('Helvetica-Bold');
-  doc.text('No', 50, doc.y, { width: 30, continued: true });
-  doc.text('Employee No', 90, doc.y, { width: 70, continued: true });
-  doc.text('Name', 170, doc.y, { width: 90, continued: true });
-  doc.text('Position', 270, doc.y, { width: 100, continued: true });
-  doc.text('Status', 380, doc.y, { width: 60, continued: true });
-  doc.text('Join Date', 450, doc.y, { width: 80 });
+  doc.fontSize(10).font('Helvetica-Bold');
+  const headerY = doc.y;
+  doc.text('#', 50, headerY);
+  doc.text('EmpID', 75, headerY);
+  doc.text('Name', 120, headerY);
+  doc.text('Role', 180, headerY);
+  doc.text('Status', 240, headerY);
+  doc.text('Admin', 285, headerY);
+  doc.text('Login', 325, headerY);
+  doc.text('Joined', 380, headerY);
+  // Add header underline
+  doc.moveDown(0.3);
+  doc.moveTo(50, doc.y).lineTo(430, doc.y).stroke();
+  doc.moveDown(0.3);
+  
   doc.font('Helvetica');
+  
   staffList.forEach((s, idx) => {
-    doc.text(String(idx + 1), 50, doc.y, { width: 30, continued: true });
-    doc.text(s.employee_number || '', 90, doc.y, { width: 70, continued: true });
-    doc.text(s.name || '', 170, doc.y, { width: 90, continued: true });
-    doc.text(s.position || '', 270, doc.y, { width: 100, continued: true, lineGap: 2 });
-    doc.text(s.status || '', 380, doc.y, { width: 60, continued: true });
-    doc.text(s.created_at ? new Date(s.created_at).toLocaleDateString() : '', 450, doc.y, { width: 80 });
+    doc.fontSize(9);
+    const rowY = doc.y;
+    doc.text(String(idx + 1), 50, rowY, { width: 20 });
+    doc.text((s.employee_number || 'N/A').substring(0, 6), 75, rowY, { width: 40 });
+    doc.text((s.username || 'N/A').substring(0, 7), 120, rowY, { width: 55 });
+    doc.text((s.position || 'N/A').substring(0, 8), 180, rowY, { width: 55 });
+    doc.text((s.status || 'N/A').charAt(0).toUpperCase() + (s.status || 'N/A').slice(1).substring(0, 5), 240, rowY, { width: 40 });
+    doc.text(s.isAdmin ? 'Yes' : 'No', 285, rowY, { width: 35 });
+    doc.text(s.lastLoginAt ? new Date(s.lastLoginAt).toLocaleDateString() : 'Never', 325, rowY, { width: 50 });
+    doc.text(s.created_at ? new Date(s.created_at).toLocaleDateString() : 'N/A', 380, rowY, { width: 50 });
+    
+    doc.moveDown(0.8); // Space between rows
   });
   
   // Footer
