@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Users, BookOpen, Hospital } from 'lucide-react';
+import { FileText, Users, BookOpen, Hospital, BarChart3 } from 'lucide-react';
 
 const sidebarItems = [
   { label: 'Home', path: '/dashboard', icon: <Hospital className="w-5 h-5 mr-2" /> },
@@ -16,6 +16,7 @@ const Reports = () => {
     patient: 'daily',
     staff: 'daily',
     book: 'daily',
+    summary: 'daily',
   });
 
   // Build query string for download links
@@ -131,6 +132,31 @@ const Reports = () => {
               className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2"
             >
               <BookOpen className="w-5 h-5" />
+            </a>
+          </div>
+          
+          {/* Hospital Summary Report */}
+          <div className="flex items-center justify-between bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl shadow border border-purple-200 px-6 py-4 hover:bg-gradient-to-r hover:from-purple-100 hover:to-blue-100 transition">
+            <div className="flex items-center gap-3 text-purple-800 font-semibold text-lg">
+              <select
+                value={periods.summary}
+                onChange={e => setPeriods(p => ({ ...p, summary: e.target.value }))}
+                className="border border-purple-300 rounded px-2 py-1 focus:outline-none focus:ring focus:ring-purple-200 text-gray-400 mr-3"
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="annually">Annually</option>
+              </select>
+              <Hospital className="w-6 h-6 text-purple-600" /> Hospital Summary Report
+            </div>
+            <a
+              href={`http://localhost:3000/reports/summary/download${getQuery('summary')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-purple-600 hover:bg-purple-700 text-white rounded-full p-2"
+            >
+              <Hospital className="w-5 h-5" />
             </a>
           </div>
         </div>
