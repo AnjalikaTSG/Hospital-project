@@ -113,13 +113,15 @@ createRoot(document.getElementById('root')).render(
         <Route path="/patient/:patientId/referral" element={<ProtectedRoute><RefferedTo /></ProtectedRoute>} /> 
         <Route path="/PatientBasicInfo" element={<ProtectedRoute><PatientBasicInfo /></ProtectedRoute>} />
         
+        {/* Admin Only Report Routes */}
+        <Route path="/Reports" element={<AdminRoute><Reports /></AdminRoute>} />
+        <Route path="/PatientReport" element={<AdminRoute><PatientReport /></AdminRoute>} />
+        <Route path="/StaffReport" element={<AdminRoute><StaffReport /></AdminRoute>} />
+        <Route path="/BookReport" element={<AdminRoute><BookReport /></AdminRoute>} />
+        
         {/* Protected General Routes */}
         <Route path="/Notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
         <Route path="/RequestLostBook" element={<ProtectedRoute><RequestLostBook /></ProtectedRoute>} />
-        <Route path="/Reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
-        <Route path="/PatientReport" element={<ProtectedRoute><PatientReport /></ProtectedRoute>} />
-        <Route path="/StaffReport" element={<ProtectedRoute><StaffReport /></ProtectedRoute>} />
-        <Route path="/BookReport" element={<ProtectedRoute><BookReport /></ProtectedRoute>} />
         
         {/* Component Routes */}
         <Route path="/sideBar" element={<ProtectedRoute><SideBar /></ProtectedRoute>} />
