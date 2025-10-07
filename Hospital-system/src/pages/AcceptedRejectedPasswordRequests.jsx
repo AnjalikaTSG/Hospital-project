@@ -81,7 +81,39 @@ const AcceptedRejectedPasswordRequests = () => {
                                     <span className="font-semibold text-gray-700">Requested At:</span>
                                     <span className="text-gray-800">{new Date(req.requestedAt).toLocaleString()}</span>
                                 </div>
+                                {req.status === 'accepted' && req.acceptedAt && (
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-semibold text-gray-700">Accepted At:</span>
+                                        <span className="text-green-600">{new Date(req.acceptedAt).toLocaleString()}</span>
+                                    </div>
+                                )}
+                                {req.status === 'rejected' && req.rejectedAt && (
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-semibold text-gray-700">Rejected At:</span>
+                                        <span className="text-red-600">{new Date(req.rejectedAt).toLocaleString()}</span>
+                                    </div>
+                                )}
+                                {req.userType && (
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-semibold text-gray-700">User Type:</span>
+                                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                            req.userType === 'admin' 
+                                                ? 'bg-purple-100 text-purple-700' 
+                                                : 'bg-blue-100 text-blue-700'
+                                        }`}>
+                                            {req.userType.charAt(0).toUpperCase() + req.userType.slice(1)}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
+                            {req.status === 'rejected' && req.rejectionReason && (
+                                <div className="mt-3 pt-3 border-t border-gray-200">
+                                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                                        <span className="font-semibold text-red-700">Rejection Reason:</span>
+                                        <p className="text-red-600 text-sm mt-1">{req.rejectionReason}</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

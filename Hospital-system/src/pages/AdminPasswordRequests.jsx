@@ -9,6 +9,7 @@ const AdminPasswordRequests = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [message, setMessage] = useState({ type: '', text: '' });
+    const [tempPasswordModal, setTempPasswordModal] = useState({ show: false, username: '', password: '' });
 
     const fetchRequests = async () => {
         try {
@@ -43,7 +44,36 @@ const AdminPasswordRequests = () => {
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to accept request');
             }
+            
+            // Show temporary password modal
+            setTempPasswordModal({
+                show: true,
+                username: username,
+                password: data.tempPassword
+            });
+            
             setMessage({ type: 'success', text: data.message || 'Request accepted successfully!' });
+            await fetchRequests();
+            setTimeout(() => setMessage({ type: '', text: '' }), 5000);
+        } catch (err) {
+            setMessage({ type: 'error', text: err.message });
+            setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+        }
+    };
+
+    const handleReject = async (username, reason = '') => {
+        try {
+            setMessage({ type: '', text: '' });
+            const response = await fetch(`${API_BASE_URL}/forgot-password/reject`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, reason })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to reject request');
+            }
+            setMessage({ type: 'success', text: data.message || 'Request rejected successfully!' });
             await fetchRequests();
             setTimeout(() => setMessage({ type: '', text: '' }), 3000);
         } catch (err) {
@@ -54,6 +84,69 @@ const AdminPasswordRequests = () => {
 
     return (
         <AdminLayout title="Forgot Password Requests">
+            {/* Temporary Password Modal */}
+            {tempPasswordModal.show && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
+                        <div className="text-center mb-6">
+                            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-full mb-4">
+                                <CheckCircle className="w-8 h-8 text-white" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">Password Reset Complete</h3>
+                            <p className="text-gray-600">New temporary password generated for user</p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="font-medium text-gray-700">Username:</span>
+                                <span className="font-mono text-gray-800">{tempPasswordModal.username}</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="font-medium text-gray-700">Temporary Password:</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-mono bg-yellow-100 text-yellow-800 px-3 py-1 rounded text-lg font-bold">
+                                        {tempPasswordModal.password}
+                                    </span>
+                                    <button
+                                        onClick={() => navigator.clipboard.writeText(tempPasswordModal.password)}
+                                        className="p-1 text-gray-500 hover:text-gray-700"
+                                        title="Copy to clipboard"
+                                    >
+                                        📋
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                            <h4 className="font-medium text-blue-800 mb-2">📋 Instructions:</h4>
+                            <ul className="text-sm text-blue-700 space-y-1">
+                                <li>• Share this temporary password with the user</li>
+                                <li>• User must login and change password immediately</li>
+                                <li>• This password is valid until changed</li>
+                                <li>• Keep this information secure</li>
+                            </ul>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => navigator.clipboard.writeText(
+                                    `Username: ${tempPasswordModal.username}\nTemporary Password: ${tempPasswordModal.password}\n\nPlease login and change your password immediately.`
+                                )}
+                                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                            >
+                                📋 Copy Details
+                            </button>
+                            <button
+                                onClick={() => setTempPasswordModal({ show: false, username: '', password: '' })}
+                                className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="flex flex-col items-center w-full py-10 px-4">
                 {/* Message Display */}
                 {message.text && (
@@ -123,7 +216,20 @@ const AdminPasswordRequests = () => {
                             </div>
                             {req.status === 'pending' && (
                                 <div className="flex gap-2 mt-2">
-                                    <button onClick={() => handleAccept(req.username)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Accept</button>
+                                    <button 
+                                        onClick={() => handleAccept(req.username)} 
+                                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                                    >
+                                        <CheckCircle className="w-4 h-4" />
+                                        Accept
+                                    </button>
+                                    <button 
+                                        onClick={() => handleReject(req.username)} 
+                                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+                                    >
+                                        <AlertCircle className="w-4 h-4" />
+                                        Reject
+                                    </button>
                                 </div>
                             )}
                         </div>

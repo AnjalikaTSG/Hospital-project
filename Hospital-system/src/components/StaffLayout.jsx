@@ -52,7 +52,7 @@ const StaffLayout = ({ children, title = "Patient Checkup Management System" }) 
         {/* User Info */}
         {user && (
           <div className="px-6 py-4 bg-blue-800/30">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-8 bg-cyan-400 rounded-full flex items-center justify-center">
                 <span className="text-blue-800 font-semibold text-sm">
                   {user.username?.charAt(0).toUpperCase()}
@@ -63,6 +63,12 @@ const StaffLayout = ({ children, title = "Patient Checkup Management System" }) 
                 <p className="text-xs text-blue-200">{user.position}</p>
               </div>
             </div>
+            <button
+              onClick={() => navigate('/change-password')}
+              className="w-full text-left px-3 py-2 text-xs text-blue-200 hover:text-white hover:bg-blue-700/50 rounded-lg transition-colors"
+            >
+              🔑 Change Password
+            </button>
           </div>
         )}
         

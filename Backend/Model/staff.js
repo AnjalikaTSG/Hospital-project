@@ -6,7 +6,11 @@ const staffSchema = new mongoose.Schema({
   position: { type: String, required: true },
   status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
   created_at: { type: Date, default: Date.now },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  isAdmin: { type: Boolean, default: false },
+  passwordResetAt: { type: Date },
+  isPasswordTemporary: { type: Boolean, default: false },
+  lastLoginAt: { type: Date }
 });
 
 // Prevent OverwriteModelError

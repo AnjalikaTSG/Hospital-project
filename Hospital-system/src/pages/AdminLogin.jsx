@@ -12,6 +12,9 @@ const AdminLogin = () => {
         password: ""
     });
     const [focusedField, setFocusedField] = useState("");
+    const [showForgotModal, setShowForgotModal] = useState(false);
+    const [forgotData, setForgotData] = useState({ username: '', employeeNumber: '' });
+    const [forgotStatus, setForgotStatus] = useState('');
     const API_BASE_URL = 'http://localhost:3000';
 
     const handleLogin = async (e) => {
@@ -59,6 +62,16 @@ const AdminLogin = () => {
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('userRole', 'admin');
                 
+                // Check if admin has temporary password
+                if (data.staff.isPasswordTemporary) {
+                    localStorage.setItem('needsPasswordChange', 'true');
+                    setMessage({ type: 'success', text: 'Login successful! You will be redirected to change your temporary password.' });
+                    setTimeout(() => {
+                        navigate('/change-password');
+                    }, 2000);
+                    return;
+                }
+                
                 setMessage({ type: 'success', text: 'Admin login successful!' });
                 
                 // Navigate to admin dashboard
@@ -85,12 +98,100 @@ const AdminLogin = () => {
         }
     };
 
+    const handleForgotChange = (field, value) => {
+        setForgotData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleForgotSubmit = async (e) => {
+        e.preventDefault();
+        if (!forgotData.username.trim() || !forgotData.employeeNumber.trim()) {
+            setForgotStatus('Please fill both fields.');
+            return;
+        }
+        try {
+            const response = await fetch(`${API_BASE_URL}/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(forgotData),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setForgotStatus('Request submitted. Await admin approval.');
+                setForgotData({ username: '', employeeNumber: '' });
+            } else {
+                setForgotStatus(data.message || 'Error submitting request.');
+            }
+        } catch (err) {
+            setForgotStatus('Network error. Try again.');
+        }
+    };
+
     const handleStaffLogin = () => {
         navigate('/loginScreen');
     };
 
     return (
         <div className="min-h-screen w-screen bg-gradient-to-br from-purple-900 via-indigo-950 to-blue-900 relative overflow-x-hidden">
+            {/* Forgot Password Modal */}
+            {showForgotModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-sm">
+                        <h3 className="text-xl font-bold mb-4 text-gray-800">Admin Forgot Password</h3>
+                        <form onSubmit={handleForgotSubmit} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium mb-1 text-gray-700">Username</label>
+                                <input 
+                                    type="text" 
+                                    value={forgotData.username} 
+                                    onChange={e => handleForgotChange('username', e.target.value)} 
+                                    className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 placeholder-gray-400 focus:border-purple-500 focus:ring-1 focus:ring-purple-500" 
+                                    placeholder="Enter admin username" 
+                                    required 
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-1 text-gray-700">Employee Number</label>
+                                <input 
+                                    type="text" 
+                                    value={forgotData.employeeNumber} 
+                                    onChange={e => handleForgotChange('employeeNumber', e.target.value)} 
+                                    className="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 placeholder-gray-400 focus:border-purple-500 focus:ring-1 focus:ring-purple-500" 
+                                    placeholder="Enter employee number" 
+                                    required 
+                                />
+                            </div>
+                            {forgotStatus && (
+                                <div className={`text-sm p-2 rounded ${
+                                    forgotStatus.includes('submitted') 
+                                        ? 'bg-green-100 text-green-700 border border-green-200' 
+                                        : 'bg-red-100 text-red-700 border border-red-200'
+                                }`}>
+                                    {forgotStatus}
+                                </div>
+                            )}
+                            <div className="flex gap-2 mt-4">
+                                <button 
+                                    type="submit" 
+                                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded transition-colors"
+                                >
+                                    Submit Request
+                                </button>
+                                <button 
+                                    type="button" 
+                                    className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded text-gray-700 transition-colors" 
+                                    onClick={() => { 
+                                        setShowForgotModal(false); 
+                                        setForgotStatus(""); 
+                                        setForgotData({ username: '', employeeNumber: '' });
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
             {/* Animated Background Elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -179,6 +280,18 @@ const AdminLogin = () => {
                                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                         </button>
                                     </div>
+                                </div>
+
+                                {/* Forgot Password Link */}
+                                <div className="text-right">
+                                    <button 
+                                        type="button"
+                                        onClick={() => navigate('/forgot-password')}
+                                        className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
+                                        disabled={loading}
+                                    >
+                                        Forgot Password?
+                                    </button>
                                 </div>
 
                                 {/* Message Display */}

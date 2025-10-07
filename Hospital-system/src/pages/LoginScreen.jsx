@@ -71,6 +71,16 @@ const LoginScreen = () => {
                 localStorage.setItem('user', JSON.stringify(data.staff));
                 localStorage.setItem('isLoggedIn', 'true');
                 
+                // Check if user has temporary password
+                if (data.staff.isPasswordTemporary) {
+                    // Store user info for change password page
+                    localStorage.setItem('needsPasswordChange', 'true');
+                    localStorage.setItem('userRole', data.staff.isAdmin ? 'admin' : 'staff');
+                    alert('You are using a temporary password. You will be redirected to change your password.');
+                    navigate('/change-password');
+                    return;
+                }
+                
                 // Navigate based on user role
                 if (data.staff.isAdmin) {
                     localStorage.setItem('userRole', 'admin');
@@ -232,7 +242,7 @@ const LoginScreen = () => {
                                 <div className="text-right">
                                     <button 
                                         type="button"
-                                        onClick={() => setShowForgotModal(true)}
+                                        onClick={() => navigate('/forgot-password')}
                                         className="text-cyan-400 hover:text-cyan-300 text-sm font-medium transition-colors duration-200 hover:underline bg-transparent border-none cursor-pointer"
                                     >
                                         Forgot Password?

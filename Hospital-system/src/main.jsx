@@ -12,6 +12,8 @@ import LoginScreen from './pages/LoginScreen';
 import RegisterScreen from './pages/RegisterScreen';
 import AdminLogin from './pages/AdminLogin';
 import AdminRegister from './pages/AdminRegister';
+import ForgotPassword from './pages/ForgotPassword';
+import ChangePassword from './pages/ChangePassword';
 
 // Main Pages
 import Dashboard from './pages/Dashboard';
@@ -68,6 +70,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/registerScreen" element={<GuestRoute><RegisterScreen /></GuestRoute>} />
         <Route path="/admin-login" element={<GuestRoute><AdminLogin /></GuestRoute>} />
         <Route path="/admin-register" element={<GuestRoute><AdminRegister /></GuestRoute>} />
+        <Route path="/forgot-password" element={<GuestRoute><ForgotPassword /></GuestRoute>} />
+        <Route path="/change-password" element={<ChangePassword />} />
         
         {/* Protected Staff Dashboard Routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

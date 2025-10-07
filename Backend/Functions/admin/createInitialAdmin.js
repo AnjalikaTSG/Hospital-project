@@ -31,7 +31,9 @@ async function createInitialAdmin() {
       password: hashedPassword,
       employee_number: adminData.employee_number,
       position: adminData.position,
-      status: adminData.status
+      status: adminData.status,
+      isAdmin: true,
+      isPasswordTemporary: false
     });
 
     await adminUser.save();
